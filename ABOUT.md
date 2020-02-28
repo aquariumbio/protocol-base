@@ -4,6 +4,8 @@ Libraries to model PCR composition and program, and help with master mixes [[Dow
 
 &copy; University of Washington
 
+### Keywords
+Aquarium, Protocol, Library
 
 ### Maintainer
 - Devin Strickland, <dvn.strcklnd@gmail.com>
