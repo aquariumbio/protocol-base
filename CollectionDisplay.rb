@@ -20,19 +20,19 @@ module CollectionDisplay
   # @param collection [Collection] the collection to be represented by the table
   # @param add_headers [Boolean] optional True
   def create_collection_table(collection)
-    tab = nil
-    rows = collection.object_type.rows
-    columns = collection.object_type.columns
-    size = rows * columns
-    slots = (1..size + rows + columns + 1).to_a # gotta add spots for labels plus one square for upper left corner
-    tab = slots.each_slice(collection.object_type.columns + 1).map.with_index do |row|
-      row.map do |col, col_idx|
-        { class: 'td-empty-slot' }
-      end
-    end
+    rows = collection.object_type.rows + 1
+    columns = collection.object_type.columns + 1
+    # add one to number of rows/columns to make space for labels
 
-    labels = Array(1...size + 1)
-    tab.each_with_index do |row, row_idx|
+    # creates a 2d row by column array
+    # each slot will contain { :class => 'td-empty-slot'}
+    collection_table = Array.new(rows) { Array.new(columns) { { class: 'td-empty-slot' } } }
+
+    # label top row 0 ... length - 1
+    collection_table[0].each_with_index { |col, idx| col[:content] = "<b><u>#{idx}</u></b>"}
+   
+    collection_table.each_slice {}
+    collection_table.each_with_index do |row, row_idx|
       row.each_with_index do |col, col_idx|
          if row_idx.zero?
            col[:content] = "<b><u>#{col_idx}</u></b>"
@@ -40,17 +40,17 @@ module CollectionDisplay
            col[:content] = "<b><u>#{get_alpha(row_idx)}</u></b>"
          else
            col[:content] = labels.first
-           labels = labels.drop(1)
+           labels = labels.drop(1) #remove item from start of array
          end
       end
     end
-    tab.first.first[:content] = "<b>:)</b>"
-    tab
+    collection_table.first.first[:content] = "<b>:)</b>"
+    collection_table
   end
-  
-  #turns numbers in to alpha values (eg 1->A 27-AA etc)
+
+  # converts numbers to alphabetical values (eg 1->A 27-AA etc)
   #
-  # @param num [Int] the integer to be turned
+  # @param num [Int] the integer to be converted
   def get_alpha(num)
     alpha = ('A'...'AA').to_a
     number_parts = []
@@ -62,7 +62,7 @@ module CollectionDisplay
       iterations += 1
     end
     number_parts.push(num % 26)
-    alpha_string = ""
+    alpha_string = ''
     number_parts.reverse_each do |let|
       alpha_string += alpha[let - 1]
     end
@@ -214,11 +214,13 @@ module CollectionDisplay
     columns = collection.object_type.columns
     size = rows * columns
     slots = (1..size + rows + columns + 1).to_a
+    
     slots.each_slice(collection.object_type.columns).each_with_index.map do |row, r_idx|
       row.each_with_index.map do |col, c_idx|
         {class: 'td-empty-slot' }
       end
     end
+
     labels = Array(1...size + 1)
     tab.each_with_index do |row, row_idx|
       row.each_with_index do |col, col_idx|
