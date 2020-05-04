@@ -1,4 +1,6 @@
-#TODO With the added boardered need to ensure that they don't land under the checkable range if checkable is true
+# frozen_string_literal: true
+
+# TODO With the added boardered need to ensure that they don't land under the checkable range if checkable is true
 
 # Justin Vrana
 #
@@ -22,25 +24,25 @@ module CollectionDisplay
     rows = collection.object_type.rows
     columns = collection.object_type.columns
     size = rows * columns
-    slots = (1..size+rows+columns+1).to_a #gotta add spots for labels plus one square for upper left corner
-    tab = slots.each_slice(collection.object_type.columns+1).map.with_index do |row|
+    slots = (1..size + rows + columns + 1).to_a # gotta add spots for labels plus one square for upper left corner
+    tab = slots.each_slice(collection.object_type.columns + 1).map.with_index do |row|
       row.map do |col, col_idx|
-        {class: 'td-empty-slot' }
+        { class: 'td-empty-slot' }
       end
     end
 
-    labels = Array(1...size+1)
+    labels = Array(1...size + 1)
     tab.each_with_index do |row, row_idx|
-       row.each_with_index do |col, col_idx|
-          if row_idx == 0
-            col[:content] = "<b><u>#{col_idx}</u></b>"
-          elsif col_idx == 0
-            col[:content] = "<b><u>#{get_alpha(row_idx)}</u></b>"
-          else
-            col[:content] = labels.first
-            labels = labels.drop(1)
-          end
-       end
+      row.each_with_index do |col, col_idx|
+         if row_idx.zero?
+           col[:content] = "<b><u>#{col_idx}</u></b>"
+         elsif col_idx.zero?
+           col[:content] = "<b><u>#{get_alpha(row_idx)}</u></b>"
+         else
+           col[:content] = labels.first
+           labels = labels.drop(1)
+         end
+      end
     end
     tab.first.first[:content] = "<b>:)</b>"
     tab
@@ -50,19 +52,19 @@ module CollectionDisplay
   #
   # @param num [Int] the integer to be turned
   def get_alpha(num)
-    alpha = ("A"..."AA").to_a
+    alpha = ('A'...'AA').to_a
     number_parts = []
     iterations = 0
-    until num/26 == 0 || num == 26 || iterations == 20
-        div_parts = num.divmod(26)
-        number_parts.push(div_parts[1])
-        num = div_parts[0]
-        iterations += 1
+    until num / 26 == 0 || num == 26 || iterations == 20
+      div_parts = num.divmod(26)
+      number_parts.push(div_parts[1])
+      num = div_parts[0]
+      iterations += 1
     end
-    number_parts.push(num%26)
+    number_parts.push(num % 26)
     alpha_string = ""
     number_parts.reverse_each do |let|
-       alpha_string += alpha[let-1]
+      alpha_string += alpha[let - 1]
     end
     alpha_string
   end
@@ -76,7 +78,7 @@ module CollectionDisplay
   #                    (TODO EMPTY STRING/DONT REPLACE CONTENT)
   # @param check [Boolean] optional determines if cell is checkable or not
   def highlight_cell(tbl, row, col, id, check: true)
-    tbl[row+1][col+1] = { content: id, class: 'td-filled-slot', check: check }
+    tbl[row + 1][col + 1] = { content: id, class: 'td-filled-slot', check: check }
   end
 
   # Highlights all cells in ROW/COLUMN/X  (TODO TABLE CLASS)
@@ -157,7 +159,7 @@ module CollectionDisplay
   # @return [Table]
   def highlight_collection_rc(collection, rc_list,  check: true, &rc_block)
     rcx_list = rc_list.map { |r, c|
-      block_given? ? [r, c, yield(r, c)] : [r, c, ""]
+      block_given? ? [r, c, yield(r, c)] : [r, c, '']
     }
     highlight_collection_rcx(collection, rcx_list, check: check)
   end
@@ -201,7 +203,7 @@ module CollectionDisplay
   # @param c [Integer] column integer
   def r_c_to_slot(collection, r, c)
     rows, cols = collection.dimensions = collection.object_type.rows
-    r*cols + c+1
+    r * cols + c + 1
   end
 
   # Makes an Alpha Numeric Table from Collection
@@ -211,24 +213,24 @@ module CollectionDisplay
     rows = collection.object_type.rows
     columns = collection.object_type.columns
     size = rows * columns
-    slots = (1..size+rows+columns+1).to_a
+    slots = (1..size + rows + columns + 1).to_a
     slots.each_slice(collection.object_type.columns).each_with_index.map do |row, r_idx|
       row.each_with_index.map do |col, c_idx|
         {class: 'td-empty-slot' }
       end
     end
-    labels = Array(1...size+1)
+    labels = Array(1...size + 1)
     tab.each_with_index do |row, row_idx|
-       row.each_with_index do |col, col_idx|
-        if row_idx == 0
-          col[:content] = "<b><u>#{col_idx}</u></b>"
-        elsif col_idx == 0
-          col[:content] = "<b><u>#{get_alpha(row_idx)}</u></b>"
-        else
-          col[:content] = labels.first
-          labels = labels.drop(1)
-        end
-     end
+      row.each_with_index do |col, col_idx|
+      if row_idx == 0
+        col[:content] = "<b><u>#{col_idx}</u></b>"
+      elsif col_idx == 0
+        col[:content] = "<b><u>#{get_alpha(row_idx)}</u></b>"
+      else
+        col[:content] = labels.first
+        labels = labels.drop(1)
+      end
+    end
   end
   tab.first.first[:content] = "<b>:)</b>"
   tab
@@ -283,7 +285,7 @@ module CollectionDisplay
     parts.each do |part|
       loc_array = collection.find(part)
       loc_array.each do |loc|
-        loc.push(get_associated_data(part,key))
+        loc.push(get_associated_data(part, key))
         rcx_array.push(loc)
       end
     end

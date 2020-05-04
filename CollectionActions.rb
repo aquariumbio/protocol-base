@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 # Cannon Mallory
 # malloc3@uw.edu
