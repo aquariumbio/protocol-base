@@ -32,7 +32,7 @@ module CollectionData
         part = plate.part(key_value_map[0], key_value_map[1])
         data_value = key_value_map[2]
         key = key_value_map[3]
-        associate_data(part, key.to_sym, data_value)
+        associate_data(part, key.to_sym, data_value) unless part.nil?
     end
   end
 
