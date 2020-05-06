@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 # Cannon Mallory
 # malloc3@uw.edu
@@ -8,7 +9,7 @@
 module CollectionActions
   # Store all input collections from all operations
   #
-  # @param operations [OperationList] the  list of operations
+  # @param operations [OperationList] the list of operations
   # @param location [String] the location that the items are to be moved to
   def store_input_collections(operations, location: nil)
     show do
@@ -29,6 +30,18 @@ module CollectionActions
               location: location)
     end
   end
+
+  # Store collections
+  #
+  # @param operations [OperationList] the operations whose items should be stored
+  # @param location [String]
+  # @param role [Sring] whether the items are inputs or outputs
+  def store_collection_items(operations, location: nil, role: '')
+    show do
+      title 'Put Away the Following Items'
+      table table_of_job_object_location(operations, role: role,
+              location: location)
+    end
 
   # Stores all input objects in operation list
   #
