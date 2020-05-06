@@ -89,3 +89,4 @@ module CollectionLocation
     rcx_list
   end
 end
+

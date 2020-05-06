@@ -32,7 +32,7 @@ module CollectionTransfer
   #
   # @param input_collection [Collection] the collection samples come from
   # @param to_collection[Collection] the collection samples will move to
-  # @param transfer_vol [Integer] volume of sample to transfer (in ul)
+  # @param transfer_vol [String] volume of sample to transfer (INCLUDE UNITS)
   # @param populate_collection [Boolean] true if the to_collection needs to be populated
   #     false if the to_collection has already been populated.
   # @param array_of_samples [Array<Sample>] Optional
@@ -42,7 +42,7 @@ module CollectionTransfer
   # 1. get the item locations
   # 2. make Data associations  (done)
   # 3. give instructions  (done)
-  def transfer_to_new_collection(from_collection, to_collection, transfer_vol, 
+  def transfer_from_collection_to_collection(from_collection, to_collection, transfer_vol, 
                 populate_collection: true, array_of_samples: nil)
 
     # gets samples to transfer if not explicitly given
@@ -164,14 +164,14 @@ module CollectionTransfer
   # @param from_collection [Collection] the collection that items are being transered from
   # @param association_map [Array<{TO_LOC: loc, FROM_LOC: loc}] maps the location relationship
   #     between the two plates.  If not given will assume one to one collection transfer
-  # @param transfer_vol [Double] Optional the volume to be transfered
+  # @param transfer_vol [String] Optional the volume to be transfered WITH UNITS
   #       (if nil no volume instructions)
   def collection_transfer_instructions(to_collection:, from_collection:,
                   association_map: nil, transfer_vol: nil)
     if transfer_vol.nil?
       amount_to_transfer = "everything"
     else
-      amount_to_transfer = "#{transfer_vol} #{MICROLITERS}"
+      amount_to_transfer = "#{transfer_vol}"
     end
 
     association_map = one_to_one_association_map(to_collection: to_collection,
@@ -208,13 +208,13 @@ module CollectionTransfer
   #
   # @param input_fv_array [Array<FieldValues>] an array of field values of collections
   # @param to_collection [Collection] (Should have samples already associated to it)
-  # @param transfer_vol [Integer] volume in ul of sample to transfer
+  # @param transfer_vol [String] volume in sample to transfer INCLUDE UNITS
   def transfer_subsamples_to_working_plate(input_fv_array, to_collection, transfer_vol)
     # was transfer_to_collection_from_fv_array
     sample_array_by_collection = input_fv_array.group_by { |fv| fv.collection }
     sample_array_by_collection.each do |from_collection, fv_array|
       sample_array = fv_array.map { |fv| fv.sample }
-      transfer_to_new_collection(from_collection, to_collection, transfer_vol, array_of_samples: sample_array)
+      transfer_from_collection_to_collection(from_collection, to_collection, transfer_vol, array_of_samples: sample_array)
     end
   end
 
@@ -306,23 +306,16 @@ module CollectionTransfer
   # @return [Array<Collection>] an array of the collections that are now populated
   #
   # TODO Probably needs to move from collection Transfer
-  def make_and_populate_collection(samples, collection_type, add_column_wise: true, label_plates: false,
-               first_collection: nil)
-    first_collection = make_new_plate(collection_type,
-                label_plate: label_plates) if first_collection.nil?
-
-    capacity = first_collection.capacity
+  def make_and_populate_collection(samples, collection_type, add_column_wise: true, label_plates: false)
+    obj_type = ObjectType.find_by_name(collection_type)
+    capacity = obj_type.columns * obj_type.rows
     collections = []
     grouped_samples = samples.in_groups_of(capacity, false)
     #TODO This if else thing could totally be removed if I figured out a way to get the capacity
     # of the collection without making the collection first.  I am sure there is a way to do this
     # however I haven't the time rn to figure it out.
     grouped_samples.each_with_index do |sub_samples, idx|
-      if idx.zero?
-        collection = first_collection
-      else
-        collection =  make_new_plate(collection_type, label_plate: label_plates)
-      end
+      collection =  make_new_plate(collection_type, label_plate: label_plates)
       add_samples_to_collection(sub_samples, collection, add_column_wise: add_column_wise)
       collections.push(collection)
     end
@@ -357,8 +350,9 @@ module CollectionTransfer
   # Associates corrosponding well locations that contain a part.
   #
   # @param to_collection [Collection] the plate that is getting the association
-  # @param input_plate [Collection] the plate that is transfering the association
-  # @param samples [Array<Samples>] array of samples that are to be associated over
+  # @param from_collection [Collection] the plate that is transfering the association
+  # @param Association_map [Array<Hash<from_loc: loc1, to_loc: loc2>] 
+  #             Assiciation map of where items were coming from
   # @param transfer_vol [Integer] the volume transfered if applicable default nil
   #   if nil then will associate all common samples
   def associate_plate_to_plate(to_collection:, from_collection:, association_map: nil, transfer_vol: nil)
@@ -384,11 +378,89 @@ module CollectionTransfer
       to_part = to_collection.part(to_loc[0], to_loc[1])
       from_part = from_collection.part(from_loc[0], from_loc[1])
 
-      associate_transfer_vol(transfer_vol, VOL_TRANSFER, to_part: to_part, from_part: from_part) unless transfer_vol.nil?
+      associate_transfer_vol(transfer_vol, VOL_TRANSFER, to_part: to_part, 
+                    from_part: from_part) unless transfer_vol.nil?
 
       from_obj_to_obj_provenance(to_part, from_part)
     end
   end
+
+
+  # Creates data association based on plate map for transfer of sample from one item to wells
+  # in the collection.  Additionally tracks provenance through items.
+  #
+  #
+  # @param to_collection [Collection] the plate that is getting the association
+  # @param from_item [item] the item that is transfering the association
+  # @param Association_map [Array<row, column>] Assiciation map of where items 
+  #     are coming from.  If nil will assume transfered to all wells.  Can take standard 
+  #     Array of Hashes as used in other methods in this library
+  # @param transfer_vol [Integer] the volume transfered if applicable default nil
+  #   if nil then will state unknow transfer vol
+  def associate_item_to_wells(from_item:, to_collection:, association_map: nil, transfer_vol: nil)
+    if association_map.nil?
+      association_map = to_collection.get_non_empty
+    end
+    association_map.each do |to_loc|
+      to_loc = to_loc[:TO_LOC] if to_loc.is_a? Hash
+      to_loc = convert_alpha_to_rc if to_loc.is_a? String
+
+      to_part = to_collection.part(to_loc[0],to_loc[1])
+      associate_transfer_vol(transfer_vol, VOL_TRANSFER, to_part: to_part, 
+                from_part: from_item) unless transfer_vol.nil?
+      from_obj_to_obj_provenance(to_part, from_item)
+    end
+  end
+
+
+
+  # Creates data association based on plate map for transfer of sample from one/many wells to
+  # one item
+  # Additionally tracks provenance through items.
+  #
+  #
+  # @param from_collection [Collection] the is transfereing the association
+  # @param to_item [item] the item that is getting_the association
+  # @param Association_map [Array<row, column>] Assiciation map of where items 
+  #     are coming from.  If nil will assume transfered from all wells.  Can take standard 
+  #     Array of Hashes as used in other methods in this library
+  # @param transfer_vol [String] the volume transfered if applicable
+  def associate_wells_to_item(to_item:, from_collection:, association_map: nil, transfer_vol: nil)
+    if association_map.nil?
+      association_map = from_collection.get_non_empty
+    end
+    association_map.each do |to_loc|
+      from_loc = loc[:TO_LOC] if loc.is_a? Hash
+      from_loc = convert_alpha_to_rc if from_loc.is_a? String
+
+      from_part = from_collection.part(from_loc[0],from_loc[1])
+      associate_transfer_vol(transfer_vol, VOL_TRANSFER, to_part: to_item, 
+                from_part: from_part) unless transfer_vol.nil?
+      from_obj_to_obj_provenance(to_item, from_part)
+    end
+  end
+
+
+
+  # Creates associations from wells to items based on the association map.
+  # The map directs wich wells and what items are associated.   Should be in the form
+  # Array<Array<to_item, [r,c]>>  where [r,c] is the location in the collection that the
+  # item should be from.
+  #
+  # @param from_collection [Collection] the collection that the item should be from
+  # @param assocaition_map [Array<Array<item, [row, col]>>] or 
+  #           [Array<Array<item, Hash{FROM_LOC: [r,c]}>>]
+  # @param transfer_vol [String] the volume transfered INCLUDE UNITS
+  def associate_wells_to_multiple_items(from_collection:, association_map:, transfer_vol: nil)
+    association_map.each do |to_item, loc|
+      associate_wells_to_item(to_item: to_item, from_collection: from_collection, 
+                association_map:[loc], transfer_vol: transfer_vol)
+    end
+  end
+
+
+
+
 
   # Records the volume of an item that was transfered (or at least what the code)
   # instructed the technition to transfer.   Creates an array of all the transfered volumes

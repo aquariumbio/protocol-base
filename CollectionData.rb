@@ -58,6 +58,8 @@ module CollectionData
   # @param from_obj [Krill Object] object that provenance is coming from
   # @param to_obj [Krill Object] the object that provenance is going to
   def from_obj_to_obj_provenance(to_obj, from_obj)
+    raise "Object #{to_obj.id} is not an item" unless to_obj.is_a? Item
+    raise "Object #{from_obj.id} is not an item" unless from_obj.is_a? Item
     from_obj_map = AssociationMap.new(from_obj)
     to_obj_map = AssociationMap.new(to_obj)
     add_provenance(from: from_obj, from_map: from_obj_map,

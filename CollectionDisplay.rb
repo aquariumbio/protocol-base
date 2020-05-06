@@ -196,6 +196,15 @@ module CollectionDisplay
     row * cols + column + 1
   end
 
+  # Makes an Alpha Numeric Table from Collection
+  # A wrapper for a new method that has been renamed
+  #
+  # @param collection [Collection] the collection that the table is based from
+  def create_alpha_numeric_table(collection)
+    create_collection_table(collection)
+
+  end
+
   # Makes an alpha numerical display of collection wells listed in rc_list
   #
   # @param collection [Collection] the collection
@@ -251,6 +260,7 @@ module CollectionDisplay
     end
     highlight_collection_rcx(collection, rcx_array, check: false)
   end
+
 end
 
 # TODO: Not sure is this is the same as the other table creation method?
