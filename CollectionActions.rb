@@ -7,10 +7,10 @@
 # These actions should involve the WHOLE plate not individual wells.
 # NOTE: The collection is doing the whole action
 module CollectionActions
-  # Store all input collections from all operations
+  # Store all items used in input operations
   #
   # @param operations [OperationList] the list of operations
-  # @param location [String] the location that the items are to be moved to
+  # @param location [String] the storage location
   def store_input_collections(operations, location: nil)
     show do
       title 'Put Away the Following Items'
@@ -19,7 +19,7 @@ module CollectionActions
     end
   end
 
-  # Stores all output collections from all operations
+  # Stores all items used in output operations
   #
   # @param operations [OperationList] the operation list where all
   # output collections should be stored
@@ -42,6 +42,7 @@ module CollectionActions
       table table_of_job_object_location(operations, role: role,
               location: location)
     end
+  end
 
   # Stores all input objects in operation list
   #
@@ -49,35 +50,43 @@ module CollectionActions
   # @param role [String] whether object is an input or an output
   # @param location [String] the location to put things
   def table_of_job_object_location(operations, role: 'input', location: nil)
-    obj_array = []
+    input_output_objects = []
     operations.each do |op|
-      array_of_fv = op.inputs.reject { |fv|
+      field_values = op.inputs.reject { |fv|
               fv.collection.nil? } if role == 'input'
-      array_of_fv = op.outputs.reject { |fv|
+      field_values = op.outputs.reject { |fv|
               fv.collection.nil? } if role == 'output'
-      obj_array.concat(get_obj_from_fv_array(array_of_fv))
+      input_output_objects.concat(get_input_output_objects(field_values))
     end
-    obj_array = obj_array.uniq
-    set_locations(obj_array, location) unless location.nil?
-    get_collection_location_table(obj_array)
+#    input_output_objects = input_output_objects.uniq
+    set_locations(input_output_objects, location) unless location.nil?
+    get_collection_location_table(input_output_objects)
   end
 
-  # Get the obj from the fv (either item or collection)
+  # Wrapper on Old Method
   #
   # @param array_of_fv [Array] array of field values
   # @return obj_array [Array] array of objects (either collections or items)
   def get_obj_from_fv_array(array_of_fv)
-    obj_array = []
-    array_of_fv.each do |fv|
-      if !fv.collection.nil?
-        obj_array.push(fv.collection)
-      elsif !fv.item.nil?
-        obj_array.push(fv.item)
+    get_input_output_objects(array_of_fv)
+  end
+
+  # Get the obj from the fv (either item or collection)
+  #
+  # @param field_values [Array] array of field values
+  # @return input_output_objects [Array] array of objects (either collections or items)
+  def get_input_output_objects(field_values)
+    input_output_objects = []
+    field_values.each do |field_value|
+      if !field_value.collection.nil?
+        input_output_objects.push(field_value.collection)
+      elsif !field_value.item.nil?
+        input_output_objects.push(field_value.item)
       else
         raise "Invalid class.  Neither collection nor item. Class = #{fv.class}"
       end
     end
-    obj_array.uniq
+    input_output_objects.uniq
   end
 
   # Sets the location of all objects in array to some given locations
@@ -106,7 +115,7 @@ module CollectionActions
 
   # Wrapper for old method that was renamed and moved
   #
-  # Creates table of locations, object type, and ID 
+  # Creates table of locations, object type, and ID
   def get_collection_location_table(obj_array)
     get_location_table(obj_array)
   end
