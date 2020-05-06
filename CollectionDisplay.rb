@@ -27,6 +27,7 @@ module CollectionDisplay
 
     # label column headers 0 ... length - 1
     collection_table[0].each_with_index { |col, idx| col[:content] = "<b><u>#{idx}</u></b>" }
+
     # label row headers A through Z
     collection_table.each_with_index { |row, idx| row[0][:content] = "<b><u>#{get_alpha(idx)}</u></b>" }
     # label collection data
