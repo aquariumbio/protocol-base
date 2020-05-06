@@ -83,12 +83,19 @@ module CollectionActions
   #
   # @param collection [Collection] the collection that is to be put away
   # @return location_table [Array<Array>] of collections and their locations
-  def get_collection_location_table(obj_array)
-    location_table = [['ID', 'Collection Type', 'Location']]
+  def get_location_table(obj_array)
+    location_table = [['ID', 'Object Type', 'Location']]
     obj_array.each do |obj|
       location_table.push([obj.id, obj.object_type.name, obj.location])
     end
     location_table
+  end
+
+  # Wrapper for old method that was renamed and moved
+  #
+  # Creates table of locations, object type, and ID 
+  def get_collection_location_table(obj_array)
+    get_location_table(obj_array)
   end
 
   # Instructions to store a specific item

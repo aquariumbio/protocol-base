@@ -205,33 +205,11 @@ module CollectionDisplay
   end
 
   # Makes an Alpha Numeric Table from Collection
+  # A wrapper for a new method that has been renamed
   #
   # @param collection [Collection] the collection that the table is based from
   def create_alpha_numeric_table(collection)
-    rows = collection.object_type.rows
-    columns = collection.object_type.columns
-    size = rows * columns
-    slots = (1..size+rows+columns+1).to_a
-    slots.each_slice(collection.object_type.columns).each_with_index.map do |row, r_idx|
-      row.each_with_index.map do |col, c_idx|
-        {class: 'td-empty-slot' }
-      end
-    end
-    labels = Array(1...size+1)
-    tab.each_with_index do |row, row_idx|
-       row.each_with_index do |col, col_idx|
-        if row_idx == 0
-          col[:content] = "<b><u>#{col_idx}</u></b>"
-        elsif col_idx == 0
-          col[:content] = "<b><u>#{get_alpha(row_idx)}</u></b>"
-        else
-          col[:content] = labels.first
-          labels = labels.drop(1)
-        end
-     end
-  end
-  tab.first.first[:content] = "<b>:)</b>"
-  tab
+    create_collection_table(collection)
   end
 
   # Makes an alpha numerical display of collection wells listed in rc_list
