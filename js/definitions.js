@@ -41,12 +41,6 @@ var config = {
 
           
             {
-              name: 'CommonInputOutputNames',
-              path: 'libraries/CommonInputOutputNames' + '.html',
-              type: "local-webpage"
-            },
-          
-            {
               name: 'MasterMixHelper',
               path: 'libraries/MasterMixHelper' + '.html',
               type: "local-webpage"
@@ -59,14 +53,20 @@ var config = {
             },
           
             {
+              name: 'PCRCompositionDefinitions',
+              path: 'libraries/PCRCompositionDefinitions' + '.html',
+              type: "local-webpage"
+            },
+          
+            {
               name: 'PCRProgram',
               path: 'libraries/PCRProgram' + '.html',
               type: "local-webpage"
             },
           
             {
-              name: 'Units',
-              path: 'libraries/Units' + '.html',
+              name: 'PCRProgramDefinitions',
+              path: 'libraries/PCRProgramDefinitions' + '.html',
               type: "local-webpage"
             },
           
