@@ -65,6 +65,10 @@ show do
 end
 ```
 
+the `table` renders as:
+
+<table><tr><td style="border: 1px solid gray; text-align: center">Step</td><td style="border: 1px solid gray; text-align: center">Temperature</td><td style="border: 1px solid gray; text-align: center">Duration</td></tr><tr><td style="border: 1px solid gray; text-align: center">step1</td><td style="border: 1px solid gray; text-align: center">95 &deg;C</td><td style="border: 1px solid gray; text-align: center">3 min</td></tr><tr><td style="border: 1px solid gray; text-align: center">step2</td><td style="border: 1px solid gray; text-align: center">98 &deg;C</td><td style="border: 1px solid gray; text-align: center">15 sec</td></tr><tr><td style="border: 1px solid gray; text-align: center">step3</td><td style="border: 1px solid gray; text-align: center">62 &deg;C</td><td style="border: 1px solid gray; text-align: center">30 sec</td></tr><tr><td style="border: 1px solid gray; text-align: center">step4</td><td style="border: 1px solid gray; text-align: center">72 &deg;C</td><td style="border: 1px solid gray; text-align: center">30 sec</td></tr><tr><td style="border: 1px solid gray; text-align: center">step5</td><td style="border: 1px solid gray; text-align: center">goto step 2</td><td style="border: 1px solid gray; text-align: center">34 times</td></tr><tr><td style="border: 1px solid gray; text-align: center">step6</td><td style="border: 1px solid gray; text-align: center">12 &deg;C</td><td style="border: 1px solid gray; text-align: center">forever </td></tr></table>
+
 Master mixes are handled by `module MasterMixHelper`. This module contains, among other things, a method for grouping `Operations` by shared inputs, and a `show` method for making a master mix based on a `PCRComposition` object.
 
 All three make use of the `Units` library (part of [Standard Libraries](https://github.com/klavinslab/standard-libraries), which, for example, renders
