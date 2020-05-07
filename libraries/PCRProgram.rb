@@ -1,130 +1,123 @@
-needs "Standard Libs/Units"
-needs "Standard Libs/CommonInputOutputNames"
+needs "PCR Libs/PCRProgramDefinitions"
 
+# Factory class for instantiating `PCRProgram`
+# @author Devin Strickland <strcklnd@uw.edu>
+class PCRProgramFactory
+  # Instantiates `PCRComposition`
+  #
+  # @param program_name [String] the name of one of the default program hashes
+  # @param volume [Numeric] the reaction volume in MICROLITERS
+  # @return [PCRProgram]
+  def self.build(program_name:, volume: nil)
+    PCRProgram.new(program_name: program_name, volume: volume)
+  end
+end
+
+# Models a thermocycler program
+# @author Devin Strickland <strcklnd@uw.edu>
 class PCRProgram
 
-    include CommonInputOutputNames, Units
+  include PCRProgramDefinitions
 
-    FINAL_STEP = "12C (in final step of program)"
+  attr_reader :program_name, :program_template_name, :layout_template_name
+  attr_reader :steps, :volume
 
-    PROGRAMS = {
-        "qPCR1" => {
-            name: "NGS_qPCR1.prcl", volume: 32, plate: "NGS_qPCR1.pltd",
-            steps: {
-                step1: {temp: {qty: 95, units: DEGREES_C}, time: {qty:  3, units: MINUTES}},
-                step2: {temp: {qty: 98, units: DEGREES_C}, time: {qty: 15, units: SECONDS}},
-                step3: {temp: {qty: 62, units: DEGREES_C}, time: {qty: 30, units: SECONDS}},
-                step4: {temp: {qty: 72, units: DEGREES_C}, time: {qty: 30, units: SECONDS}},
-                step5: {goto: 2, times: 34},
-                # step6: {temp: {qty: 72, units: DEGREES_C}, time: {qty:  5, units: MINUTES}},
-                step6: {temp: {qty: 12, units: DEGREES_C}, time: {qty: "forever", units: ""}}
-            }
-        },
+  # Instantiates the class
+  #
+  # @param program_name [String] the name of one of the default program hashes
+  # @param volume [Numeric] the reaction volume in MICROLITERS
+  # @return [PCRProgram]
+  def initialize(args = {})
+    @program_name = args[:program_name]
+    program = get_program_def(name: program_name)
+    @program_template_name = program[:program_template_name]
+    @name = @program_template
+    @plate = program[:plate]
+    @layout_template_name = program[:layout_template_name]
+    @steps = {}
+    program[:steps].each { |k, v| @steps[k] = PCRStep.create_from(v) }
+    @volume = args[:volume] || program[:volume]
+  end
 
-        "qPCR2" => {
-            name: "NGS_qPCR2", volume: 50, plate: "NGS_qPCR1.pltd",
-            steps: {
-                step1: {temp: {qty: 98, units: DEGREES_C}, time: {qty:  3, units: MINUTES}},
-                step2: {temp: {qty: 98, units: DEGREES_C}, time: {qty: 15, units: SECONDS}},
-                step3: {temp: {qty: 64, units: DEGREES_C}, time: {qty: 30, units: SECONDS}},
-                step4: {temp: {qty: 72, units: DEGREES_C}, time: {qty: 30, units: SECONDS}},
-                step5: {goto: 2, times: 29},
-                step6: {temp: {qty: 72, units: DEGREES_C}, time: {qty:  5, units: MINUTES}},
-                step7: {temp: {qty: 12, units: DEGREES_C}, time: {qty: "forever", units: ""}}
-            }
-        },
+  # @deprecated Use {#program_template_name}
+  def name
+    program_template_name
+  end
 
-        "lib_qPCR1" => {
-            name: "LIB_qPCR1.prcl", volume: 25, plate: "LIB_qPCR.pltd",
-            steps: {
-                step1: {temp: {qty: 95, units: DEGREES_C}, time: {qty:  3, units: MINUTES}},
-                step2: {temp: {qty: 98, units: DEGREES_C}, time: {qty: 15, units: SECONDS}},
-                step3: {temp: {qty: 65, units: DEGREES_C}, time: {qty: 30, units: SECONDS}},
-                step4: {temp: {qty: 72, units: DEGREES_C}, time: {qty: 30, units: SECONDS}},
-                step5: {goto: 2, times: 34},
-                step6: {temp: {qty: 72, units: DEGREES_C}, time: {qty:  5, units: MINUTES}},
-                step7: {temp: {qty: 12, units: DEGREES_C}, time: {qty: "forever", units: ""}}
-            }
-        },
+  # @deprecated Use {#layout_template_name}
+  def plate
+    layout_template_name
+  end
 
-        "lib_qPCR2" => {
-            name: "LIB_qPCR2.prcl", volume: 50, plate: "LIB_qPCR.pltd",
-            steps: {
-                step1: {temp: {qty: 95, units: DEGREES_C}, time: {qty:  3, units: MINUTES}},
-                step2: {temp: {qty: 98, units: DEGREES_C}, time: {qty: 15, units: SECONDS}},
-                step3: {temp: {qty: 65, units: DEGREES_C}, time: {qty: 30, units: SECONDS}},
-                step4: {temp: {qty: 72, units: DEGREES_C}, time: {qty: 30, units: SECONDS}},
-                step5: {goto: 2, times: 34},
-                step6: {temp: {qty: 72, units: DEGREES_C}, time: {qty:  5, units: MINUTES}},
-                step7: {temp: {qty: 12, units: DEGREES_C}, time: {qty: "forever", units: ""}}
-            }
-        }
-    }
-
-    attr_reader :program_name, :name, :plate, :steps, :volume
-
-    def initialize(args={})
-        @program_name = args[:program_name]
-        program = PCRProgram::PROGRAMS[program_name]
-        @name = program[:name]
-        @plate = program[:plate]
-        @steps = {}
-        program[:steps].each { |k,v| @steps[k] = PCRStep.new(v) }
-        @volume = args[:volume] || program[:volume]
+  # Renders the thermocycler program as a table for `show` blocks
+  #
+  # @return [Array<Array>]
+  def table
+    table = []
+    steps.each do |k, v|
+      row = ["#{k}"] + v.display
+      table.append(row)
     end
+    table
+  end
 
-    def table
-        table = []
-        steps.each do |k,v|
-            row = ["#{k}"]
-            if v.incubation?
-                row += [v.temperature_display, v.duration_display]
-            elsif v.goto?
-                row += [v.goto_display, v.times_display]
-            else
-                raise "Unable to interpret #{v} as a PCRStep"
-            end
-            table.append(row)
-        end
-        table
-    end
-
-    def final_step
-        FINAL_STEP
-    end
+  # TODO: This needs to be responsive to the actual program parameters
+  def final_step
+    "the final step"
+  end
 end
 
 class PCRStep
-    attr_reader :temperature, :duration, :goto, :times
-
-    def initialize(args={})
-        @temperature = args[:temp]
-        @duration = args[:time]
-        @goto = args[:goto]
-        @times = args[:times]
+  def self.create_from(temperature: nil, duration: nil, goto: nil, times: nil)
+    if temperature && duration
+      IncubationStep.new(temperature: temperature, duration: duration)
+    elsif goto && times
+      GotoStep.new(destination: goto, times: times)
+    else
+      raise ProtocolError.new("Expected either an incubation or goto step")
     end
+  end
+end
 
-    def incubation?
-        temperature && duration
-    end
+class IncubationStep 
+  attr_reader :temperature, :duration
 
-    def goto?
-        goto && times
-    end
+  def initialize(temperature: , duration:)
+    @temperature = temperature
+    @duration = duration
+  end
 
-    def temperature_display
-        Units.qty_display(temperature)
-    end
+  def display
+    [temperature_display, duration_display]
+  end
 
-    def duration_display
-        Units.qty_display(duration)
-    end
+  def temperature_display
+    Units.qty_display(temperature)
+  end
 
-    def goto_display
-        "goto step #{goto}"
-    end
+  def duration_display
+    Units.qty_display(duration)
+  end
+  
+end
 
-    def times_display
-        "#{times} times"
-    end
+class GotoStep
+  attr_reader :destination, :times
+
+  def initialize(destination:, times:)
+    @destination = destination
+    @times = times
+  end
+
+  def display
+    [goto_display, times_display]
+  end
+
+  def goto_display
+    "goto step #{destination}"
+  end
+
+  def times_display
+    "#{times} times"
+  end
 end
