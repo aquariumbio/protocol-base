@@ -7,11 +7,7 @@ module PCRCompositionDefinitions
   include CommonInputOutputNames
 
   POLYMERASE = "Polymerase"
-  POLYMERASE_SAMPLE = "Kapa HF Master Mix"
-  POLYMERASE_OBJECT = "Enzyme Stock"
   DYE = "Dye"
-  DYE_SAMPLE = "Eva Green"
-  DYE_OBJECT = "Screw Cap Tube"
   WATER = "Molecular Grade Water"
   MASTER_MIX = "Master Mix"
 
@@ -21,13 +17,13 @@ module PCRCompositionDefinitions
     # qPCR2: 2nd qPCR in NGS prep.
     "qPCR1" => {
       polymerase:     {input_name: POLYMERASE,        qty: 16,    units: MICROLITERS,
-                       sample_name: POLYMERASE_SAMPLE, 
-                       object_name: POLYMERASE_OBJECT},
+                       sample_name: "Kapa HF Master Mix", 
+                       object_name: "Enzyme Stock"},
       forward_primer: {input_name: FORWARD_PRIMER,    qty: 0.16,  units: MICROLITERS},
       reverse_primer: {input_name: REVERSE_PRIMER,    qty: 0.16,  units: MICROLITERS},
       dye:            {input_name: DYE,               qty: 1.6,   units: MICROLITERS,
-                       sample_name: DYE_SAMPLE,
-                       object_name: DYE_OBJECT},
+                       sample_name: "Eva Green",
+                       object_name: "Screw Cap Tube"},
       water:          {input_name: WATER,             qty: 6.58,  units: MICROLITERS},
       template:       {input_name: TEMPLATE,          qty: 7.5,   units: MICROLITERS}
     },
@@ -35,13 +31,13 @@ module PCRCompositionDefinitions
     # qPCR2: 2nd qPCR in NGS prep. reverse primer is indexed primer.
     "qPCR2" => {
       polymerase:     {input_name: POLYMERASE,        qty: 25,    units: MICROLITERS,
-                       sample_name: POLYMERASE_SAMPLE, 
-                       object_name: POLYMERASE_OBJECT},
+                       sample_name: "Kapa HF Master Mix", 
+                       object_name: "Enzyme Stock"},
       forward_primer: {input_name: FORWARD_PRIMER,    qty: 2.5,   units: MICROLITERS},
       reverse_primer: {input_name: REVERSE_PRIMER,    qty: 2.5,   units: MICROLITERS},
       dye:            {input_name: DYE,               qty: 2.5,   units: MICROLITERS,
-                       sample_name: DYE_SAMPLE,
-                       object_name: DYE_OBJECT},
+                       sample_name: "Eva Green",
+                       object_name: "Screw Cap Tube"},
       water:          {input_name: WATER,             qty: 15.5,  units: MICROLITERS},
       template:       {input_name: TEMPLATE,          qty: 2,     units: MICROLITERS}
     },
@@ -49,13 +45,13 @@ module PCRCompositionDefinitions
     # LIBqPCR1: 1st qPCR in Libray prep. if sublibrary primers exist they are used here.
     "lib_qPCR1" => {
       polymerase:     {input_name: POLYMERASE,        qty: 12.5,  units: MICROLITERS,
-                       sample_name: POLYMERASE_SAMPLE, 
-                       object_name: POLYMERASE_OBJECT},
+                       sample_name: "Kapa HF Master Mix", 
+                       object_name: "Enzyme Stock"},
       forward_primer: {input_name: FORWARD_PRIMER,    qty: 0.75,  units: MICROLITERS},
       reverse_primer: {input_name: REVERSE_PRIMER,    qty: 0.75,  units: MICROLITERS},
       dye:            {input_name: DYE,               qty: 1.25,  units: MICROLITERS,
-                       sample_name: DYE_SAMPLE,
-                       object_name: DYE_OBJECT},
+                       sample_name: "Eva Green",
+                       object_name: "Screw Cap Tube"},
       water:          {input_name: WATER,             qty: 8.75,  units: MICROLITERS},
       template:       {input_name: TEMPLATE,          qty: 1,     units: MICROLITERS}
     },
@@ -63,13 +59,13 @@ module PCRCompositionDefinitions
     # LIBqPCR2: 2nd qPCR in Libray prep. overhangs compatible with cloning vector are added here.
     "lib_qPCR2" => {
       polymerase:     {input_name: POLYMERASE,        qty: 25,    units: MICROLITERS,
-                       sample_name: POLYMERASE_SAMPLE, 
-                       object_name: POLYMERASE_OBJECT},
+                       sample_name: "Kapa HF Master Mix", 
+                       object_name: "Enzyme Stock"},
       forward_primer: {input_name: FORWARD_PRIMER,    qty: 1.5,   units: MICROLITERS},
       reverse_primer: {input_name: REVERSE_PRIMER,    qty: 1.5,   units: MICROLITERS},
       dye:            {input_name: DYE,               qty: 2.5,   units: MICROLITERS,
-                       sample_name: DYE_SAMPLE,
-                       object_name: DYE_OBJECT},
+                       sample_name: "Eva Green",
+                       object_name: "Screw Cap Tube"},
       water:          {input_name: WATER,             qty: 17.5,  units: MICROLITERS},
       template:       {input_name: TEMPLATE,          qty: 2,     units: MICROLITERS}
     },
