@@ -5,16 +5,18 @@ This set of libraries can be used to model reaction compositions and thermocycle
 Reaction compositions are modeled by `class PCRComposition`, which includes descriptions of the composition like this one:
 
 ```ruby
-COMPONENTS = {
-        "qPCR1" => {
-            polymerase:     {input_name: POLYMERASE,        qty: 16,    units: MICROLITERS},
-            forward_primer: {input_name: FORWARD_PRIMER,    qty: 0.16,  units: MICROLITERS},
-            reverse_primer: {input_name: REVERSE_PRIMER,    qty: 0.16,  units: MICROLITERS},
-            dye:            {input_name: DYE,               qty: 1.6,   units: MICROLITERS},
-            water:          {input_name: WATER,             qty: 6.58,  units: MICROLITERS},
-            template:       {input_name: TEMPLATE,          qty: 7.5,   units: MICROLITERS}
-        }
-}
+"qPCR1" => {
+      polymerase:     {input_name: POLYMERASE,        qty: 16,    units: MICROLITERS,
+                       sample_name: "Kapa HF Master Mix", 
+                       object_name: "Enzyme Stock"},
+      forward_primer: {input_name: FORWARD_PRIMER,    qty: 0.16,  units: MICROLITERS},
+      reverse_primer: {input_name: REVERSE_PRIMER,    qty: 0.16,  units: MICROLITERS},
+      dye:            {input_name: DYE,               qty: 1.6,   units: MICROLITERS,
+                       sample_name: "Eva Green",
+                       object_name: "Screw Cap Tube"},
+      water:          {input_name: WATER,             qty: 6.58,  units: MICROLITERS},
+      template:       {input_name: TEMPLATE,          qty: 7.5,   units: MICROLITERS}
+    }
 ```
 
 This model is instantiated with this composition by:
