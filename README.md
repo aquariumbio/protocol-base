@@ -33,14 +33,14 @@ Reaction programs are modeled by `class PCRProgram`, which includes descriptions
 
 ```ruby
 "qPCR1" => {
-  name: "NGS_qPCR1.prcl", volume: 32, plate: "NGS_qPCR1.pltd",
+  program_template_name: "NGS_qPCR1", volume: 32, layout_template_name: "NGS_qPCR1",
   steps: {
-    step1: {temp: {qty: 95, units: DEGREES_C}, time: {qty:  3, units: MINUTES}},
-    step2: {temp: {qty: 98, units: DEGREES_C}, time: {qty: 15, units: SECONDS}},
-    step3: {temp: {qty: 62, units: DEGREES_C}, time: {qty: 30, units: SECONDS}},
-    step4: {temp: {qty: 72, units: DEGREES_C}, time: {qty: 30, units: SECONDS}},
+    step1: {temperature: {qty: 95, units: DEGREES_C}, duration: {qty:  3, units: MINUTES}},
+    step2: {temperature: {qty: 98, units: DEGREES_C}, duration: {qty: 15, units: SECONDS}},
+    step3: {temperature: {qty: 62, units: DEGREES_C}, duration: {qty: 30, units: SECONDS}},
+    step4: {temperature: {qty: 72, units: DEGREES_C}, duration: {qty: 30, units: SECONDS}},
     step5: {goto: 2, times: 34},
-    step6: {temp: {qty: 12, units: DEGREES_C}, time: {qty: "forever", units: ""}}
+    step6: {temperature: {qty: 12, units: DEGREES_C}, duration: {qty: "forever", units: ""}}
   }
 }
 ```
