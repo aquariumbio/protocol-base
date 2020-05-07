@@ -1,7 +1,4 @@
-# frozen_string_literal: true
-
-# TODO: With the added boardered need to ensure that they don't land
-# under the checkable range if checkable is true
+#TODO With the added boardered need to ensure that they don't land under the checkable range if checkable is true
 
 # Justin Vrana
 #
@@ -12,51 +9,60 @@
 # Modifications include:
 # Optional Checkable boxes.  Additional Documentation
 
+#
 # Methods for displaying information about collections
 module CollectionDisplay
   # Creates a table with the same dimensions as the input collection
   #
   # @param collection [Collection] the collection to be represented by the table
   # @param add_headers [Boolean] optional True
+  # @return tab [Table] a table to be displayed
   def create_collection_table(collection)
+    tab = nil
     rows = collection.object_type.rows
     columns = collection.object_type.columns
-
-    # creates a 2d array of { :class => 'td-empty-slot'}
-    collection_table = Array.new(rows + 1) { Array.new(columns + 1) { { class: 'td-empty-slot' } } }
-
-    # label column headers 0 ... length - 1
-    collection_table[0].each_with_index { |col, idx| col[:content] = "<b><u>#{idx}</u></b>" }
-
-    # label row headers A through Z
-    collection_table.each_with_index { |row, idx| row[0][:content] = "<b><u>#{get_alpha(idx)}</u></b>" }
-    # label collection data
-    collection_table.flatten.each do |square|
-      index = 0
-      if square[:content].nil?
-        square[:content] = index
-        index += 1
+    size = rows * columns
+    slots = (1..size+rows+columns+1).to_a #gotta add spots for labels plus one square for upper left corner
+    tab = slots.each_slice(collection.object_type.columns+1).map.with_index do |row|
+      row.map do |col, col_idx|
+        {class: 'td-empty-slot' }
       end
     end
-  end
 
-  # converts numbers to alphabetical values (eg 1->A 27-AA etc)
+    labels = Array(1...size+1)
+    tab.each_with_index do |row, row_idx|
+       row.each_with_index do |col, col_idx|
+          if row_idx == 0
+            col[:content] = "<b><u>#{col_idx}</u></b>"
+          elsif col_idx == 0
+            col[:content] = "<b><u>#{get_alpha(row_idx)}</u></b>"
+          else
+            col[:content] = labels.first
+            labels = labels.drop(1)
+          end
+       end
+    end
+    tab.first.first[:content] = "<b>:)</b>"
+    tab
+  end
+  
+  #turns numbers in to alpha values (eg 1->A 27-AA etc)
   #
-  # @param num [Integer] the integer to be converted
+  # @param num [Int] the integer to be turned
   def get_alpha(num)
-    alpha = ('A'...'AA').to_a
+    alpha = ("A"..."AA").to_a
     number_parts = []
     iterations = 0
-    until (num / 26).zero? || num == 26 || iterations == 20
-      div_parts = num.divmod(26)
-      number_parts.push(div_parts[1])
-      num = div_parts[0]
-      iterations += 1
+    until num/26 == 0 || num == 26 || iterations == 20
+        div_parts = num.divmod(26)
+        number_parts.push(div_parts[1])
+        num = div_parts[0]
+        iterations += 1
     end
-    number_parts.push(num % 26)
+    number_parts.push(num%26)
     alpha_string = ''
     number_parts.reverse_each do |let|
-      alpha_string += alpha[let - 1]
+       alpha_string += alpha[let-1]
     end
     alpha_string
   end
@@ -70,7 +76,7 @@ module CollectionDisplay
   #                    (TODO EMPTY STRING/DONT REPLACE CONTENT)
   # @param check [Boolean] optional determines if cell is checkable or not
   def highlight_cell(tbl, row, col, id, check: true)
-    tbl[row + 1][col + 1] = { content: id, class: 'td-filled-slot', check: check }
+    tbl[row+1][col+1] = { content: id, class: 'td-filled-slot', check: check }
   end
 
   # Highlights all cells in ROW/COLUMN/X  (TODO TABLE CLASS)
@@ -98,11 +104,15 @@ module CollectionDisplay
   # X can be any string that is to be displayed in cell
   #
   # @param table [Table] the table with cells to be highlighted
-  # @param rcx_check_list [Array] array of [[row, column, data, check],...]
+  # @param rcx_list [Array] array of [[row, colum, x, check],...]
+  #     row = int
+  #     col = int
+  #     x = string
+  #     check = boolean
   # @return [Table]
   def highlight_rcx_check(table, rcx_check_list)
-    rcx_check_list.each do |row, column, data, check|
-      highlight_cell(table, row, column, data, check: check)
+    rcx_check_list.each do |r, c, x, check|
+      highlight_cell(table, r, c, x, check: check)
     end
     table
   end
@@ -117,8 +127,8 @@ module CollectionDisplay
   #     x = string
   # @return [Table]
   def highlight_collection_rcx(collection, rcx_list, check: true)
-    table = create_collection_table(collection)
-    highlight_rcx(table, rcx_list, check: check)
+    tbl = create_collection_table(collection)
+    highlight_rcx(tbl, rcx_list, check: check)
   end
 
   # TODO: TABLE LIB
@@ -149,7 +159,7 @@ module CollectionDisplay
   # @return [Table]
   def highlight_collection_rc(collection, rc_list,  check: true, &rc_block)
     rcx_list = rc_list.map { |r, c|
-      block_given? ? [r, c, yield(r, c)] : [r, c, '']
+      block_given? ? [r, c, yield(r, c)] : [r, c, ""]
     }
     highlight_collection_rcx(collection, rcx_list, check: check)
   end
@@ -189,11 +199,11 @@ module CollectionDisplay
   # Unknown/TBD
   #
   # @param collection [Collection] the collection
-  # @param row [Integer] row integer
-  # @param column [Integer] column integer
-  def r_c_to_slot(collection, row, column)
+  # @param r [Integer] row integer
+  # @param c [Integer] column integer
+  def r_c_to_slot(collection, r, c)
     rows, cols = collection.dimensions = collection.object_type.rows
-    row * cols + column + 1
+    r*cols + c+1
   end
 
   # Makes an Alpha Numeric Table from Collection
@@ -202,7 +212,6 @@ module CollectionDisplay
   # @param collection [Collection] the collection that the table is based from
   def create_alpha_numeric_table(collection)
     create_collection_table(collection)
-
   end
 
   # Makes an alpha numerical display of collection wells listed in rc_list
@@ -254,46 +263,10 @@ module CollectionDisplay
     parts.each do |part|
       loc_array = collection.find(part)
       loc_array.each do |loc|
-        loc.push(get_associated_data(part, key))
+        loc.push(get_associated_data(part,key))
         rcx_array.push(loc)
       end
     end
     highlight_collection_rcx(collection, rcx_array, check: false)
   end
-
 end
-
-# TODO: Not sure is this is the same as the other table creation method?
-# If so, just forward this to the new one
-# if it's not, most of it should be in a seperate method that can be called
-# with appropriate arguments
-# Makes an Alpha Numeric Table from Collection
-  #
-  # @param collection [Collection] the collection that the table is based from
-  # def create_alpha_numeric_table(collection)
-  #   rows = collection.object_type.rows
-  #   columns = collection.object_type.columns
-  #   size = rows * columns
-  #   slots = (1..size + rows + columns + 1).to_a
-  #   slots.each_slice(collection.object_type.columns).each_with_index.map do |row, r_idx|
-  #     row.each_with_index.map do |col, c_idx|
-  #       {class: 'td-empty-slot' }
-  #     end
-  #   end
-
-  #   labels = Array(1...size + 1)
-  #   tab.each_with_index do |row, row_idx|
-  #     row.each_with_index do |col, col_idx|
-  #     if row_idx == 0
-  #       col[:content] = "<b><u>#{col_idx}</u></b>"
-  #     elsif col_idx == 0
-  #       col[:content] = "<b><u>#{get_alpha(row_idx)}</u></b>"
-  #     else
-  #       col[:content] = labels.first
-  #       labels = labels.drop(1)
-  #     end
-  #   end
-  # end
-  # tab.first.first[:content] = "<b>:)</b>"
-  # tab
-  # end
