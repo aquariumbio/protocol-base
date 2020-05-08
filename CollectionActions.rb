@@ -42,6 +42,7 @@ module CollectionActions
       table table_of_job_object_location(operations, role: role,
               location: location)
     end
+  end
 
   # Stores all input objects in operation list
   #

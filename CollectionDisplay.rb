@@ -260,9 +260,9 @@ module CollectionDisplay
         loc_array = collection.find(part)
         loc_array.each do |loc|
           data_string = ""
-          keys.each_with_idx do |key, idx|
+          keys.each_with_index do |key, idx|
             data_string += ", " unless idx == 0
-            data_string += ", #{get_associated_data(part, key)}"
+            data_string += "#{get_associated_data(part, key)}"
           end
           loc.push(data_string)
           rcx_array.push(loc)
