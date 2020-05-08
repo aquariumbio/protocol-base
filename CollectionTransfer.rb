@@ -86,7 +86,7 @@ module CollectionTransfer
       # TODO: figure out how the associations will work if there are multiple
       # to and from locations (works partially may could use improvement)
 
-      if to_loc.length.zero? || from_loc.zero?
+      if to_loc.length.zero? || from_loc.length.zero?
         samples_with_no_location.push(sample)
       end
 
