@@ -7,108 +7,110 @@
 # These actions should involve the WHOLE plate not individual wells.
 # NOTE: The collection is doing the whole action
 module CollectionActions
-  # Store all input collections from all operations
+  # Store all items used in input operations
   #
   # @param operations [OperationList] the list of operations
-  # @param location [String] the location that the items are to be moved to
+  # @param location [String] the storage location
   def store_input_collections(operations, location: nil)
-    show do
-      title 'Put Away the Following Items'
-      table table_of_job_object_location(operations, role: 'input',
-              location: location)
-    end
+    store_collection_materials(operations, location: location, role: 'input')
+    # show do
+    #   title 'Put Away the Following Items'
+    #   table material_storage_locations(operations, role: 'input',
+    #           location: location)
+    # end
   end
 
-  # Stores all output collections from all operations
+  # NOTE: Is there a reason these are seperate methods? 
+  # Stores all items used in output operations
   #
   # @param operations [OperationList] the operation list where all
   # output collections should be stored
   def store_output_collections(operations, location: nil)
-    show do
-      title 'Put Away the Following Items'
-      table table_of_job_object_location(operations, role: 'output',
-              location: location)
-    end
+    store_collection_materials(operations, location: location, role: 'output')
+    # show do
+    #   title 'Put Away the Following Items'
+     #  table material_storage_locations(operations, role: 'output',
+      #         location: location)
+   #  end
   end
 
-  # Store collections
+  # Instructions for technician on how and where to store materials
   #
   # @param operations [OperationList] the operations whose items should be stored
   # @param location [String]
-  # @param role [Sring] whether the items are inputs or outputs
-  def store_collection_items(operations, location: nil, role: '')
+  # @param role [String] whether the items are inputs or outputs
+  def store_collection_materials(operations, location: nil, role: nil)
     show do
       title 'Put Away the Following Items'
-      table table_of_job_object_location(operations, role: role,
-              location: location)
+      table material_storage_locations(operations, role: role, location: location)
     end
-
-  # Stores all input objects in operation list
-  #
-  # @param operations [OperationList] operation list
-  # @param role [String] whether object is an input or an output
-  # @param location [String] the location to put things
-  def table_of_job_object_location(operations, role: 'input', location: nil)
-    obj_array = []
-    operations.each do |op|
-      array_of_fv = op.inputs.reject { |fv|
-              fv.collection.nil? } if role == 'input'
-      array_of_fv = op.outputs.reject { |fv|
-              fv.collection.nil? } if role == 'output'
-      obj_array.concat(get_obj_from_fv_array(array_of_fv))
-    end
-    obj_array = obj_array.uniq
-    set_locations(obj_array, location) unless location.nil?
-    get_collection_location_table(obj_array)
   end
 
-  # Get the obj from the fv (either item or collection)
+  # Creates table of storage locations
   #
-  # @param array_of_fv [Array] array of field values
-  # @return obj_array [Array] array of objects (either collections or items)
-  def get_obj_from_fv_array(array_of_fv)
-    obj_array = []
-    array_of_fv.each do |fv|
-      if !fv.collection.nil?
-        obj_array.push(fv.collection)
-      elsif !fv.item.nil?
-        obj_array.push(fv.item)
+  # @param operations [OperationList] list of Operations 
+  # @param role [String] whether material to be stored is an input or an output
+  # @param location [String] the location to store the material
+  def material_storage_locations(operations, role: 'input', location: nil)
+    io_objects = []
+    operations.each do |op|
+      field_values = op.inputs.reject { |fv|
+              fv.collection.nil? } if role == 'input'
+      field_values = op.outputs.reject { |fv|
+              fv.collection.nil? } if role == 'output'
+      io_objects.concat(get_io_objects(field_values))
+    end
+    set_locations(io_objects, location) unless location.nil?
+    get_collection_location_table(io_objects)
+  end
+
+  # Get the object (either Item or Collection) from field_value
+  #
+  # @param field_values [Array] array of Field Values
+  # @return io_objects [Array] array of objects (either collections or items)
+  def get_io_objects(field_values)
+    io_objects = []
+    field_values.each do |field_value|
+      if !field_value.collection.nil?
+        io_objects.push(field_value.collection)
+      elsif !field_value.item.nil?
+        io_objects.push(field_value.item)
       else
-        raise "Invalid class.  Neither collection nor item. Class = #{fv.class}"
+        raise "Invalid class.  Neither collection nor item. Class = #{field_value.class}"
       end
     end
-    obj_array.uniq
+    io_objects.uniq
   end
 
   # Sets the location of all objects in array to some given locations
   #
-  # @param obj_array  Array[Collection] or Array[Items] an array of any objects
-  # that extends class Item
+  # @param items Array[Collection] or Array[Items] an array of any objects
+  # that extend class Item
   # @param location [String] the location to move object to
   # (String or Wizard if Wizard exists)
-  def set_locations(obj_array, location)
-    obj_array.each do |obj|
-      obj.move(location)
+  def set_locations(items, location)
+    items.each do |item|
+      item.move(location)
     end
   end
 
-  # Instructions to store a specific collection
+  # Creates table directing technician on where to store materials
   #
-  # @param collection [Collection] the collection that is to be put away
-  # @return location_table [Array<Array>] of collections and their locations
-  def get_location_table(obj_array)
+  # @param collection [Collection] the materials that are to be put away
+  # @return location_table [Array<Array>] of Collections and their locations
+  def create_location_table(items)
     location_table = [['ID', 'Object Type', 'Location']]
-    obj_array.each do |obj|
-      location_table.push([obj.id, obj.object_type.name, obj.location])
+    items.each do |item|
+      location_table.push([item.id, item.object_type.name, item.location])
     end
     location_table
   end
 
   # Wrapper for old method that was renamed and moved
   #
-  # Creates table of locations, object type, and ID 
+  # Creates table of locations, object type, and ID
   def get_collection_location_table(obj_array)
-    get_location_table(obj_array)
+    create_location_table(obj_array)
   end
 
   # Instructions to store a specific item
@@ -129,6 +131,7 @@ module CollectionActions
     end
   end
 
+  # NOTE: is this method meant to tell someone to trash an item or is it to make a table of items with the place to trash them? I am confused as it has a show block, but it returns a table? 
   # Gives directions to throw away an object (collection or item)
   #
   # @param obj or array of Item or Object that extends class Item  eg collection
@@ -160,20 +163,19 @@ module CollectionActions
   # @return working_plate [Collection]
   def make_new_plate(c_type, label_plate: true)
     working_plate = Collection.new_collection(c_type)
-    get_and_label_new_plate(working_plate) if label_plate
+    get_and_label_new_plate(working_plate) if label_plate # Is there a reason you wouldn't need to label the plate?
     working_plate
   end
 
   # Replaces operations.make
-  # Ensures that all items in fv_array
-  # remain together in one collection
-  # the collection must already have the samples set in the collection
+  # Ensures that all items remain together in one Collection
+  # the Collection must already have the samples set in the Collection
   #
-  # @param fv_array [Array<Field Values>] array of field values
+  # @param field_values [Array<Field Values>] array of field values
   # @param collection [Collection] the destination collection
   # replaced make_output_plate
-  def associate_field_values_to_plate(fv_array, collection)
-    fv_array.each do |fv|
+  def associate_field_values_to_plate(field_values, collection)
+    field_values.each do |fv|
       r_c = collection.find(fv.sample).first
       fv.set(collection: collection, row: r_c[0], column: r_c[1]) unless r_c.first.nil?
     end
@@ -188,5 +190,13 @@ module CollectionActions
       note "Get a <b>#{plate.object_type.name}</b> and
            label it ID: <b>#{plate.id}</b>"
     end
+  end
+
+  # Wrapper on Old Method in case anyone was using it
+  #
+  # @param array_of_fv [Array] array of field values
+  # @return obj_array [Array] array of objects (either collections or items)
+  def get_obj_from_fv_array(array_of_fv)
+    get_io_objects(array_of_fv)
   end
 end
