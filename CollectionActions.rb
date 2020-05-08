@@ -20,6 +20,7 @@ module CollectionActions
     # end
   end
 
+  # NOTE: Is there a reason these are seperate methods? 
   # Stores all items used in output operations
   #
   # @param operations [OperationList] the operation list where all
@@ -162,7 +163,7 @@ module CollectionActions
   # @return working_plate [Collection]
   def make_new_plate(c_type, label_plate: true)
     working_plate = Collection.new_collection(c_type)
-    get_and_label_new_plate(working_plate) if label_plate
+    get_and_label_new_plate(working_plate) if label_plate # Is there a reason you wouldn't need to label the plate?
     working_plate
   end
 
