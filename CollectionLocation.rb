@@ -38,7 +38,7 @@ module CollectionLocation
   def convert_alpha_to_rc(alpha)
     row = ALPHA26.find_index(alpha[0, 1])
     # TODO: check this next line -- weird error
-    # col = alpha[1...].to_i - 1
+    col = alpha[1...].to_i - 1
     [row, col]
   end
 
