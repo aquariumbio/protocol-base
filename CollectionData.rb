@@ -9,16 +9,17 @@ module CollectionData
 
   include AssociationManagement
 
-  # Associates data to parts in the collection based on the data map
+  # Associates data to parts in the Collection based on the data map
   # Data map is an array of [[Row, Column, Value], ...]
   # All values are associated under the same key
   #
-  # @param plate [Collection] the plate that the parts exit in
-  # @param data_map [Array<Array<r,c, value>, ...>] data map of all parts should be associated with value
+  # @param plate [Collection] the plate that the parts are in
+  # @param data_map [Array<Array<row, column, value>, ...>] data map
+  # of all parts that should be associated with key
   # @param key [String] the key that the association should be tagged to
   def associate_value_to_parts(plate:, data_map:, key:)
     data_map.each do |loc_val_array|
-      loc_val_array[3] = key
+      loc_val_array[3] = key #[r,c,v,key]
     end
     associate_value_key_to_parts(plate: plate, data_map: data_map)
   end
@@ -38,11 +39,12 @@ module CollectionData
     end
   end
 
+  # Is this being used?
   # Associates data to every part in a plate
   #
   # @param plate [Collection] the collection
   # @param data [Anything] the data to be associated
-  def assiate_to_all(plate:, data:, key:)
+  def associate_to_all(plate:, data:, key:)
     data_map = []
     parts.each do |part|
       loc = plate.find(part)
@@ -60,6 +62,7 @@ module CollectionData
   def from_obj_to_obj_provenance(to_obj, from_obj)
     raise "Object #{to_obj.id} is not an item" unless to_obj.is_a? Item
     raise "Object #{from_obj.id} is not an item" unless from_obj.is_a? Item
+
     from_obj_map = AssociationMap.new(from_obj)
     to_obj_map = AssociationMap.new(to_obj)
     add_provenance(from: from_obj, from_map: from_obj_map,
@@ -79,34 +82,33 @@ module CollectionData
     samples_a & samples_b
   end
 
-  # Adds x value to [R,C,X] list.  If x does not exist (eg [R,C])
-  # then will append, if X does exist will replace or concatonate strings
-  # based on inputs
+  # Adds data [R,C,X] list.  If data is not in list (eg [R,C])
+  # if there is already a data value, the new data value will
+  # either replace it, or be appended to it
+  # based on the value of the append boolean 
   #
-  # @param rc [Array<Row(int), Column(int), Optional(String)] the RC/RCX
+  # @param coordinates [Array<Row(int), Column(int), Optional(String)] the RC/RCX
   #       list to be modified
-  # @param x [String] string to be added to x values
+  # @param data [String] string to be added to the list data
   # @param append: [Boolea] default true.  Replace if false
-  def append_x_to_rcx(rc, x, append: true)
-    x = x.to_s
-    if rc[2].nil? || !append
-      rc[2] = x
+  def append_x_to_rcx(coordinates, data, append: true)
+    data = data.to_s
+    if coordinates[2].nil? || !append
+      coordinates[2] = data
     else
-      rc[2] += ", " + x
+      coordinates[2] += ", " + data
     end
-    rc
   end
 
-  # gives an array of parts in the collection that match the right sample
+  # Returns an array of parts in the Collection that match the right sample
   #
-  # @param collection [Collection] the collecton that the part exists in
-  # @param sample [Sample] the sample searched for
+  # @param collection [Collection] the Collecton that the part is in
+  # @param sample [Sample] the Sample searched for
   def parts_from_sample(collection, sample)
-    part_loc = collection.find(sample)
+    part_location = collection.find(sample)
     parts = []
-    part_loc.each do |r_c|
-      parts.push(collection.part(r_c[0], r_c[1]))
+    part_location.each do |coordinates|
+      parts.push(collection.part(coordinates[0], coordinates[1]))
     end
-    parts
   end
 end
