@@ -6,40 +6,34 @@
 needs "Standard Libs/AssociationManagement"
 
 module CollectionData
-
   include AssociationManagement
 
-  # Creates a Data Association for items (parts) in a Collection
-  # based on the data map
-  # All values are associated with the same Key
+  # Adds Key to data map with information about Items (parts) of a Collection
+  # Creates Data Association for each Item using this Key
   #
-  # @param plate [Collection] the plate containing the Items (parts) 
-  # @param data_map [Array<Array<row, column, value>, ...>]
-  # Data map is an array of [[Row, Column, Value], ...]
-  # of all parts that should be associated with key
+  # @param plate [Collection] the plate containing the Items (parts)
+  # @param data_map [Array<Array<row, column, value>, ...>] data about
+  # Items (parts) that will have a DataAssociaiton created for them
   # @param key [String] the Data Association Key
   def associate_value_to_parts(plate:, data_map:, key:)
     data_map.each do |loc_val_array|
-      loc_val_array[3] = key #[r,c,v,key]
+      loc_val_array[3] = key
     end
     associate_value_key_to_parts(plate: plate, data_map: data_map)
   end
 
-  # Associates data to parts in the collection based on the data map
-  # Data map is an array of [[Row, Column, Value, key], ...]
+  # Creates a DataAssociation for each entry with Key :part_data and Value "well"
   # Each value is associated to its respective key
   #
   # @param plate [Collection] the plate that contains the parts (items)
   # @param data_map [Array<Array<r,c, value, key>, ...>] data map of all parts
-  # that will be ___ 
+  # @return AssociationMap object with @map containing {:key => "value"}
   def associate_value_key_to_parts(plate:, data_map:)
     data_map.each do |key_value_map|
       part = plate.part(key_value_map[0], key_value_map[1])
       data_value = key_value_map[2]
       key = key_value_map[3]
       associate_data(part, key.to_sym, data_value) unless part.nil?
-      # returns an AssociationMap object with @object and @map atributes
-      # @map will contain {:key => "value"}
     end
   end
 
@@ -75,7 +69,7 @@ module CollectionData
     to_obj_map.save
   end
 
-  # returns an array of all samples that are the same in both collections
+  # Create an array of samples that are the same in two different Collections
   #
   # @param collection_a [Collection] a collection
   # @param collection_b [Collection] a collection

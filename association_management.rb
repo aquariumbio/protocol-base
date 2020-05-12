@@ -81,7 +81,7 @@ module AssociationManagement
     end
 
     # All in one static method which associates a key and value
-    # to the associations hash of a given object. 
+    # to the associations hash of a given object.
     # If an association already exists at the given key, it will be replaced. 
     # Can associate to parts of collection either
     # using a part field value, or an optional coordinate specification with a collection
@@ -318,13 +318,14 @@ module AssociationManagement
   end
 
   # Utilizes the part-data matrix of collections to store information about the history of
-  # parts of a collection. PartProvenance initializes and relies on two fields of every part-data
+  # parts of a collection. 
+  # PartProvenance initializes and relies on two fields of every part-data
   # slot: `source` and `destination`.
   # `source` will store a list of item ids (with rc index if applicable),
   # of all the ingredients used to make this part, and destination will use the same data format
-  # to record all of the places this part was used in.
-  # Item-Item provenance can technically be recorded as well with this library, but it will not
-  # be necessary.
+  # to record all of the places this part was used.
+  # Item-Item provenance can technically be recorded as well with this library,
+  # but it will not be necessary.
   #
   module PartProvenance
     SOURCE = 'source'
@@ -413,8 +414,8 @@ module AssociationManagement
     # Given an item, or a part of a collection, serializes it into a simple tag which can be used to retrieve it.
     #
     # @param item [Item/FieldValue]  can be either an Item, or
-    #                         an i/o object corresponding to a part of a collection, which can be thought of
-    #                         as constituting a 'sub item'
+    # an i/o object corresponding to a part of a collection, which can be thought of
+    # as constituting a 'sub item'
     def serialize_as_simple_tag(item, coord, additional_info)
       info = if item.collection? && coord
                { id: item.id, row: coord[0], column: coord[1] }
