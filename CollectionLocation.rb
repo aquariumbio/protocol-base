@@ -5,7 +5,6 @@
 #
 # Methods to facilitate sample management within collections
 module CollectionLocation
-
   ALPHA26 = ('A'...'Z').to_a
 
   # Gets the location string of a sample in a collection
@@ -58,38 +57,31 @@ module CollectionLocation
     row, column = convert_location_to_coordinates(location)
     dimensions = collection.dimensions
     raise 'Location outside collection dimensions' if row > dimensions[0] || column > dimensions[1]
+
     collection.part(row, column)
-  end 
-  
-  # gets the rcx list of samples in the collection.
-  # R is Row
-  # C is column
-  # x is the alpha numerical location (in this case)
-  #
-  # Returns in the same order as sample array
+  end
+
+  # Gets a list of the coordinates and alphanumeric locations for
+  # samples in a Collection
   #
   # @param collection [Collection] the collection that items are going to
   # @param samples [The samples that locations are wanted from]
   #
-  # @return [Array<Array<r, c, x>]
+  # @return [Array<Array<row, column, location>] Coordinates and locations in same order as sample array
   def get_rcx_list(collection, samples)
-    coordinates = []
+    coordinates_and_data = []
     samples.each do |sample|
-      sample_coordinates = get_item_sample_location(from_collection, sample)
-      sample_alpha = get_alpha_num_location(from_collection, sample)
+      sample_coordinates = get_item_sample_location(collection, sample)
+      sample_locations = get_alpha_num_location(collection, sample)
 
       sample_coordinates.each do |coordinates|
-        coordinates.push(sample_alpha) # [0,0,A1]
-        locations.push(coordinates)
+        coordinates.push(sample_locations) # [0,0,A1]
+        coordinates_and_data.push(coordinates)
       end
     end
   end
 
-  # Finds a sample from an alpha numerical string location(e.g. A1, B1)
-  # wrapper method for old method name
-  # @param collection [Collection] the collection that contains the part
-  # @param  alpha [String] the location of the part within the collection (A1, B3, C7)
-  # @return part [Item] the item at the given location
+  # @deprecated Wrapper to New Method
   def part_alpha_num(collection, alpha)
     locate_part(collection, alpha)
   end
