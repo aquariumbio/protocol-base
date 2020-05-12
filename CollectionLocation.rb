@@ -17,28 +17,27 @@ module CollectionLocation
     coordinates = get_item_sample_location(collection, sample) # [[r0, c0],[r1, c0], [r2,c0]]
     alpha_num_locations = []
     coordinates.each do |coordinate_set| # takes coords [2, 0] index=0
-      alpha_num_locations << convert_rc_to_alpha(coordinate_set) # 2,0 -> C1, 4,0 -> E1
+      alpha_num_locations << convert_coordinates_to_location(coordinate_set) # 2,0 -> C1, 4,0 -> E1
     end
     locations.join(',') # removes the ["A1"] the brackets and parantheses
   end
 
-  # converts an array containing one set of row and column values coordinates to alpha numerical locations
+  # converts an array containing row and column coordinates to alphanumeric locations
   #
   # @param coordinates [Array<row,column>] set of coordinates
   # @return [String] alpha numerical location
-  def convert_rc_to_alpha(coordinates)
+  def convert_coordinates_to_location(coordinates)
     ALPHA26[coordinates[0]] + (coordinates[1] + 1).to_s
   end
 
-  # Converts alpha numerical location to Array<r,c>
+  # Converts alpha numerical location to an Array of coordinates
   #
   # @param alpha [String] alpha numerical location
-  # @return [Arrray<r,c>] array of row and column
-  def convert_alpha_to_rc(alpha)
+  # @return [Array<r,c>] array of row and column
+  def convert_location_to_coordinates(alpha)
     row = ALPHA26.find_index(alpha[0, 1])
-    # TODO: check this next line -- weird error
-    # col = alpha[1...].to_i - 1
-    [row, col]
+    column = alpha[1..-1].to_i - 1
+    [row, column]
   end
 
   # Finds the location coordinates of an Item or Sample
@@ -50,18 +49,18 @@ module CollectionLocation
     collection.find(part)
   end
 
-  # Finds a sample from an alpha numberical string location(e.g. A1, B1)
+  # Finds a part from an alpha numerical string location(e.g. A1, B1)
   #
   # @param collection [Collection] the collection that contains the part
-  # @param  alpha [String] the location of the part within the collection (A1, B3, C7)
+  # @param location [String] the location of the part within the collection (A1, B3, C7)
   # @return part [Item] the item at the given location
-  def part_alpha_num(collection, alpha)
-    row, col = convert_alpha_to_rc(alpha)
+  def locate_part(collection, location)
+    row, column = convert_location_to_coordinates(location)
     dimensions = collection.dimensions
-    raise 'Location outside collection dimensions' if row > dimensions[0] || col > dimensions[1]
-    part = collection.part(row, col)
-  end
-
+    raise 'Location outside collection dimensions' if row > dimensions[0] || column > dimensions[1]
+    collection.part(row, column)
+  end 
+  
   # gets the rcx list of samples in the collection.
   # R is Row
   # C is column
@@ -74,8 +73,8 @@ module CollectionLocation
   #
   # @return [Array<Array<r, c, x>]
   def get_rcx_list(collection, samples)
-    rcx_list = []
-    array_of_samples.each do |sample|
+    coordinates = []
+    samples.each do |sample|
       sample_coordinates = get_item_sample_location(from_collection, sample)
       sample_alpha = get_alpha_num_location(from_collection, sample)
 
@@ -84,6 +83,14 @@ module CollectionLocation
         locations.push(coordinates)
       end
     end
-    rcx_list
+  end
+
+  # Finds a sample from an alpha numerical string location(e.g. A1, B1)
+  # wrapper method for old method name
+  # @param collection [Collection] the collection that contains the part
+  # @param  alpha [String] the location of the part within the collection (A1, B3, C7)
+  # @return part [Item] the item at the given location
+  def part_alpha_num(collection, alpha)
+    locate_part(collection, alpha)
   end
 end
