@@ -59,6 +59,7 @@ module CollectionData
   # in its DataAssociation.object field
   # The other, for the to_obj, will have key :from and the Item id of the to_obj
   # in its DataAssociation.object field
+  #
   # @param from_obj [Item] object that provenance is coming from
   # @param to_obj [Item] the object that provenance is going to
   def from_obj_to_obj_provenance(to_obj, from_obj)
@@ -73,7 +74,7 @@ module CollectionData
     to_obj_map.save
   end
 
-  # Create an array of samples that are the same in two different Collections
+  # Creates an array of samples that are the same in two different Collections
   #
   # @param collection_a [Collection] a collection
   # @param collection_b [Collection] a collection
@@ -100,7 +101,7 @@ module CollectionData
     end
   end
 
-  # Returns an array of Items (parts) in the Collection that match the right Sample
+  # Returns an array of parts in the Collection that match the right Sample
   #
   # @param collection [Collection] the Collecton that the Item (part) is in
   # @param sample [Sample] the Sample searched for
