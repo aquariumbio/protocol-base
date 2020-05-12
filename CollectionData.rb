@@ -22,12 +22,12 @@ module CollectionData
     associate_value_key_to_parts(plate: plate, data_map: data_map)
   end
 
-  # Creates a DataAssociation for each entry with Key :part_data and Value "well"
+  # Creates a DataAssociation for each entry with Key :part_data and
+  # Value "well" (saved as DataAssociation.object)
   # Each value is associated to its respective key
   #
   # @param plate [Collection] the plate that contains the parts (items)
   # @param data_map [Array<Array<r,c, value, key>, ...>] data map of all parts
-  # @return AssociationMap object with @map containing {:key => "value"}
   def associate_value_key_to_parts(plate:, data_map:)
     data_map.each do |key_value_map|
       part = plate.part(key_value_map[0], key_value_map[1])
@@ -54,9 +54,13 @@ module CollectionData
   end
 
   # Adds provenence history to to_object from from_object
-  #
-  # @param from_obj [Krill Object] object that provenance is coming from
-  # @param to_obj [Krill Object] the object that provenance is going to
+  # Creates two DataAssociations:
+  # One, for the from_obj, will have key :to and the Item id of the to_obj
+  # in its DataAssociation.object field
+  # The other, for the to_obj, will have key :from and the Item id of the to_obj
+  # in its DataAssociation.object field
+  # @param from_obj [Item] object that provenance is coming from
+  # @param to_obj [Item] the object that provenance is going to
   def from_obj_to_obj_provenance(to_obj, from_obj)
     raise "Object #{to_obj.id} is not an item" unless to_obj.is_a? Item
     raise "Object #{from_obj.id} is not an item" unless from_obj.is_a? Item
@@ -75,18 +79,16 @@ module CollectionData
   # @param collection_b [Collection] a collection
   # @return [Array<Sample>]
   def find_like_samples(collection_a, collection_b)
-    samples_a = collection_a.parts.map! { |part| part.sample }
-    samples_b = collection_b.parts.map! { |part| part.sample }
-    samples_a & samples_b
+    collection_a.parts.map!(&:sample) & collection_b.parts.map!(&:sample)
   end
 
-  # Adds data [R,C,X] list.  If data is not in list (eg [R,C])
-  # if there is already a data value, the new data value will
+  # Adds data to list of coordinates
+  # If there is already a data value present, the new data value will
   # either replace it, or be appended to it
-  # based on the value of the append boolean 
+  # based on the value of the append boolean
   #
-  # @param coordinates [Array<Row(int), Column(int), Optional(String)] the RC/RCX
-  #       list to be modified
+  # @param coordinates [Array<Row(int), Column(int), Optional(String)] the
+  #       coordiante list to be modified
   # @param data [String] string to be added to the list data
   # @param append: [Boolea] default true.  Replace if false
   def append_x_to_rcx(coordinates, data, append: true)
@@ -94,13 +96,13 @@ module CollectionData
     if coordinates[2].nil? || !append
       coordinates[2] = data
     else
-      coordinates[2] += ", " + data
+      coordinates[2] += ', ' + data
     end
   end
 
-  # Returns an array of parts in the Collection that match the right sample
+  # Returns an array of Items (parts) in the Collection that match the right Sample
   #
-  # @param collection [Collection] the Collecton that the part is in
+  # @param collection [Collection] the Collecton that the Item (part) is in
   # @param sample [Sample] the Sample searched for
   def parts_from_sample(collection, sample)
     part_location = collection.find(sample)

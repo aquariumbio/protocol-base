@@ -98,6 +98,7 @@ module AssociationManagement
       defaults = { data_matrix: DATAMATRIX_KEY }
       opts.merge defaults
       raise 'Bad Arguments: cannot associate to a part and specify coords at the same time' if object.is_a?(FieldValue) && opts[:coord]
+ 
       if object.is_a?(FieldValue)
         assoc_map = AssociationMap.new(object.collection)
         assoc_map.putrc(object.row, object.column, key, data)
