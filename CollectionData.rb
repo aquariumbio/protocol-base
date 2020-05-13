@@ -6,16 +6,15 @@
 needs "Standard Libs/AssociationManagement"
 
 module CollectionData
-
   include AssociationManagement
 
-  # Associates data to parts in the collection based on the data map
-  # Data map is an array of [[Row, Column, Value], ...]
-  # All values are associated under the same key
+  # Adds Key to data map with information about Items (parts) of a Collection
+  # Creates Data Association for each Item using this Key
   #
-  # @param plate [Collection] the plate that the parts exit in
-  # @param data_map [Array<Array<r,c, value>, ...>] data map of all parts should be associated with value
-  # @param key [String] the key that the association should be tagged to
+  # @param plate [Collection] the plate containing the Items (parts)
+  # @param data_map [Array<Array<row, column, value>, ...>] data about
+  # Items (parts) that will have a DataAssociaiton created for them
+  # @param key [String] the Data Association Key
   def associate_value_to_parts(plate:, data_map:, key:)
     data_map.each do |loc_val_array|
       loc_val_array[3] = key
@@ -23,12 +22,12 @@ module CollectionData
     associate_value_key_to_parts(plate: plate, data_map: data_map)
   end
 
-  # Associates data to parts in the collection based on the data map
-  # Data map is an array of [[Row, Column, Value, key], ...]
-  # All values are associated under their respective key
+  # Creates a DataAssociation for each entry with Key :part_data and
+  # Value "well" (saved as DataAssociation.object)
+  # Each value is associated to its respective key
   #
-  # @param plate [Collection] the plate that the parts exit in
-  # @param data_map [Array<Array<r,c, value, key>, ...>] data map of all parts should be associated with value
+  # @param plate [Collection] the plate that contains the parts (items)
+  # @param data_map [Array<Array<r,c, value, key>, ...>] data map of all parts
   def associate_value_key_to_parts(plate:, data_map:)
     data_map.each do |key_value_map|
       part = plate.part(key_value_map[0], key_value_map[1])
@@ -38,11 +37,12 @@ module CollectionData
     end
   end
 
+  # Is this being used?
   # Associates data to every part in a plate
   #
   # @param plate [Collection] the collection
   # @param data [Anything] the data to be associated
-  def assiate_to_all(plate:, data:, key:)
+  def associate_to_all(plate:, data:, key:)
     data_map = []
     parts.each do |part|
       loc = plate.find(part)
@@ -54,12 +54,18 @@ module CollectionData
   end
 
   # Adds provenence history to to_object from from_object
+  # Creates two DataAssociations:
+  # One, for the from_obj, will have key :to and the Item id of the to_obj
+  # in its DataAssociation.object field
+  # The other, for the to_obj, will have key :from and the Item id of the to_obj
+  # in its DataAssociation.object field
   #
-  # @param from_obj [Krill Object] object that provenance is coming from
-  # @param to_obj [Krill Object] the object that provenance is going to
+  # @param from_obj [Item] object that provenance is coming from
+  # @param to_obj [Item] the object that provenance is going to
   def from_obj_to_obj_provenance(to_obj, from_obj)
     raise "Object #{to_obj.id} is not an item" unless to_obj.is_a? Item
     raise "Object #{from_obj.id} is not an item" unless from_obj.is_a? Item
+
     from_obj_map = AssociationMap.new(from_obj)
     to_obj_map = AssociationMap.new(to_obj)
     add_provenance(from: from_obj, from_map: from_obj_map,
@@ -68,45 +74,42 @@ module CollectionData
     to_obj_map.save
   end
 
-  # returns an array of all samples that are the same in both collections
+  # Creates an array of samples that are the same in two different Collections
   #
   # @param collection_a [Collection] a collection
   # @param collection_b [Collection] a collection
   # @return [Array<Sample>]
   def find_like_samples(collection_a, collection_b)
-    samples_a = collection_a.parts.map! { |part| part.sample }
-    samples_b = collection_b.parts.map! { |part| part.sample }
-    samples_a & samples_b
+    collection_a.parts.map!(&:sample) & collection_b.parts.map!(&:sample)
   end
 
-  # Adds x value to [R,C,X] list.  If x does not exist (eg [R,C])
-  # then will append, if X does exist will replace or concatonate strings
-  # based on inputs
+  # Adds data to list of coordinates
+  # If there is already a data value present, the new data value will
+  # either replace it, or be appended to it
+  # based on the value of the append boolean
   #
-  # @param rc [Array<Row(int), Column(int), Optional(String)] the RC/RCX
-  #       list to be modified
-  # @param x [String] string to be added to x values
+  # @param coordinates [Array<Row(int), Column(int), Optional(String)] the
+  #       coordiante list to be modified
+  # @param data [String] string to be added to the list data
   # @param append: [Boolea] default true.  Replace if false
-  def append_x_to_rcx(rc, x, append: true)
-    x = x.to_s
-    if rc[2].nil? || !append
-      rc[2] = x
+  def append_x_to_rcx(coordinates, data, append: true)
+    data = data.to_s
+    if coordinates[2].nil? || !append
+      coordinates[2] = data
     else
-      rc[2] += ", " + x
+      coordinates[2] += ', ' + data
     end
-    rc
   end
 
-  # gives an array of parts in the collection that match the right sample
+  # Returns an array of parts in the Collection that match the right Sample
   #
-  # @param collection [Collection] the collecton that the part exists in
-  # @param sample [Sample] the sample searched for
+  # @param collection [Collection] the Collecton that the Item (part) is in
+  # @param sample [Sample] the Sample searched for
   def parts_from_sample(collection, sample)
-    part_loc = collection.find(sample)
+    part_location = collection.find(sample)
     parts = []
-    part_loc.each do |r_c|
-      parts.push(collection.part(r_c[0], r_c[1]))
+    part_location.each do |coordinates|
+      parts.push(collection.part(coordinates[0], coordinates[1]))
     end
-    parts
   end
 end
