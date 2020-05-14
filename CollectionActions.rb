@@ -20,7 +20,7 @@ module CollectionActions
     # end
   end
 
-  # NOTE: Is there a reason these are seperate methods? 
+  # NOTE: Is there a reason these are seperate methods?
   # Stores all items used in output operations
   #
   # @param operations [OperationList] the operation list where all
@@ -29,9 +29,9 @@ module CollectionActions
     store_collection_materials(operations, location: location, role: 'output')
     # show do
     #   title 'Put Away the Following Items'
-     #  table material_storage_locations(operations, role: 'output',
-      #         location: location)
-   #  end
+    #  table material_storage_locations(operations, role: 'output',
+    #         location: location)
+    #  end
   end
 
   # Instructions for technician on how and where to store materials
@@ -48,16 +48,18 @@ module CollectionActions
 
   # Creates table of storage locations
   #
-  # @param operations [OperationList] list of Operations 
+  # @param operations [OperationList] list of Operations
   # @param role [String] whether material to be stored is an input or an output
   # @param location [String] the location to store the material
   def material_storage_locations(operations, role: 'input', location: nil)
     io_objects = []
     operations.each do |op|
       field_values = op.inputs.reject { |fv|
-              fv.collection.nil? } if role == 'input'
+        fv.collection.nil?
+      } if role == 'input'
       field_values = op.outputs.reject { |fv|
-              fv.collection.nil? } if role == 'output'
+        fv.collection.nil?
+      } if role == 'output'
       io_objects.concat(get_io_objects(field_values))
     end
     set_locations(io_objects, location) unless location.nil?
@@ -131,7 +133,7 @@ module CollectionActions
     end
   end
 
-  # NOTE: is this method meant to tell someone to trash an item or is it to make a table of items with the place to trash them? I am confused as it has a show block, but it returns a table? 
+  # NOTE: is this method meant to tell someone to trash an item or is it to make a table of items with the place to trash them? I am confused as it has a show block, but it returns a table?
   # Gives directions to throw away an object (collection or item)
   #
   # @param obj or array of Item or Object that extends class Item  eg collection
