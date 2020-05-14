@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # Justin Vrana
 #
 # modified by:
@@ -11,7 +9,151 @@
 
 # Methods for displaying information about collections
 module CollectionDisplay
-  # Creates a table with the same dimensions as the input collection
+
+    # Highlights all non-empty slots in collection
+    #
+    # @param collection [Collection] the collection
+    # @param check [Boolean] Optional weather cells should be Checkable
+    # @param &rc_block [Block] Optional block to determin rc_list
+    # @return [Table]
+    def highlight_non_empty(collection, check: true, &rc_block)
+      highlight_collection_rc(collection, collection.get_non_empty, check: check, &rc_block)
+    end
+
+    # Highlights all empty slots in collection
+    #
+    # @param collection [Collection] the collection
+    # @param check [Boolean] Optional weather cells should be Checkable
+    # @param &rc_block [Block] Optional block to determin rc_list
+    # @return [Table]
+    def highlight_empty(collection, check: true, &rc_block)
+      highlight_collection_rc(collection, collection.get_empty, check: check, &rc_block)
+    end
+
+    # Highlights all non-empty slots in collection
+    #
+    # @param collection [Collection] the collection
+    # @param check [Boolean] Optional weather cells should be Checkable
+    # @param &rc_block [Block] Optional block to determin rc_list
+    # @return [Table]
+    def highlight_alpha_non_empty(collection, check: true, &rc_block)
+      highlight_alpha_rc(collection, collection.get_non_empty, check: check, &rc_block)
+    end
+
+    # Highlights all empty slots in collection
+    #
+    # @param collection [Collection] the collection
+    # @param check [Boolean] Optional weather cells should be Checkable
+    # @param &rc_block [Block] Optional block to determin rc_list
+    # @return [Table]
+    def highlight_alpha_empty(collection, check: true, &rc_block)
+      highlight_alpha_rc(collection, collection.get_empty, check: check, &rc_block)
+    end
+
+  # Gets a list of the coordinates and alphanumeric locations for
+  # samples in a Collection
+  #
+  # @param collection [Collection] the collection that items are going to
+  # @param samples [The samples that locations are wanted from]
+  #
+  # @return [Array<Array<row, column, location>] Coordinates and locations in same order as sample array
+  def get_rcx_list(collection, samples)
+    coordinates_and_data = []
+    samples.each do |sample|
+      sample_coordinates = get_obj_location(collection, sample)
+      sample_locations = get_alpha_num_location(collection, sample)
+
+      sample_coordinates.each do |coordinates|
+        coordinates.push(sample_locations) # [0,0,A1]
+        coordinates_and_data.push(coordinates)
+      end
+    end
+  end
+
+    # Highlights all cells listed in rc_list (CHANGED NAME)
+    #
+    # @param collection [Collection] the collection which should be highlighted
+    # @param rc_list [Array] array of rc [[row,col],...]
+    #                       row = int
+    #                       col = int
+    # @param check [Boolean] Optional wheather cells should be Checkable
+    # @param &rc_block [Block] to determine rc list
+    # @return [Table]
+    def highlight_collection_rc(collection, rc_list,  check: true, &rc_block)
+      rcx_list = rc_list.map { |r, c|
+        block_given? ? [r, c, yield(r, c)] : [r, c, '']
+      }
+      highlight_collection_rcx(collection, rcx_list, check: check)
+    end
+
+      # Highlights all cells in ROW/COLUMN/X (CHANGED NAME)
+    # X can be any string that is to be displayed in cell
+    #
+    # @param collection [Collection] the collection
+    # @param rcx_list [Array] array of [[row, colum, x],...]
+    #     row = int
+    #     col = int
+    #     x = string
+    # @return [Table]
+    def highlight_collection_rcx(collection, rcx_list, check: true)
+      table = create_collection_table(collection)
+      highlight_rcx(table, rcx_list, check: check)
+    end
+
+  # Makes an alpha numerical display of collection wells listed in rc_list
+    #
+    # @param collection [Collection] the collection
+    # @param rc_list [Array] Array of rows and colums [[row,col],...] row & col are int
+    # @param check [Boolean] Default True weather cells are checkable
+    # @param &rc_block [Block] Optional tbd
+    def highlight_alpha_rc(collection, rc_list, check: true, &rc_block)
+      rcx_list = rc_list.map { |r, c|
+        block_given? ? [r, c, yield(r, c)] : [r, c, '']
+      }
+      highlight_alpha_rcx(collection, rcx_list, check: check)
+    end
+  
+    # Makes an alpha numerical display of collection wells listed in rcx_list
+    #
+    # @param collection [Collection] the collection
+    # @param rc_list [Array] Array of rows and colums [[row,col,x],...] row & col are int, x is string to be displayed in cell
+    # @param check [Boolean] Default True weather cells are checkable
+    # @param &rc_block [Block] Optional tbd
+    def highlight_alpha_rcx(collection, rcx_list, check: true)
+      tbl = create_alpha_numeric_table(collection)
+      rcx_list.each do |r, c, x|
+        highlight_cell(tbl, r, c, x, check: check)
+      end
+      tbl
+    end
+
+    # Creates table for the data associated with said key
+    # TODO write highlight heat map method for table
+    #
+    # @param collection [Collection] the plate being used
+    # @param keys [Array<String>] an array of keys that the data is associated with.
+    # @return table of parts with data information
+    def display_data(collection, keys)
+      rcx_array = []
+      parts = collection.parts
+      parts.each do |part|
+        loc_array = collection.find(part)
+        loc_array.each do |loc|
+          data_string = ""
+          keys.each_with_index do |key, idx|
+            data_string += ", " unless idx == 0
+            data_string += "#{get_associated_data(part, key)}"
+          end
+          loc.push(data_string)
+          rcx_array.push(loc)
+        end
+      end
+      highlight_collection_rcx(collection, rcx_array, check: false)
+    end
+
+
+
+    # Creates a table with the same dimensions as the input collection
     #
     # @param collection [Collection] the collection to be represented by the table
     # @param add_headers [Boolean] optional True
@@ -112,20 +254,6 @@ module CollectionDisplay
       table
     end
   
-    # Highlights all cells in ROW/COLUMN/X (CHANGED NAME)
-    # X can be any string that is to be displayed in cell
-    #
-    # @param collection [Collection] the collection
-    # @param rcx_list [Array] array of [[row, colum, x],...]
-    #     row = int
-    #     col = int
-    #     x = string
-    # @return [Table]
-    def highlight_collection_rcx(collection, rcx_list, check: true)
-      table = create_collection_table(collection)
-      highlight_rcx(table, rcx_list, check: check)
-    end
-  
     # TODO: TABLE LIB
     # Highlights all cells listed in rc_list
     #
@@ -143,32 +271,28 @@ module CollectionDisplay
       highlight_rcx(table, rcx_list, check: check)
     end
   
-    # Highlights all cells listed in rc_list (CHANGED NAME)
-    #
-    # @param collection [Collection] the collection which should be highlighted
-    # @param rc_list [Array] array of rc [[row,col],...]
-    #                       row = int
-    #                       col = int
-    # @param check [Boolean] Optional wheather cells should be Checkable
-    # @param &rc_block [Block] to determine rc list
-    # @return [Table]
-    def highlight_collection_rc(collection, rc_list,  check: true, &rc_block)
-      rcx_list = rc_list.map { |r, c|
-        block_given? ? [r, c, yield(r, c)] : [r, c, '']
-      }
-      highlight_collection_rcx(collection, rcx_list, check: check)
-    end
+
   
-    # Highlights all non-empty slots in collection
+    # Unknown/TBD
     #
     # @param collection [Collection] the collection
-    # @param check [Boolean] Optional weather cells should be Checkable
-    # @param &rc_block [Block] Optional block to determin rc_list
-    # @return [Table]
-    def highlight_non_empty(collection, check: true, &rc_block)
-      highlight_collection_rc(collection, collection.get_non_empty, check: check, &rc_block)
+    # @param row [Integer] row integer
+    # @param column [Integer] column integer
+    def r_c_to_slot(collection, row, column)
+      rows, cols = collection.dimensions = collection.object_type.rows
+      row * cols + column + 1
     end
   
+    # Makes an Alpha Numeric Table from Collection
+    # A wrapper for a new method that has been renamed
+    #
+    # @param collection [Collection] the collection that the table is based from
+    def create_alpha_numeric_table(collection)
+      inspect "Does it use this?"
+      create_collection_table(collection)
+    end
+
+
     # Highlights all slots in all collections in operation list
     #
     # @param ops [OperationList] Operation list
@@ -189,86 +313,6 @@ module CollectionDisplay
         [collection, tbl]
       end
       tables
-    end
-  
-    # Unknown/TBD
-    #
-    # @param collection [Collection] the collection
-    # @param row [Integer] row integer
-    # @param column [Integer] column integer
-    def r_c_to_slot(collection, row, column)
-      rows, cols = collection.dimensions = collection.object_type.rows
-      row * cols + column + 1
-    end
-  
-    # Makes an Alpha Numeric Table from Collection
-    # A wrapper for a new method that has been renamed
-    #
-    # @param collection [Collection] the collection that the table is based from
-    def create_alpha_numeric_table(collection)
-      inspect "Does it use this?"
-      create_collection_table(collection)
-    end
-  
-    # Makes an alpha numerical display of collection wells listed in rc_list
-    #
-    # @param collection [Collection] the collection
-    # @param rc_list [Array] Array of rows and colums [[row,col],...] row & col are int
-    # @param check [Boolean] Default True weather cells are checkable
-    # @param &rc_block [Block] Optional tbd
-    def highlight_alpha_rc(collection, rc_list, check: true, &rc_block)
-      rcx_list = rc_list.map { |r, c|
-        block_given? ? [r, c, yield(r, c)] : [r, c, '']
-      }
-      highlight_alpha_rcx(collection, rcx_list, check: check)
-    end
-  
-    # Makes an alpha numerical display of collection wells listed in rcx_list
-    #
-    # @param collection [Collection] the collection
-    # @param rc_list [Array] Array of rows and colums [[row,col,x],...] row & col are int, x is string to be displayed in cell
-    # @param check [Boolean] Default True weather cells are checkable
-    # @param &rc_block [Block] Optional tbd
-    def highlight_alpha_rcx(collection, rcx_list, check: true)
-      tbl = create_alpha_numeric_table(collection)
-      rcx_list.each do |r, c, x|
-        highlight_cell(tbl, r, c, x, check: check)
-      end
-      tbl
-    end
-  
-    # Highlights all non-empty slots in collection
-    #
-    # @param collection [Collection] the collection
-    # @param check [Boolean] Optional weather cells should be Checkable
-    # @param &rc_block [Block] Optional block to determin rc_list
-    # @return [Table]
-    def highlight_alpha_non_empty(collection, check: true, &rc_block)
-      highlight_alpha_rc(collection, collection.get_non_empty, check: check, &rc_block)
-    end
-  
-    # Creates table for the data associated with said key
-    # TODO write highlight heat map method for table
-    #
-    # @param collection [Collection] the plate being used
-    # @param keys [Array<String>] an array of keys that the data is associated with.
-    # @return table of parts with data information
-    def display_data(collection, keys)
-      rcx_array = []
-      parts = collection.parts
-      parts.each do |part|
-        loc_array = collection.find(part)
-        loc_array.each do |loc|
-          data_string = ""
-          keys.each_with_index do |key, idx|
-            data_string += ", " unless idx == 0
-            data_string += "#{get_associated_data(part, key)}"
-          end
-          loc.push(data_string)
-          rcx_array.push(loc)
-        end
-      end
-      highlight_collection_rcx(collection, rcx_array, check: false)
     end
   
   end

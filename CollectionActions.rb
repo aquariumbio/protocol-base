@@ -34,54 +34,6 @@ module CollectionActions
    #  end
   end
 
-  # Instructions for technician on how and where to store materials
-  #
-  # @param operations [OperationList] the operations whose items should be stored
-  # @param location [String]
-  # @param role [String] whether the items are inputs or outputs
-  def store_collection_materials(operations, location: nil, role: nil)
-    show do
-      title 'Put Away the Following Items'
-      table material_storage_locations(operations, role: role, location: location)
-    end
-  end
-
-  # Creates table of storage locations
-  #
-  # @param operations [OperationList] list of Operations 
-  # @param role [String] whether material to be stored is an input or an output
-  # @param location [String] the location to store the material
-  def material_storage_locations(operations, role: 'input', location: nil)
-    io_objects = []
-    operations.each do |op|
-      field_values = op.inputs.reject { |fv|
-              fv.collection.nil? } if role == 'input'
-      field_values = op.outputs.reject { |fv|
-              fv.collection.nil? } if role == 'output'
-      io_objects.concat(get_io_objects(field_values))
-    end
-    set_locations(io_objects, location) unless location.nil?
-    get_collection_location_table(io_objects)
-  end
-
-  # Get the object (either Item or Collection) from field_value
-  #
-  # @param field_values [Array] array of Field Values
-  # @return io_objects [Array] array of objects (either collections or items)
-  def get_io_objects(field_values)
-    io_objects = []
-    field_values.each do |field_value|
-      if !field_value.collection.nil?
-        io_objects.push(field_value.collection)
-      elsif !field_value.item.nil?
-        io_objects.push(field_value.item)
-      else
-        raise "Invalid class.  Neither collection nor item. Class = #{field_value.class}"
-      end
-    end
-    io_objects.uniq
-  end
-
   # Sets the location of all objects in array to some given locations
   #
   # @param items Array[Collection] or Array[Items] an array of any objects
@@ -91,6 +43,7 @@ module CollectionActions
   def set_locations(items, location)
     items.each do |item|
       item.move(location)
+      item.save
     end
   end
 
@@ -121,14 +74,40 @@ module CollectionActions
   def store_items(obj_item, location: nil)
     show do
       title 'Put Away the Following Items'
-      if obj_item.class != Array
-        set_locations([obj_item], location) if location.nil?
-        table get_collection_location_table([obj_item])
+      unless obj_item.is_a? Array
+        set_locations([obj_item], location) unless location.nil?
+        table create_location_table([obj_item])
       else
-        set_locations(obj_item, location) if location.nil?
-        table get_item_location(obj_item)
+        set_locations(obj_item, location) unless location.nil?
+        table create_location_table(obj_item)
       end
     end
+  end
+
+  # Instructions for tech on how and where to store materials
+  #
+  # @deprecated wrapper for meterial_storage_locations_table
+  def store_collection_materials(operations, location: nil, role: nil, all_items: false)
+    material_storage_locations_table(operations, role: role, location: location, all_items: all_items)
+  end
+
+  # Stores all items of a certain role in the operations list
+  # Creates table for storage
+  #
+  # @param operations [OperationList] list of Operations 
+  # @param role [String] whether material to be stored is an input or an output
+  # @param location [String] the location to store the material
+  # @param all_items [Boolean] an option to store all items not just collections
+  def material_storage_locations_table(operations, role: 'input', location: nil, all_items: false)
+    io_objects = []
+    operations.each do |op|
+      field_values = op.inputs.reject { |fv|
+              fv.collection.nil? unless all_items } if role == 'input'
+      field_values = op.outputs.reject { |fv|
+              fv.collection.nil? unless all_items } if role == 'output'
+      io_objects.concat(get_io_objects(field_values))
+    end
+    store_items(io_objects, location: location)
   end
 
   # NOTE: is this method meant to tell someone to trash an item or is it to make a table of items with the place to trash them? I am confused as it has a show block, but it returns a table? 
@@ -167,20 +146,6 @@ module CollectionActions
     working_plate
   end
 
-  # Replaces operations.make
-  # Ensures that all items remain together in one Collection
-  # the Collection must already have the samples set in the Collection
-  #
-  # @param field_values [Array<Field Values>] array of field values
-  # @param collection [Collection] the destination collection
-  # replaced make_output_plate
-  def associate_field_values_to_plate(field_values, collection)
-    field_values.each do |fv|
-      r_c = collection.find(fv.sample).first
-      fv.set(collection: collection, row: r_c[0], column: r_c[1]) unless r_c.first.nil?
-    end
-  end
-
   # Instructions on getting and labeling new plate
   #
   # @param plate [Collection] the plate to be retrieved and labeled
@@ -199,4 +164,37 @@ module CollectionActions
   def get_obj_from_fv_array(array_of_fv)
     get_io_objects(array_of_fv)
   end
+
+    # Replaces operations.make
+  # Ensures that all items remain together in one Collection
+  # the Collection must already have the samples set in the Collection
+  #
+  # @param field_values [Array<Field Values>] array of field values
+  # @param collection [Collection] the destination collection
+  # replaced make_output_plate
+  def associate_field_values_to_plate(field_values, collection)
+    field_values.each do |fv|
+      r_c = collection.find(fv.sample).first
+      fv.set(collection: collection, row: r_c[0], column: r_c[1]) unless r_c.first.nil?
+    end
+  end
+
+  # Get the object (either Item or Collection) from field_value
+  #
+  # @param field_values [Array] array of Field Values
+  # @return io_objects [Array] array of objects (either collections or items)
+  def get_io_objects(field_values)
+    io_objects = []
+    field_values.each do |field_value|
+      if !field_value.collection.nil?
+        io_objects.push(field_value.collection)
+      elsif !field_value.item.nil?
+        io_objects.push(field_value.item)
+      else
+        raise "Invalid class.  Neither collection nor item. Class = #{field_value.class}"
+      end
+    end
+    io_objects.uniq
+  end
+
 end
