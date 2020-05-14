@@ -20,7 +20,7 @@ module CollectionActions
     # end
   end
 
-  # NOTE: Is there a reason these are seperate methods? 
+  # NOTE: Is there a reason these are seperate methods?
   # Stores all items used in output operations
   #
   # @param operations [OperationList] the operation list where all
@@ -29,9 +29,9 @@ module CollectionActions
     store_collection_materials(operations, location: location, role: 'output')
     # show do
     #   title 'Put Away the Following Items'
-     #  table material_storage_locations(operations, role: 'output',
-      #         location: location)
-   #  end
+    #  table material_storage_locations(operations, role: 'output',
+    #         location: location)
+    #  end
   end
 
   # Sets the location of all objects in array to some given locations
@@ -94,7 +94,7 @@ module CollectionActions
   # Stores all items of a certain role in the operations list
   # Creates table for storage
   #
-  # @param operations [OperationList] list of Operations 
+  # @param operations [OperationList] list of Operations
   # @param role [String] whether material to be stored is an input or an output
   # @param location [String] the location to store the material
   # @param all_items [Boolean] an option to store all items not just collections
@@ -102,15 +102,17 @@ module CollectionActions
     io_objects = []
     operations.each do |op|
       field_values = op.inputs.reject { |fv|
-              fv.collection.nil? unless all_items } if role == 'input'
+        fv.collection.nil? unless all_items
+      } if role == 'input'
       field_values = op.outputs.reject { |fv|
-              fv.collection.nil? unless all_items } if role == 'output'
+        fv.collection.nil? unless all_items
+      } if role == 'output'
       io_objects.concat(get_io_objects(field_values))
     end
     store_items(io_objects, location: location)
   end
 
-  # NOTE: is this method meant to tell someone to trash an item or is it to make a table of items with the place to trash them? I am confused as it has a show block, but it returns a table? 
+  # NOTE: is this method meant to tell someone to trash an item or is it to make a table of items with the place to trash them? I am confused as it has a show block, but it returns a table?
   # Gives directions to throw away an object (collection or item)
   #
   # @param obj or array of Item or Object that extends class Item  eg collection
@@ -165,7 +167,7 @@ module CollectionActions
     get_io_objects(array_of_fv)
   end
 
-    # Replaces operations.make
+  # Replaces operations.make
   # Ensures that all items remain together in one Collection
   # the Collection must already have the samples set in the Collection
   #
@@ -196,5 +198,4 @@ module CollectionActions
     end
     io_objects.uniq
   end
-
 end

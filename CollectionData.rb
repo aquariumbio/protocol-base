@@ -1,9 +1,6 @@
-# frozen_string_literal: true
-
 # for managing data associations of collections
 # and ensuring that samples/item data is handled correctly
-
-needs "Standard Libs/AssociationManagement"
+needs 'Standard Libs/AssociationManagement'
 
 module CollectionData
   include AssociationManagement
@@ -13,7 +10,7 @@ module CollectionData
   #
   # @param plate [Collection] the plate containing the Items (parts)
   # @param data_map [Array<Array<row, column, value>, ...>] data about
-  # Items (parts) that will have a DataAssociaiton created for them
+  # Items (parts) that will have a DataAssociation created for them
   # @param key [String] the Data Association Key
   def associate_value_to_parts(plate:, data_map:, key:)
     data_map.each do |loc_val_array|
@@ -53,7 +50,7 @@ module CollectionData
     associate_value_key_to_parts(plate: plate, data_map: data_map)
   end
 
-  # Adds provenence history to to_object from from_object
+  # Adds provenance history to to_object from from_object
   # Creates two DataAssociations:
   # One, for the from_obj, will have key :to and the Item id of the to_obj
   # in its DataAssociation.object field
@@ -89,9 +86,9 @@ module CollectionData
   # based on the value of the append boolean
   #
   # @param coordinates [Array<Row(int), Column(int), Optional(String)] the
-  #       coordiante list to be modified
+  #       coordinate list to be modified
   # @param data [String] string to be added to the list data
-  # @param append: [Boolea] default true.  Replace if false
+  # @param append: [Boolean] default true.  Replace if false
   def append_x_to_rcx(coordinates, data, append: true)
     data = data.to_s
     if coordinates[2].nil? || !append
@@ -103,7 +100,7 @@ module CollectionData
 
   # Returns an array of parts in the Collection that match the right Sample
   #
-  # @param collection [Collection] the Collecton that the Item (part) is in
+  # @param collection [Collection] the Collection that the Item (part) is in
   # @param sample [Sample] the Sample searched for
   def parts_from_sample(collection, sample)
     part_location = collection.find(sample)

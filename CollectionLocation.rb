@@ -21,12 +21,12 @@ module CollectionLocation
 
     hash_of_samples = Hash.new
     array_of_objs.each do |sample|
-      coordinates = get_obj_location(collection, sample) # [[r0, c0],[r1, c0], [r2,c0]]
+      coordinates = get_obj_location(collection, sample)
       alpha_num_locations = []
-      coordinates.each do |coordinate_set| # takes coords [2, 0] index=0
-        alpha_num_locations << convert_coordinates_to_location(coordinate_set) # 2,0 -> C1, 4,0 -> E1
+      coordinates.each do |coordinate_set|
+        alpha_num_locations << convert_coordinates_to_location(coordinate_set)
       end
-      locations.join(',') # removes the ["A1"] the brackets and parantheses
+      locations.join(',') # removes the ["A1"] the brackets and parentheses
       return locations unless obj_to_find.is_a? Array
       hash_of_samples[sample] = locations
     end
@@ -41,7 +41,7 @@ module CollectionLocation
     ALPHA26[coordinates[0]] + (coordinates[1] + 1).to_s
   end
 
-  # Converts alpha numerical location to an Array of coordinatese
+  # Converts alpha numerical location to an Array of coordinates
   #
   # @param alpha [String] alpha numerical location
   # @return [Array<r,c>] array of row and column
@@ -97,4 +97,5 @@ module CollectionLocation
   def part_alpha_num(collection, alpha)
     locate_part(collection, alpha)
   end
+  
 end
