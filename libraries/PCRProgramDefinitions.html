@@ -898,7 +898,34 @@ $(document).ready(function() {
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>Provide program definitions for PCR</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Author:</p>
+<ul class="author">
+  
+    <li>
+      
+      
+      
+      
+        
+        <div class='inline'>
+<p>Devin Strickland &lt;strcklnd@uw.edu&gt;</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div>
   
     <h2>
       Constant Summary
@@ -911,101 +938,237 @@ $(document).ready(function() {
           
         </dt>
         <dd><pre class="code"><span class='lbrace'>{</span>
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>qPCR1</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
-    <span class='label'>program_template_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>NGS_qPCR1</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>volume:</span> <span class='int'>32</span><span class='comma'>,</span> <span class='label'>layout_template_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>NGS_qPCR1</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>qPCR1</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
+    <span class='label'>program_template_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>NGS_qPCR1</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='label'>layout_template_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>NGS_qPCR1</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='label'>volume:</span> <span class='int'>32</span><span class='comma'>,</span>
     <span class='label'>steps:</span> <span class='lbrace'>{</span>
-      <span class='label'>step1:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>95</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span>  <span class='int'>3</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step2:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>98</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>15</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step3:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>62</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>30</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step4:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>72</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>30</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step5:</span> <span class='lbrace'>{</span><span class='label'>goto:</span> <span class='int'>2</span><span class='comma'>,</span> <span class='label'>times:</span> <span class='int'>34</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step6:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>12</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>forever</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>units:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='rbrace'>}</span><span class='rbrace'>}</span>
+      <span class='label'>step1:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>95</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>3</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step2:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>98</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>15</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step3:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>62</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>30</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step4:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>72</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>30</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step5:</span> <span class='lbrace'>{</span> <span class='label'>goto:</span> <span class='int'>2</span><span class='comma'>,</span> <span class='label'>times:</span> <span class='int'>34</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step6:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>12</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>forever</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>units:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span>
     <span class='rbrace'>}</span>
   <span class='rbrace'>}</span><span class='comma'>,</span>
 
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>qPCR2</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
-    <span class='label'>program_template_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>NGS_qPCR2</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>volume:</span> <span class='int'>50</span><span class='comma'>,</span> <span class='label'>layout_template_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>NGS_qPCR1</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>qPCR2</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
+    <span class='label'>program_template_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>NGS_qPCR2</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='label'>layout_template_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>NGS_qPCR1</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='label'>volume:</span> <span class='int'>50</span><span class='comma'>,</span>
     <span class='label'>steps:</span> <span class='lbrace'>{</span>
-      <span class='label'>step1:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>98</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span>  <span class='int'>3</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step2:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>98</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>15</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step3:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>64</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>30</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step4:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>72</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>30</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step5:</span> <span class='lbrace'>{</span><span class='label'>goto:</span> <span class='int'>2</span><span class='comma'>,</span> <span class='label'>times:</span> <span class='int'>29</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step6:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>72</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span>  <span class='int'>5</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step7:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>12</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>forever</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>units:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='rbrace'>}</span><span class='rbrace'>}</span>
+      <span class='label'>step1:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>98</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>3</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step2:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>98</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>15</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step3:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>64</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>30</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step4:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>72</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>30</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step5:</span> <span class='lbrace'>{</span> <span class='label'>goto:</span> <span class='int'>2</span><span class='comma'>,</span> <span class='label'>times:</span> <span class='int'>29</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step6:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>72</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>5</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step7:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>12</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>forever</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>units:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span>
     <span class='rbrace'>}</span>
   <span class='rbrace'>}</span><span class='comma'>,</span>
 
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>lib_qPCR1</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
-    <span class='label'>program_template_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>LIB_qPCR1</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>volume:</span> <span class='int'>25</span><span class='comma'>,</span> <span class='label'>layout_template_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>LIB_qPCR</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>lib_qPCR1</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
+    <span class='label'>program_template_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>LIB_qPCR1</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='label'>layout_template_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>LIB_qPCR</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='label'>volume:</span> <span class='int'>25</span><span class='comma'>,</span>
     <span class='label'>steps:</span> <span class='lbrace'>{</span>
-      <span class='label'>step1:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>95</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span>  <span class='int'>3</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step2:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>98</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>15</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step3:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>65</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>30</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step4:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>72</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>30</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step5:</span> <span class='lbrace'>{</span><span class='label'>goto:</span> <span class='int'>2</span><span class='comma'>,</span> <span class='label'>times:</span> <span class='int'>34</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step6:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>72</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span>  <span class='int'>5</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step7:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>12</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>forever</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>units:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='rbrace'>}</span><span class='rbrace'>}</span>
+      <span class='label'>step1:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>95</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>3</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step2:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>98</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>15</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step3:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>65</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>30</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step4:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>72</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>30</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step5:</span> <span class='lbrace'>{</span> <span class='label'>goto:</span> <span class='int'>2</span><span class='comma'>,</span> <span class='label'>times:</span> <span class='int'>34</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step6:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>72</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>5</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step7:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>12</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>forever</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>units:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span>
     <span class='rbrace'>}</span>
   <span class='rbrace'>}</span><span class='comma'>,</span>
 
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>lib_qPCR2</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
-    <span class='label'>program_template_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>LIB_qPCR2</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>volume:</span> <span class='int'>50</span><span class='comma'>,</span> <span class='label'>layout_template_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>LIB_qPCR</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>lib_qPCR2</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
+    <span class='label'>program_template_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>LIB_qPCR2</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='label'>layout_template_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>LIB_qPCR</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='label'>volume:</span> <span class='int'>50</span><span class='comma'>,</span>
     <span class='label'>steps:</span> <span class='lbrace'>{</span>
-      <span class='label'>step1:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>95</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span>  <span class='int'>3</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step2:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>98</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>15</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step3:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>65</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>30</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step4:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>72</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>30</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step5:</span> <span class='lbrace'>{</span><span class='label'>goto:</span> <span class='int'>2</span><span class='comma'>,</span> <span class='label'>times:</span> <span class='int'>34</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step6:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>72</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span>  <span class='int'>5</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step7:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>12</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>forever</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>units:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='rbrace'>}</span><span class='rbrace'>}</span>
+      <span class='label'>step1:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>95</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>3</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step2:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>98</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>15</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step3:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>65</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>30</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step4:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>72</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>30</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step5:</span> <span class='lbrace'>{</span> <span class='label'>goto:</span> <span class='int'>2</span><span class='comma'>,</span> <span class='label'>times:</span> <span class='int'>34</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step6:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>72</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>5</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step7:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>12</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>forever</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>units:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span>
     <span class='rbrace'>}</span>
   <span class='rbrace'>}</span><span class='comma'>,</span>
 
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>illumina_qPCR_quantification</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
-    <span class='label'>program_template_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>illumina_qPCR_quantification_v1</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> 
-    <span class='label'>layout_template_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>illumina_qPCR_plate_layout_v1</span><span class='tstring_end'>&quot;</span></span>
+  <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>illumina_qPCR_quantification</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
+    <span class='label'>program_template_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>illumina_qPCR_quantification_v1</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='label'>layout_template_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>illumina_qPCR_plate_layout_v1</span><span class='tstring_end'>&#39;</span></span>
   <span class='rbrace'>}</span><span class='comma'>,</span>
 
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>CDC_TaqPath_CG</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
-    <span class='label'>program_template_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>CDC_TaqPath_CG</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>volume:</span> <span class='int'>20</span><span class='comma'>,</span> <span class='label'>layout_template_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>CDC_TaqPath_CG</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CDC_TaqPath_CG</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
+    <span class='label'>program_template_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CDC_TaqPath_CG</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='label'>layout_template_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CDC_TaqPath_CG</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='label'>volume:</span> <span class='int'>20</span><span class='comma'>,</span>
     <span class='label'>steps:</span> <span class='lbrace'>{</span>
-      <span class='label'>step1:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>25</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span>  <span class='int'>2</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step2:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>50</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>15</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step3:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>95</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span>  <span class='int'>2</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step4:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>95</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span>  <span class='int'>3</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step5:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>55</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>30</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-      <span class='label'>step6:</span> <span class='lbrace'>{</span><span class='label'>goto:</span> <span class='int'>4</span><span class='comma'>,</span> <span class='label'>times:</span> <span class='int'>44</span><span class='rbrace'>}</span>
+      <span class='label'>step1:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>25</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>2</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step2:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>50</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>15</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step3:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>95</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>2</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step4:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>95</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>3</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step5:</span> <span class='lbrace'>{</span>
+        <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>55</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+        <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>30</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span> <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>step6:</span> <span class='lbrace'>{</span> <span class='label'>goto:</span> <span class='int'>4</span><span class='comma'>,</span> <span class='label'>times:</span> <span class='int'>44</span> <span class='rbrace'>}</span>
     <span class='rbrace'>}</span>
   <span class='rbrace'>}</span><span class='comma'>,</span>
 
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>CDC_qScript_XLT_ToughMix</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
-    <span class='label'>program_template_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>CDC_qScript_XLT_ToughMix</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>volume:</span> <span class='int'>20</span><span class='comma'>,</span> <span class='label'>layout_template_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>CDC_qScript_XLT_ToughMix</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
-    <span class='label'>step1:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>50</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>10</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>step2:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>95</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span>  <span class='int'>3</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>step3:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>95</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span>  <span class='int'>3</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>step4:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>55</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>30</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>step5:</span> <span class='lbrace'>{</span><span class='label'>goto:</span> <span class='int'>3</span><span class='comma'>,</span> <span class='label'>times:</span> <span class='int'>44</span><span class='rbrace'>}</span>
+  <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CDC_qScript_XLT_ToughMix</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
+    <span class='label'>program_template_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CDC_qScript_XLT_ToughMix</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='label'>layout_template_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CDC_qScript_XLT_ToughMix</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='label'>volume:</span> <span class='int'>20</span><span class='comma'>,</span>
+    <span class='label'>step1:</span> <span class='lbrace'>{</span>
+      <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>50</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>10</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span> <span class='rbrace'>}</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>step2:</span> <span class='lbrace'>{</span>
+      <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>95</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>3</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span> <span class='rbrace'>}</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>step3:</span> <span class='lbrace'>{</span>
+      <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>95</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>3</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span> <span class='rbrace'>}</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>step4:</span> <span class='lbrace'>{</span>
+      <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>55</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>30</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span> <span class='rbrace'>}</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>step5:</span> <span class='lbrace'>{</span> <span class='label'>goto:</span> <span class='int'>3</span><span class='comma'>,</span> <span class='label'>times:</span> <span class='int'>44</span> <span class='rbrace'>}</span>
   <span class='rbrace'>}</span><span class='comma'>,</span>
 
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>CDC_UltraPlex_ToughMix</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
-    <span class='label'>program_template_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>CDC_UltraPlex_ToughMix</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>volume:</span> <span class='int'>20</span><span class='comma'>,</span> <span class='label'>layout_template_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>CDC_UltraPlex_ToughMix</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
-    <span class='label'>step1:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>50</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>10</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>step2:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>95</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span>  <span class='int'>3</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>step3:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>95</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span>  <span class='int'>3</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>step4:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>55</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>30</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>step5:</span> <span class='lbrace'>{</span><span class='label'>goto:</span> <span class='int'>3</span><span class='comma'>,</span> <span class='label'>times:</span> <span class='int'>44</span><span class='rbrace'>}</span>
+  <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CDC_UltraPlex_ToughMix</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
+    <span class='label'>program_template_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CDC_UltraPlex_ToughMix</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='label'>layout_template_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CDC_UltraPlex_ToughMix</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='label'>volume:</span> <span class='int'>20</span><span class='comma'>,</span>
+    <span class='label'>step1:</span> <span class='lbrace'>{</span>
+      <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>50</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>10</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span> <span class='rbrace'>}</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>step2:</span> <span class='lbrace'>{</span>
+      <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>95</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>3</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span> <span class='rbrace'>}</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>step3:</span> <span class='lbrace'>{</span>
+      <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>95</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>3</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span> <span class='rbrace'>}</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>step4:</span> <span class='lbrace'>{</span>
+      <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>55</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>30</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span> <span class='rbrace'>}</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>step5:</span> <span class='lbrace'>{</span> <span class='label'>goto:</span> <span class='int'>3</span><span class='comma'>,</span> <span class='label'>times:</span> <span class='int'>44</span> <span class='rbrace'>}</span>
   <span class='rbrace'>}</span><span class='comma'>,</span>
 
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>CDC_GoTaq_Probe_1-Step</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
-    <span class='label'>program_template_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>CDC_GoTaq_Probe_1-Step</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>volume:</span> <span class='int'>20</span><span class='comma'>,</span> <span class='label'>layout_template_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>CDC_GoTaq_Probe_1-Step</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
-    <span class='label'>step1:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>45</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>15</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>step2:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>95</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span>  <span class='int'>2</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>step3:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>95</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span>  <span class='int'>3</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>step4:</span> <span class='lbrace'>{</span><span class='label'>temperature:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>55</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='lbrace'>{</span><span class='label'>qty:</span> <span class='int'>30</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>step5:</span> <span class='lbrace'>{</span><span class='label'>goto:</span> <span class='int'>3</span><span class='comma'>,</span> <span class='label'>times:</span> <span class='int'>44</span><span class='rbrace'>}</span>
+  <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CDC_GoTaq_Probe_1-Step</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
+    <span class='label'>program_template_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CDC_GoTaq_Probe_1-Step</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='label'>layout_template_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CDC_GoTaq_Probe_1-Step</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='label'>volume:</span> <span class='int'>20</span><span class='comma'>,</span>
+    <span class='label'>step1:</span> <span class='lbrace'>{</span>
+      <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>45</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>15</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span> <span class='rbrace'>}</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>step2:</span> <span class='lbrace'>{</span>
+      <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>95</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>2</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MINUTES</span> <span class='rbrace'>}</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>step3:</span> <span class='lbrace'>{</span>
+      <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>95</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>3</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span> <span class='rbrace'>}</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>step4:</span> <span class='lbrace'>{</span>
+      <span class='label'>temperature:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>55</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>DEGREES_C</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='label'>duration:</span> <span class='lbrace'>{</span> <span class='label'>qty:</span> <span class='int'>30</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>SECONDS</span> <span class='rbrace'>}</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>step5:</span> <span class='lbrace'>{</span> <span class='label'>goto:</span> <span class='int'>3</span><span class='comma'>,</span> <span class='label'>times:</span> <span class='int'>44</span> <span class='rbrace'>}</span>
   <span class='rbrace'>}</span>
-<span class='rbrace'>}</span></pre></dd>
+<span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
     </dl>
   
@@ -1027,7 +1190,7 @@ $(document).ready(function() {
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#get_program_def-instance_method" title="#get_program_def (instance method)">#<strong>get_program_def</strong>(name:)  &#x21d2; Object </a>
+      <a href="#get_program_def-instance_method" title="#get_program_def (instance method)">#<strong>get_program_def</strong>(name:)  &#x21d2; Hash </a>
     
 
     
@@ -1041,7 +1204,9 @@ $(document).ready(function() {
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Gets the Hash that defines the program for the given name.</p>
+</div></span>
   
 </li>
 
@@ -1059,24 +1224,63 @@ $(document).ready(function() {
       <div class="method_details first">
   <h3 class="signature first" id="get_program_def-instance_method">
   
-    #<strong>get_program_def</strong>(name:)  &#x21d2; <tt>Object</tt> 
+    #<strong>get_program_def</strong>(name:)  &#x21d2; <tt>Hash</tt> 
   
 
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Gets the Hash that defines the program for the given name</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>name</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-104
-105
-106</pre>
+249
+250
+251</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'PCRProgramDefinitions.rb', line 104</span>
+      <pre class="code"><span class="info file"># File 'PCRProgramDefinitions.rb', line 249</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_get_program_def'>get_program_def</span><span class='lparen'>(</span><span class='label'>name:</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="" title="PCRProgramDefinitions (module)">PCRProgramDefinitions</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="#PROGRAMS-constant" title="PCRProgramDefinitions::PROGRAMS (constant)">PROGRAMS</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span>
