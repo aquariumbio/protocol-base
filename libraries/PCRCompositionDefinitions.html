@@ -898,7 +898,34 @@ $(document).ready(function() {
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>Provice composition definitions for PCR reactions</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Author:</p>
+<ul class="author">
+  
+    <li>
+      
+      
+      
+      
+        
+        <div class='inline'>
+<p>Devin Strickland &lt;strcklnd@uw.edu&gt;</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div>
   
     <h2>
       Constant Summary
@@ -910,126 +937,252 @@ $(document).ready(function() {
         <dt id="POLYMERASE-constant" class="">POLYMERASE =
           
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Polymerase</span><span class='tstring_end'>&quot;</span></span></pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Polymerase</span><span class='tstring_end'>&#39;</span></span></pre></dd>
       
         <dt id="DYE-constant" class="">DYE =
           
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Dye</span><span class='tstring_end'>&quot;</span></span></pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Dye</span><span class='tstring_end'>&#39;</span></span></pre></dd>
       
         <dt id="WATER-constant" class="">WATER =
           
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Molecular Grade Water</span><span class='tstring_end'>&quot;</span></span></pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Molecular Grade Water</span><span class='tstring_end'>&#39;</span></span></pre></dd>
       
         <dt id="MASTER_MIX-constant" class="">MASTER_MIX =
           
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Master Mix</span><span class='tstring_end'>&quot;</span></span></pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Master Mix</span><span class='tstring_end'>&#39;</span></span></pre></dd>
       
         <dt id="PRIMER_PROBE_MIX-constant" class="">PRIMER_PROBE_MIX =
           
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Combined Primer/Probe Mix</span><span class='tstring_end'>&quot;</span></span></pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Combined Primer/Probe Mix</span><span class='tstring_end'>&#39;</span></span></pre></dd>
       
         <dt id="COMPONENTS-constant" class="">COMPONENTS =
           
         </dt>
         <dd><pre class="code"><span class='lbrace'>{</span>
   <span class='comment'># qPCR2: 2nd qPCR in NGS prep.
-</span>  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>qPCR1</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
-    <span class='label'>polymerase:</span>     <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#POLYMERASE-constant" title="PCRCompositionDefinitions::POLYMERASE (constant)">POLYMERASE</a></span></span><span class='comma'>,</span>        <span class='label'>qty:</span> <span class='int'>16</span><span class='comma'>,</span>    <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='comma'>,</span>
-                     <span class='label'>sample_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Kapa HF Master Mix</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> 
-                     <span class='label'>object_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Enzyme Stock</span><span class='tstring_end'>&quot;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>forward_primer:</span> <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'>FORWARD_PRIMER</span><span class='comma'>,</span>    <span class='label'>qty:</span> <span class='float'>0.16</span><span class='comma'>,</span>  <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>reverse_primer:</span> <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'>REVERSE_PRIMER</span><span class='comma'>,</span>    <span class='label'>qty:</span> <span class='float'>0.16</span><span class='comma'>,</span>  <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>dye:</span>            <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#DYE-constant" title="PCRCompositionDefinitions::DYE (constant)">DYE</a></span></span><span class='comma'>,</span>               <span class='label'>qty:</span> <span class='float'>1.6</span><span class='comma'>,</span>   <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='comma'>,</span>
-                     <span class='label'>sample_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Eva Green</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
-                     <span class='label'>object_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Screw Cap Tube</span><span class='tstring_end'>&quot;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>water:</span>          <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#WATER-constant" title="PCRCompositionDefinitions::WATER (constant)">WATER</a></span></span><span class='comma'>,</span>             <span class='label'>qty:</span> <span class='float'>6.58</span><span class='comma'>,</span>  <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>template:</span>       <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'>TEMPLATE</span><span class='comma'>,</span>          <span class='label'>qty:</span> <span class='float'>7.5</span><span class='comma'>,</span>   <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span>
+</span>  <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>qPCR1</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
+    <span class='label'>polymerase:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#POLYMERASE-constant" title="PCRCompositionDefinitions::POLYMERASE (constant)">POLYMERASE</a></span></span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='int'>16</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='comma'>,</span>
+      <span class='label'>sample_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Kapa HF Master Mix</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+      <span class='label'>object_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Enzyme Stock</span><span class='tstring_end'>&#39;</span></span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>forward_primer:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'>FORWARD_PRIMER</span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>0.16</span><span class='comma'>,</span>  <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>reverse_primer:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'>REVERSE_PRIMER</span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>0.16</span><span class='comma'>,</span>  <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>dye:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#DYE-constant" title="PCRCompositionDefinitions::DYE (constant)">DYE</a></span></span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>1.6</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='comma'>,</span>
+      <span class='label'>sample_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Eva Green</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+      <span class='label'>object_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Screw Cap Tube</span><span class='tstring_end'>&#39;</span></span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>water:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#WATER-constant" title="PCRCompositionDefinitions::WATER (constant)">WATER</a></span></span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>6.58</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>template:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'>TEMPLATE</span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>7.5</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span>
   <span class='rbrace'>}</span><span class='comma'>,</span>
 
-  <span class='comment'># qPCR2: 2nd qPCR in NGS prep. reverse primer is indexed primer.
-</span>  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>qPCR2</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
-    <span class='label'>polymerase:</span>     <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#POLYMERASE-constant" title="PCRCompositionDefinitions::POLYMERASE (constant)">POLYMERASE</a></span></span><span class='comma'>,</span>        <span class='label'>qty:</span> <span class='int'>25</span><span class='comma'>,</span>    <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='comma'>,</span>
-                     <span class='label'>sample_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Kapa HF Master Mix</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> 
-                     <span class='label'>object_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Enzyme Stock</span><span class='tstring_end'>&quot;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>forward_primer:</span> <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'>FORWARD_PRIMER</span><span class='comma'>,</span>    <span class='label'>qty:</span> <span class='float'>2.5</span><span class='comma'>,</span>   <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>reverse_primer:</span> <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'>REVERSE_PRIMER</span><span class='comma'>,</span>    <span class='label'>qty:</span> <span class='float'>2.5</span><span class='comma'>,</span>   <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>dye:</span>            <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#DYE-constant" title="PCRCompositionDefinitions::DYE (constant)">DYE</a></span></span><span class='comma'>,</span>               <span class='label'>qty:</span> <span class='float'>2.5</span><span class='comma'>,</span>   <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='comma'>,</span>
-                     <span class='label'>sample_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Eva Green</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
-                     <span class='label'>object_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Screw Cap Tube</span><span class='tstring_end'>&quot;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>water:</span>          <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#WATER-constant" title="PCRCompositionDefinitions::WATER (constant)">WATER</a></span></span><span class='comma'>,</span>             <span class='label'>qty:</span> <span class='float'>15.5</span><span class='comma'>,</span>  <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>template:</span>       <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'>TEMPLATE</span><span class='comma'>,</span>          <span class='label'>qty:</span> <span class='int'>2</span><span class='comma'>,</span>     <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span>
+  <span class='comment'># qPCR2: 2nd qPCR in NGS prep.
+</span>  <span class='comment'>#   Reverse primer is indexed primer.
+</span>  <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>qPCR2</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
+    <span class='label'>polymerase:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#POLYMERASE-constant" title="PCRCompositionDefinitions::POLYMERASE (constant)">POLYMERASE</a></span></span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='int'>25</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='comma'>,</span>
+      <span class='label'>sample_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Kapa HF Master Mix</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+      <span class='label'>object_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Enzyme Stock</span><span class='tstring_end'>&#39;</span></span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>forward_primer:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'>FORWARD_PRIMER</span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>2.5</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>reverse_primer:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'>REVERSE_PRIMER</span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>2.5</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>dye:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#DYE-constant" title="PCRCompositionDefinitions::DYE (constant)">DYE</a></span></span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>2.5</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='comma'>,</span>
+      <span class='label'>sample_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Eva Green</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+      <span class='label'>object_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Screw Cap Tube</span><span class='tstring_end'>&#39;</span></span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>water:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#WATER-constant" title="PCRCompositionDefinitions::WATER (constant)">WATER</a></span></span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>15.5</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>template:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'>TEMPLATE</span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='int'>2</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span>
   <span class='rbrace'>}</span><span class='comma'>,</span>
 
-  <span class='comment'># LIBqPCR1: 1st qPCR in Libray prep. if sublibrary primers exist they are used here.
-</span>  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>lib_qPCR1</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
-    <span class='label'>polymerase:</span>     <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#POLYMERASE-constant" title="PCRCompositionDefinitions::POLYMERASE (constant)">POLYMERASE</a></span></span><span class='comma'>,</span>        <span class='label'>qty:</span> <span class='float'>12.5</span><span class='comma'>,</span>  <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='comma'>,</span>
-                     <span class='label'>sample_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Kapa HF Master Mix</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> 
-                     <span class='label'>object_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Enzyme Stock</span><span class='tstring_end'>&quot;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>forward_primer:</span> <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'>FORWARD_PRIMER</span><span class='comma'>,</span>    <span class='label'>qty:</span> <span class='float'>0.75</span><span class='comma'>,</span>  <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>reverse_primer:</span> <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'>REVERSE_PRIMER</span><span class='comma'>,</span>    <span class='label'>qty:</span> <span class='float'>0.75</span><span class='comma'>,</span>  <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>dye:</span>            <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#DYE-constant" title="PCRCompositionDefinitions::DYE (constant)">DYE</a></span></span><span class='comma'>,</span>               <span class='label'>qty:</span> <span class='float'>1.25</span><span class='comma'>,</span>  <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='comma'>,</span>
-                     <span class='label'>sample_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Eva Green</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
-                     <span class='label'>object_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Screw Cap Tube</span><span class='tstring_end'>&quot;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>water:</span>          <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#WATER-constant" title="PCRCompositionDefinitions::WATER (constant)">WATER</a></span></span><span class='comma'>,</span>             <span class='label'>qty:</span> <span class='float'>8.75</span><span class='comma'>,</span>  <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>template:</span>       <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'>TEMPLATE</span><span class='comma'>,</span>          <span class='label'>qty:</span> <span class='int'>1</span><span class='comma'>,</span>     <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span>
+  <span class='comment'># LIBqPCR1: 1st qPCR in Libray prep.
+</span>  <span class='comment'>#   If sublibrary primers exist they are used here.
+</span>  <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>lib_qPCR1</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
+    <span class='label'>polymerase:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#POLYMERASE-constant" title="PCRCompositionDefinitions::POLYMERASE (constant)">POLYMERASE</a></span></span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>12.5</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='comma'>,</span>
+      <span class='label'>sample_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Kapa HF Master Mix</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+      <span class='label'>object_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Enzyme Stock</span><span class='tstring_end'>&#39;</span></span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>forward_primer:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'>FORWARD_PRIMER</span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>0.75</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>reverse_primer:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'>REVERSE_PRIMER</span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>0.75</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>dye:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#DYE-constant" title="PCRCompositionDefinitions::DYE (constant)">DYE</a></span></span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>1.25</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='comma'>,</span>
+      <span class='label'>sample_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Eva Green</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+      <span class='label'>object_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Screw Cap Tube</span><span class='tstring_end'>&#39;</span></span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>water:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#WATER-constant" title="PCRCompositionDefinitions::WATER (constant)">WATER</a></span></span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>8.75</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>template:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'>TEMPLATE</span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='int'>1</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span>
   <span class='rbrace'>}</span><span class='comma'>,</span>
 
-  <span class='comment'># LIBqPCR2: 2nd qPCR in Libray prep. overhangs compatible with cloning vector are added here.
-</span>  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>lib_qPCR2</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
-    <span class='label'>polymerase:</span>     <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#POLYMERASE-constant" title="PCRCompositionDefinitions::POLYMERASE (constant)">POLYMERASE</a></span></span><span class='comma'>,</span>        <span class='label'>qty:</span> <span class='int'>25</span><span class='comma'>,</span>    <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='comma'>,</span>
-                     <span class='label'>sample_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Kapa HF Master Mix</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> 
-                     <span class='label'>object_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Enzyme Stock</span><span class='tstring_end'>&quot;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>forward_primer:</span> <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'>FORWARD_PRIMER</span><span class='comma'>,</span>    <span class='label'>qty:</span> <span class='float'>1.5</span><span class='comma'>,</span>   <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>reverse_primer:</span> <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'>REVERSE_PRIMER</span><span class='comma'>,</span>    <span class='label'>qty:</span> <span class='float'>1.5</span><span class='comma'>,</span>   <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>dye:</span>            <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#DYE-constant" title="PCRCompositionDefinitions::DYE (constant)">DYE</a></span></span><span class='comma'>,</span>               <span class='label'>qty:</span> <span class='float'>2.5</span><span class='comma'>,</span>   <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='comma'>,</span>
-                     <span class='label'>sample_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Eva Green</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
-                     <span class='label'>object_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Screw Cap Tube</span><span class='tstring_end'>&quot;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>water:</span>          <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#WATER-constant" title="PCRCompositionDefinitions::WATER (constant)">WATER</a></span></span><span class='comma'>,</span>             <span class='label'>qty:</span> <span class='float'>17.5</span><span class='comma'>,</span>  <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>template:</span>       <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'>TEMPLATE</span><span class='comma'>,</span>          <span class='label'>qty:</span> <span class='int'>2</span><span class='comma'>,</span>     <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span>
+  <span class='comment'># LIBqPCR2: 2nd qPCR in Libray prep.
+</span>  <span class='comment'>#   Overhangs compatible with cloning vector are added here.
+</span>  <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>lib_qPCR2</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
+    <span class='label'>polymerase:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#POLYMERASE-constant" title="PCRCompositionDefinitions::POLYMERASE (constant)">POLYMERASE</a></span></span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='int'>25</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='comma'>,</span>
+      <span class='label'>sample_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Kapa HF Master Mix</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+      <span class='label'>object_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Enzyme Stock</span><span class='tstring_end'>&#39;</span></span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>forward_primer:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'>FORWARD_PRIMER</span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>1.5</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>reverse_primer:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'>REVERSE_PRIMER</span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>1.5</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>dye:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#DYE-constant" title="PCRCompositionDefinitions::DYE (constant)">DYE</a></span></span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>2.5</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='comma'>,</span>
+      <span class='label'>sample_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Eva Green</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+      <span class='label'>object_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Screw Cap Tube</span><span class='tstring_end'>&#39;</span></span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>water:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#WATER-constant" title="PCRCompositionDefinitions::WATER (constant)">WATER</a></span></span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>17.5</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>template:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'>TEMPLATE</span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='int'>2</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span>
   <span class='rbrace'>}</span><span class='comma'>,</span>
 
   <span class='comment'># CDC COVID-19 detection protocol
-</span>  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>CDC_TaqPath_CG</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
-    <span class='label'>water:</span>             <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#WATER-constant" title="PCRCompositionDefinitions::WATER (constant)">WATER</a></span></span><span class='comma'>,</span>             <span class='label'>qty:</span> <span class='float'>8.5</span><span class='comma'>,</span>  <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>primer_probe_mix:</span>  <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#PRIMER_PROBE_MIX-constant" title="PCRCompositionDefinitions::PRIMER_PROBE_MIX (constant)">PRIMER_PROBE_MIX</a></span></span><span class='comma'>,</span>  <span class='label'>qty:</span> <span class='float'>1.5</span><span class='comma'>,</span>  <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>master_mix:</span>        <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#MASTER_MIX-constant" title="PCRCompositionDefinitions::MASTER_MIX (constant)">MASTER_MIX</a></span></span><span class='comma'>,</span>        <span class='label'>qty:</span> <span class='float'>5.0</span><span class='comma'>,</span>  <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='comma'>,</span>
-                        <span class='label'>sample_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>TaqPath 1-Step RT-qPCR Master Mix (4x)</span><span class='tstring_end'>&quot;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>template:</span>          <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'>TEMPLATE</span><span class='comma'>,</span>          <span class='label'>qty:</span> <span class='float'>5.0</span><span class='comma'>,</span>  <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span>
+</span>  <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CDC_TaqPath_CG</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
+    <span class='label'>water:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#WATER-constant" title="PCRCompositionDefinitions::WATER (constant)">WATER</a></span></span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>8.5</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>primer_probe_mix:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#PRIMER_PROBE_MIX-constant" title="PCRCompositionDefinitions::PRIMER_PROBE_MIX (constant)">PRIMER_PROBE_MIX</a></span></span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>1.5</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>master_mix:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#MASTER_MIX-constant" title="PCRCompositionDefinitions::MASTER_MIX (constant)">MASTER_MIX</a></span></span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>5.0</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='comma'>,</span>
+      <span class='label'>sample_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>TaqPath 1-Step RT-qPCR Master Mix (4x)</span><span class='tstring_end'>&#39;</span></span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>template:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'>TEMPLATE</span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>5.0</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span>
   <span class='rbrace'>}</span><span class='comma'>,</span>
 
   <span class='comment'># CDC COVID-19 detection protocol
-</span>  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>CDC_qScript_XLT_ToughMix</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
-    <span class='label'>water:</span>             <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#WATER-constant" title="PCRCompositionDefinitions::WATER (constant)">WATER</a></span></span><span class='comma'>,</span>             <span class='label'>qty:</span> <span class='float'>3.5</span><span class='comma'>,</span>  <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>primer_probe_mix:</span>  <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#PRIMER_PROBE_MIX-constant" title="PCRCompositionDefinitions::PRIMER_PROBE_MIX (constant)">PRIMER_PROBE_MIX</a></span></span><span class='comma'>,</span>  <span class='label'>qty:</span> <span class='float'>1.5</span><span class='comma'>,</span>  <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>master_mix:</span>        <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#MASTER_MIX-constant" title="PCRCompositionDefinitions::MASTER_MIX (constant)">MASTER_MIX</a></span></span><span class='comma'>,</span>        <span class='label'>qty:</span> <span class='int'>10</span><span class='comma'>,</span>   <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='comma'>,</span>
-                        <span class='label'>sample_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>qScript XLT One-Step RT-qPCR ToughMix (2X)</span><span class='tstring_end'>&quot;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>template:</span>          <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'>TEMPLATE</span><span class='comma'>,</span>          <span class='label'>qty:</span> <span class='float'>5.0</span><span class='comma'>,</span>  <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span>
+</span>  <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CDC_qScript_XLT_ToughMix</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
+    <span class='label'>water:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#WATER-constant" title="PCRCompositionDefinitions::WATER (constant)">WATER</a></span></span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>3.5</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>primer_probe_mix:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#PRIMER_PROBE_MIX-constant" title="PCRCompositionDefinitions::PRIMER_PROBE_MIX (constant)">PRIMER_PROBE_MIX</a></span></span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>1.5</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>master_mix:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#MASTER_MIX-constant" title="PCRCompositionDefinitions::MASTER_MIX (constant)">MASTER_MIX</a></span></span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='int'>10</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='comma'>,</span>
+      <span class='label'>sample_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>qScript XLT One-Step RT-qPCR ToughMix (2X)</span><span class='tstring_end'>&#39;</span></span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>template:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'>TEMPLATE</span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>5.0</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span>
   <span class='rbrace'>}</span><span class='comma'>,</span>
 
   <span class='comment'># CDC COVID-19 detection protocol
-</span>  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>CDC_UltraPlex_ToughMix</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
-    <span class='label'>water:</span>             <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#WATER-constant" title="PCRCompositionDefinitions::WATER (constant)">WATER</a></span></span><span class='comma'>,</span>             <span class='label'>qty:</span> <span class='float'>8.5</span><span class='comma'>,</span>  <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>primer_probe_mix:</span>  <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#PRIMER_PROBE_MIX-constant" title="PCRCompositionDefinitions::PRIMER_PROBE_MIX (constant)">PRIMER_PROBE_MIX</a></span></span><span class='comma'>,</span>  <span class='label'>qty:</span> <span class='float'>1.5</span><span class='comma'>,</span>  <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>master_mix:</span>        <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#MASTER_MIX-constant" title="PCRCompositionDefinitions::MASTER_MIX (constant)">MASTER_MIX</a></span></span><span class='comma'>,</span>        <span class='label'>qty:</span> <span class='float'>5.0</span><span class='comma'>,</span>  <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='comma'>,</span>        
-                        <span class='label'>sample_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>UltraPlex 1-Step ToughMix (4X)</span><span class='tstring_end'>&quot;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>template:</span>          <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'>TEMPLATE</span><span class='comma'>,</span>          <span class='label'>qty:</span> <span class='float'>5.0</span><span class='comma'>,</span>  <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span>
+</span>  <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CDC_UltraPlex_ToughMix</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
+    <span class='label'>water:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#WATER-constant" title="PCRCompositionDefinitions::WATER (constant)">WATER</a></span></span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>8.5</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>primer_probe_mix:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#PRIMER_PROBE_MIX-constant" title="PCRCompositionDefinitions::PRIMER_PROBE_MIX (constant)">PRIMER_PROBE_MIX</a></span></span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>1.5</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>master_mix:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#MASTER_MIX-constant" title="PCRCompositionDefinitions::MASTER_MIX (constant)">MASTER_MIX</a></span></span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>5.0</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='comma'>,</span>
+      <span class='label'>sample_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>UltraPlex 1-Step ToughMix (4X)</span><span class='tstring_end'>&#39;</span></span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>template:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'>TEMPLATE</span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>5.0</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span>
   <span class='rbrace'>}</span><span class='comma'>,</span>
 
   <span class='comment'># CDC COVID-19 detection protocol
-</span>  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>CDC_GoTaq_Probe_1-Step</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
-    <span class='label'>water:</span>             <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#WATER-constant" title="PCRCompositionDefinitions::WATER (constant)">WATER</a></span></span><span class='comma'>,</span>             <span class='label'>qty:</span> <span class='float'>3.1</span><span class='comma'>,</span>  <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>primer_probe_mix:</span>  <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#PRIMER_PROBE_MIX-constant" title="PCRCompositionDefinitions::PRIMER_PROBE_MIX (constant)">PRIMER_PROBE_MIX</a></span></span><span class='comma'>,</span>  <span class='label'>qty:</span> <span class='float'>1.5</span><span class='comma'>,</span>  <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>master_mix:</span>        <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#MASTER_MIX-constant" title="PCRCompositionDefinitions::MASTER_MIX (constant)">MASTER_MIX</a></span></span><span class='comma'>,</span>        <span class='label'>qty:</span> <span class='int'>10</span><span class='comma'>,</span>   <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='comma'>,</span>        
-                        <span class='label'>sample_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>GoTaq Probe qPCR Master Mix with dUTP</span><span class='tstring_end'>&quot;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>rt_mix:</span>            <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>RT Mix</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>          <span class='label'>qty:</span> <span class='float'>0.4</span><span class='comma'>,</span>  <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='comma'>,</span>        
-                        <span class='label'>sample_name:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Go Script RT Mix for 1-Step RT-qPCR</span><span class='tstring_end'>&quot;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-    <span class='label'>template:</span>          <span class='lbrace'>{</span><span class='label'>input_name:</span> <span class='const'>TEMPLATE</span><span class='comma'>,</span>          <span class='label'>qty:</span> <span class='float'>5.0</span><span class='comma'>,</span>  <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='rbrace'>}</span>
+</span>  <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CDC_GoTaq_Probe_1-Step</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
+    <span class='label'>water:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#WATER-constant" title="PCRCompositionDefinitions::WATER (constant)">WATER</a></span></span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>3.1</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>primer_probe_mix:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#PRIMER_PROBE_MIX-constant" title="PCRCompositionDefinitions::PRIMER_PROBE_MIX (constant)">PRIMER_PROBE_MIX</a></span></span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>1.5</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>master_mix:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'><span class='object_link'><a href="#MASTER_MIX-constant" title="PCRCompositionDefinitions::MASTER_MIX (constant)">MASTER_MIX</a></span></span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='int'>10</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='comma'>,</span>
+      <span class='label'>sample_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>GoTaq Probe qPCR Master Mix with dUTP</span><span class='tstring_end'>&#39;</span></span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>rt_mix:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>RT Mix</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>0.4</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span><span class='comma'>,</span>
+      <span class='label'>sample_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Go Script RT Mix for 1-Step RT-qPCR</span><span class='tstring_end'>&#39;</span></span>
+    <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>template:</span> <span class='lbrace'>{</span>
+      <span class='label'>input_name:</span> <span class='const'>TEMPLATE</span><span class='comma'>,</span>
+      <span class='label'>qty:</span> <span class='float'>5.0</span><span class='comma'>,</span> <span class='label'>units:</span> <span class='const'>MICROLITERS</span>
+    <span class='rbrace'>}</span>
   <span class='rbrace'>}</span>
-<span class='rbrace'>}</span></pre></dd>
+<span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
     </dl>
   
@@ -1051,7 +1204,7 @@ $(document).ready(function() {
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#get_composition_def-instance_method" title="#get_composition_def (instance method)">#<strong>get_composition_def</strong>(name:)  &#x21d2; Object </a>
+      <a href="#get_composition_def-instance_method" title="#get_composition_def (instance method)">#<strong>get_composition_def</strong>(name:)  &#x21d2; Hash </a>
     
 
     
@@ -1065,7 +1218,9 @@ $(document).ready(function() {
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Gets the Hash that defines the compostion for the given name.</p>
+</div></span>
   
 </li>
 
@@ -1084,24 +1239,63 @@ $(document).ready(function() {
       <div class="method_details first">
   <h3 class="signature first" id="get_composition_def-instance_method">
   
-    #<strong>get_composition_def</strong>(name:)  &#x21d2; <tt>Object</tt> 
+    #<strong>get_composition_def</strong>(name:)  &#x21d2; <tt>Hash</tt> 
   
 
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Gets the Hash that defines the compostion for the given name</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>name</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-112
-113
-114</pre>
+246
+247
+248</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'PCRCompositionDefinitions.rb', line 112</span>
+      <pre class="code"><span class="info file"># File 'PCRCompositionDefinitions.rb', line 246</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_get_composition_def'>get_composition_def</span><span class='lparen'>(</span><span class='label'>name:</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="" title="PCRCompositionDefinitions (module)">PCRCompositionDefinitions</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="#COMPONENTS-constant" title="PCRCompositionDefinitions::COMPONENTS (constant)">COMPONENTS</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span>
