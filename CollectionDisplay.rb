@@ -13,7 +13,7 @@ module CollectionDisplay
   #
   # @param collection [Collection] the collection
   # @param check [Boolean] Optional weather cells should be Checkable
-  # @param &rc_block [Block] Optional block to determin rc_list
+  # @param &rc_block [Block] Optional block to determine rc_list
   # @return [Table]
   def highlight_non_empty(collection, check: true, &rc_block)
     highlight_collection_rc(collection, collection.get_non_empty,
@@ -24,7 +24,7 @@ module CollectionDisplay
   #
   # @param collection [Collection] the collection
   # @param check [Boolean] Optional weather cells should be Checkable
-  # @param &rc_block [Block] Optional block to determin rc_list
+  # @param &rc_block [Block] Optional block to determine rc_list
   # @return [Table]
   def highlight_empty(collection, check: true, &rc_block)
     highlight_collection_rc(collection, collection.get_empty,
@@ -35,7 +35,7 @@ module CollectionDisplay
   #
   # @param collection [Collection] the collection
   # @param check [Boolean] Optional weather cells should be Checkable
-  # @param &rc_block [Block] Optional block to determin rc_list
+  # @param &rc_block [Block] Optional block to determine rc_list
   # @return [Table]
   def highlight_alpha_non_empty(collection, check: true, &rc_block)
     highlight_alpha_rc(collection, collection.get_non_empty,
@@ -46,7 +46,7 @@ module CollectionDisplay
   #
   # @param collection [Collection] the collection
   # @param check [Boolean] Optional weather cells should be Checkable
-  # @param &rc_block [Block] Optional block to determin rc_list
+  # @param &rc_block [Block] Optional block to determine rc_list
   # @return [Table]
   def highlight_alpha_empty(collection, check: true, &rc_block)
     highlight_alpha_rc(collection, collection.get_empty,
@@ -79,7 +79,7 @@ module CollectionDisplay
   # @param rc_list [Array] array of rc [[row,col],...]
   #                       row = int
   #                       col = int
-  # @param check [Boolean] Optional wheather cells should be Checkable
+  # @param check [Boolean] Optional whether cells should be Checkable
   # @param &rc_block [Block] to determine rc list
   # @return [Table]
   def highlight_collection_rc(collection, rc_list, check: true, &_rc_block)
@@ -106,7 +106,7 @@ module CollectionDisplay
   # Makes an alpha numerical display of collection wells listed in rc_list
   #
   # @param collection [Collection] the collection
-  # @param rc_list [Array] Array of rows and colums [[row,col],...]
+  # @param rc_list [Array] Array of rows and columns [[row,col],...]
   # @param check [Boolean] Default True weather cells are checkable
   # @param &rc_block [Block] Optional tbd
   def highlight_alpha_rc(collection, rc_list, check: true, &_rc_block)
@@ -129,30 +129,6 @@ module CollectionDisplay
       highlight_cell(tbl, r, c, x, check: check)
     end
     tbl
-  end
-
-  # TODO: write highlight heat map method for table
-  # Creates table for the data associated with said key
-  #
-  # @param collection [Collection] the plate being used
-  # @param keys [Array<String>] an array of keys that the data is associated with.
-  # @return table of parts with data information
-  def display_data(collection, keys)
-    rcx_array = []
-    parts = collection.parts
-    parts.each do |part|
-      loc_array = collection.find(part)
-      loc_array.each do |loc|
-        data_string = ''
-        keys.each_with_index do |key, idx|
-          data_string += ', ' unless idx.zero?
-          data_string += get_associated_data(part, key).to_s
-        end
-        loc.push(data_string)
-        rcx_array.push(loc)
-      end
-    end
-    highlight_collection_rcx(collection, rcx_array, check: false)
   end
 
   # Creates a table with the same dimensions as the input collection

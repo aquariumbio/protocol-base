@@ -5,6 +5,31 @@ needs 'Standard Libs/AssociationManagement'
 module CollectionData
   include AssociationManagement
 
+  # TODO: write highlight heat map method for table
+  # Creates table for the data associated with said key
+  #
+  # @param collection [Collection] the plate being used
+  # @param keys [Array<String>] an array of keys that the data is
+  #        associated with.
+  # @return table of parts with data information
+  def display_data(collection, keys)
+    rcx_array = []
+    parts = collection.parts
+    parts.each do |part|
+      loc_array = collection.find(part)
+      loc_array.each do |loc|
+        data_string = ''
+        keys.each_with_index do |key, idx|
+          data_string += ', ' unless idx.zero?
+          data_string += get_associated_data(part, key).to_s
+        end
+        loc.push(data_string)
+        rcx_array.push(loc)
+      end
+    end
+    highlight_collection_rcx(collection, rcx_array, check: false)
+  end
+
   # Adds Key to data map with information about Items (parts) of a Collection
   # Creates Data Association for each Item using this Key
   #

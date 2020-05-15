@@ -7,6 +7,87 @@
 # These actions should involve the WHOLE plate not individual wells.
 # NOTE: The collection is doing the whole action
 module CollectionActions
+
+  # makes a new plate and provides instructions to label said plate
+  #
+  # @param c_type [String] the collection type
+  # @param label_plate [Boolean] whether to get and label plate or no default true
+  # @return working_plate [Collection]
+  def make_new_plate(c_type, label_plate: true)
+    working_plate = Collection.new_collection(c_type)
+    get_and_label_new_plate(working_plate) if label_plate # Is there a reason you wouldn't need to label the plate?
+    working_plate
+  end
+
+  # Makes the required number of collections and populates the collections with samples
+  # returns an array of of collections created
+  #
+  # @param samples [Array<FieldValue>] or [Array<Samples>]
+  # @param collection_type [String] the type of collection that is to be made and populated
+  # @param first_collection [Collection] optional the first collection to be filled
+  #       either collection_type or first_collection must be given
+  #
+  # @param add_column_wise [Boolean] default true.  Will add samples by column and not row
+  # @param label_plates [Boolean] default false, Mark as true if you want instructions to label plates to be shown
+  # @param first_collection [Collection] a starting collection to be completely filled first before moving on to
+  #         making new collections.
+  # @return [Array<Collection>] an array of the collections that are now populated
+  #
+  # TODO Probably needs to move from collection Transfer
+  def make_and_populate_collection(samples, collection_type: nil,
+                                   first_collection: nil,
+                                   add_column_wise: true,
+                                   label_plates: false
+                                   )
+    if collection_type.nil? && first_collection.nil?
+      ProtocolError 'Either collection_type or first_collection must be given'
+    end
+
+    unless collection_type.nil? || first_collection.nil?
+      ProtocolError 'Both collection_type and first_collection cannot be given'
+    end
+
+    if collection_type.nil?
+      capacity = first_collection.capacity
+      remaining_space = first_collection.get_empty.length
+      add_samples_to_collection(samples[0...remaining_space - 1], first_collection,
+                                label_plates: label_plates)
+      samples = samples.drop(remaining_space)
+    else #if first_collection.nil?
+      obj_type = ObjectType.find_by_name(collection_type)
+      capacity = obj_type.columns * obj_type.rows
+    end
+
+    collections = [first_collection]
+    grouped_samples = samples.in_groups_of(capacity, false)
+    grouped_samples.each do |sub_samples|
+      collection = make_new_plate(collection_type, label_plate: label_plates)
+      add_samples_to_collection(sub_samples, collection, 
+                                add_column_wise: add_column_wise)
+      collections.push(collection)
+    end
+    collections
+  end
+
+  # Assigns samples to specific well locations, they are added in order of the list
+  #
+  # @param samples [Array<FieldValue>] or [Array<Samples>]
+  # @param to_collection [Collection]
+  # @param add_row_wise [Boolean] default true will add samples by column and not row
+  # @raise if not enough space in collection
+  def add_samples_to_collection(samples, to_collection, add_column_wise: true)
+    samples.map! { |fv| fv = fv.sample } if samples.first.is_a? FieldValue
+    slots_left = to_collection.get_empty.length
+    raise 'Not enough space in in collection for all samples' if samples.length > slots_left
+
+    if add_column_wise
+      add_samples_column_wise(samples, to_collection)
+    else
+      to_collection.add_samples(samples)
+    end
+  end
+
+
   # Store all items used in input operations
   #
   # @param operations [OperationList] the list of operations
@@ -20,7 +101,7 @@ module CollectionActions
     # end
   end
 
-  # NOTE: Is there a reason these are seperate methods?
+  # NOTE: Is there a reason these are separate methods?
   # Stores all items used in output operations
   #
   # @param operations [OperationList] the operation list where all
@@ -137,15 +218,28 @@ module CollectionActions
     end
   end
 
-  # makes a new plate and provides instructions to label said plate
+  # Adds samples to the first slot in the first available column
+  # as opposed to column wise that the base version does.
   #
-  # @param c_type [String] the collection type
-  # @param label_plate [Boolean] whether to get and label plate or no default true
-  # @return working_plate [Collection]
-  def make_new_plate(c_type, label_plate: true)
-    working_plate = Collection.new_collection(c_type)
-    get_and_label_new_plate(working_plate) if label_plate # Is there a reason you wouldn't need to label the plate?
-    working_plate
+  # @param samples_to_add [Array<Samples>] an array of samples
+  # @param collection [Collection] the collection to include samples
+  def add_samples_column_wise(samples_to_add, collection)
+    col_matrix = collection.matrix
+    columns = col_matrix.first.size
+    rows = col_matrix.size
+    samples_to_add.each do |sample|
+      break_pattern = false
+      columns.times do |col|
+        rows.times do |row|
+          if collection.part(row, col).nil?
+            collection.set(row, col, sample)
+            break_pattern = true
+            break
+          end
+        end
+        break if break_pattern
+      end
+    end
   end
 
   # Instructions on getting and labeling new plate
