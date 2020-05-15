@@ -5,17 +5,35 @@ This set of libraries can be used to model reaction compositions and thermocycle
 Reaction compositions are modeled by `class PCRComposition`, which includes descriptions of the composition like this one:
 
 ```ruby
-"qPCR1" => {
-  polymerase:     {input_name: POLYMERASE,        qty: 16,    units: MICROLITERS,
-                   sample_name: "Kapa HF Master Mix", 
-                   object_name: "Enzyme Stock"},
-  forward_primer: {input_name: FORWARD_PRIMER,    qty: 0.16,  units: MICROLITERS},
-  reverse_primer: {input_name: REVERSE_PRIMER,    qty: 0.16,  units: MICROLITERS},
-  dye:            {input_name: DYE,               qty: 1.6,   units: MICROLITERS,
-                   sample_name: "Eva Green",
-                   object_name: "Screw Cap Tube"},
-  water:          {input_name: WATER,             qty: 6.58,  units: MICROLITERS},
-  template:       {input_name: TEMPLATE,          qty: 7.5,   units: MICROLITERS}
+'qPCR1' => {
+  polymerase: {
+    input_name: POLYMERASE,
+    qty: 16, units: MICROLITERS,
+    sample_name: 'Kapa HF Master Mix',
+    object_name: 'Enzyme Stock'
+  },
+  forward_primer: {
+    input_name: FORWARD_PRIMER,
+    qty: 0.16,  units: MICROLITERS
+  },
+  reverse_primer: {
+    input_name: REVERSE_PRIMER,
+    qty: 0.16,  units: MICROLITERS
+  },
+  dye: {
+    input_name: DYE,
+    qty: 1.6, units: MICROLITERS,
+    sample_name: 'Eva Green',
+    object_name: 'Screw Cap Tube'
+  },
+  water: {
+    input_name: WATER,
+    qty: 6.58, units: MICROLITERS
+  },
+  template: {
+    input_name: TEMPLATE,
+    qty: 7.5, units: MICROLITERS
+  }
 }
 ```
 
@@ -32,15 +50,32 @@ Individual components are modeled by the `ReactionComponent` class, created duri
 Reaction programs are modeled by `class PCRProgram`, which includes descriptions of the program like this one:
 
 ```ruby
-"qPCR1" => {
-  program_template_name: "NGS_qPCR1", volume: 32, layout_template_name: "NGS_qPCR1",
+'qPCR1' => {
+  program_template_name: 'NGS_qPCR1',
+  layout_template_name: 'NGS_qPCR1',
+  volume: 32,
   steps: {
-    step1: {temperature: {qty: 95, units: DEGREES_C}, duration: {qty:  3, units: MINUTES}},
-    step2: {temperature: {qty: 98, units: DEGREES_C}, duration: {qty: 15, units: SECONDS}},
-    step3: {temperature: {qty: 62, units: DEGREES_C}, duration: {qty: 30, units: SECONDS}},
-    step4: {temperature: {qty: 72, units: DEGREES_C}, duration: {qty: 30, units: SECONDS}},
-    step5: {goto: 2, times: 34},
-    step6: {temperature: {qty: 12, units: DEGREES_C}, duration: {qty: "forever", units: ""}}
+    step1: {
+      temperature: { qty: 95, units: DEGREES_C },
+      duration: { qty: 3, units: MINUTES }
+    },
+    step2: {
+      temperature: { qty: 98, units: DEGREES_C },
+      duration: { qty: 15, units: SECONDS }
+    },
+    step3: {
+      temperature: { qty: 62, units: DEGREES_C },
+      duration: { qty: 30, units: SECONDS }
+    },
+    step4: {
+      temperature: { qty: 72, units: DEGREES_C },
+      duration: { qty: 30, units: SECONDS }
+    },
+    step5: { goto: 2, times: 34 },
+    step6: {
+      temperature: { qty: 12, units: DEGREES_C },
+      duration: { qty: 'forever', units: '' }
+    }
   }
 }
 ```
