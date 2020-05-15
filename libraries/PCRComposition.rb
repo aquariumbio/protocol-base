@@ -1,4 +1,6 @@
-needs "PCR Libs/PCRCompositionDefinitions"
+# frozen_string_literal: true
+
+needs 'PCR Libs/PCRCompositionDefinitions'
 
 # Factory class for instantiating `PCRComposition`
 # @author Devin Strickland <strcklnd@uw.edu>
@@ -7,17 +9,21 @@ class PCRCompositionFactory
   # Either `component_data` or `program_name` must be passed
   #
   # @param component_data [Hash] a hash enumerating the components
-  # @param program_name [String] the name of one of the default component hashes
+  # @param program_name [String] the name of one of the default
+  #   component hashes
   # @return [PCRComposition]
   def self.build(component_data: nil, program_name: nil)
-    PCRComposition.new(component_data: component_data, program_name: program_name)
+    PCRComposition.new(
+      component_data: component_data,
+      program_name: program_name
+    )
   end
 end
 
 # Models the composition of a polymerase chain reaction
 # @author Devin Strickland <strcklnd@uw.edu>
-# @note As much as possible, Protocols using this class should draw input names 
-#   from `CommonInputOutputNames`
+# @note As much as possible, Protocols using this class should draw
+#   input names from `CommonInputOutputNames`
 class PCRComposition
   include PCRCompositionDefinitions
 
@@ -27,19 +33,20 @@ class PCRComposition
   # Either `component_data` or `program_name` must be passed
   #
   # @param component_data [Hash] a hash enumerating the components
-  # @param program_name [String] the name of one of the default component hashes
+  # @param program_name [String] the name of one of the default
+  #   component hashes
   # @return [PCRComposition]
   def initialize(component_data: nil, program_name: nil)
     if component_data.blank? && program_name.blank?
-      msg = "Unable to initialize PCRComposition." \
-        " Either `component_data` or `program_name` is required."
-      raise ProtocolError.new(msg)
+      msg = 'Unable to initialize PCRComposition.' \
+        ' Either `component_data` or `program_name` is required.'
+      raise ProtocolError, msg
     elsif program_name.present?
       component_data = get_composition_def(name: program_name)
     end
 
     @components = []
-    component_data.each { |k, c| components.append(ReactionComponent.new(c)) }
+    component_data.each { |_, c| components.append(ReactionComponent.new(c)) }
   end
 
   # Specifications for the dye component
@@ -108,20 +115,20 @@ class PCRComposition
   # @param round [Fixnum] the number of decimal places to round to
   # @return [Float]
   def sum_components(round = 1)
-    components.map { |c| c.qty }.reduce(:+).round(round)
+    components.map(&:qty).reduce(:+).round(round)
   end
 
   # The total volume of all components that have been added
   # @param (see #sum_components)
   # @return (see #sum_components)
   def sum_added_components(round = 1)
-    added_components.map { |c| c.qty }.reduce(:+).round(round)
+    added_components.map(&:qty).reduce(:+).round(round)
   end
 
   # Gets the components that have been added
   # @return [Array<ReactionComponent>]
   def added_components
-    components.select { |c| c.added? }
+    components.select(&:added?)
   end
 end
 
@@ -136,21 +143,20 @@ class ReactionComponent
   # Instantiates the class
   #
   # @param input_name [String] the name of the component
-  # @param qty [Numeric] the quantity of this component to be added to a single reaction
+  # @param qty [Numeric] the quantity of this component to be added to
+  #   a single reaction
   # @param units [String] the units of `qty`
-  # @param sample_name [String] the name of the Aquarium Sample to be used for this component
-  # @param object_name [String] the ObjectType (Container) that this component should be found in
+  # @param sample_name [String] the name of the Aquarium Sample to be
+  #   used for this component
+  # @param object_name [String] the ObjectType (Container) that this
+  #   component should be found in
   def initialize(input_name:, qty:, units:, sample_name: nil, object_name: nil)
     @input_name = input_name
     @qty = qty
     @units = units
     @sample = sample_name ? Sample.find_by_name(sample_name) : nil
 
-    if sample && object_name
-      @item = sample.in(object_name).first
-    else
-      @item = nil
-    end
+    @item = (sample.in(object_name).first if sample && object_name)
 
     @added = false
   end
@@ -168,11 +174,13 @@ class ReactionComponent
     Units.qty_display({ qty: qty.round(round), units: units })
   end
 
-  # Adjusts the qty by a given factor and, if needed, makes it checkable in a table
+  # Adjusts the qty by a given factor and, if needed, makes it checkable
+  #   in a table
   #
   # @param mult [Float] the factor to multiply `qty` by
   # @param round [FixNum] the number of places to round the result to
-  # @param checkable [Boolean] whether to make the result checkable in a table
+  # @param checkable [Boolean] whether to make the result checkable
+  #   in a table
   # @return [Numeric, Hash]
   def adjusted_qty(mult = 1.0, round = 1, checkable = true)
     adj_qty = (qty * mult).round(round)
