@@ -1,4 +1,6 @@
-needs "PCR Libs/PCRProgramDefinitions"
+# frozen_string_literal: true
+
+needs 'PCR Libs/PCRProgramDefinitions'
 
 # Factory class for instantiating `PCRProgram`
 # @author Devin Strickland <strcklnd@uw.edu>
@@ -16,7 +18,6 @@ end
 # Models a thermocycler program
 # @author Devin Strickland <strcklnd@uw.edu>
 class PCRProgram
-
   include PCRProgramDefinitions
 
   attr_reader :program_name, :program_template_name, :layout_template_name
@@ -53,9 +54,9 @@ class PCRProgram
   #
   # @return [Array<Array>]
   def table
-    table = []
+    table = [%w[Step Temperature Duration]]
     steps.each do |k, v|
-      row = ["#{k}"] + v.display
+      row = [k.to_s] + v.display
       table.append(row)
     end
     table
@@ -63,10 +64,13 @@ class PCRProgram
 
   # TODO: This needs to be responsive to the actual program parameters
   def final_step
-    "the final step"
+    'the final step'
   end
 end
 
+# Models a step of a PCRProgram
+# Really a factory class that retruns a concrete Step class
+# @author Devin Strickland <strcklnd@uw.edu>
 class PCRStep
   def self.create_from(temperature: nil, duration: nil, goto: nil, times: nil)
     if temperature && duration
@@ -74,15 +78,17 @@ class PCRStep
     elsif goto && times
       GotoStep.new(destination: goto, times: times)
     else
-      raise ProtocolError.new("Expected either an incubation or goto step")
+      raise ProtocolError, 'Expected either an incubation or goto step'
     end
   end
 end
 
-class IncubationStep 
+# Models an incubation step
+# @author Devin Strickland <strcklnd@uw.edu>
+class IncubationStep
   attr_reader :temperature, :duration
 
-  def initialize(temperature: , duration:)
+  def initialize(temperature:, duration:)
     @temperature = temperature
     @duration = duration
   end
@@ -98,9 +104,10 @@ class IncubationStep
   def duration_display
     Units.qty_display(duration)
   end
-  
 end
 
+# Models a goto step
+# @author Devin Strickland <strcklnd@uw.edu>
 class GotoStep
   attr_reader :destination, :times
 
