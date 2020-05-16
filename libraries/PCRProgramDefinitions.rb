@@ -7,8 +7,6 @@ needs 'Standard Libs/Units'
 module PCRProgramDefinitions
   include Units
 
-  private_constant :PROGRAMS
-
   PROGRAMS = {
     'qPCR1' => {
       program_template_name: 'NGS_qPCR1',
@@ -242,11 +240,13 @@ module PCRProgramDefinitions
     }
   }.freeze
 
+  private_constant :PROGRAMS
+
   # Gets the Hash that defines the program for the given name
   #
   # @param name [String]
   # @return [Hash]
   def get_program_def(name:)
-    PCRProgramDefinitions::PROGRAMS[name]
+    PROGRAMS[name]
   end
 end
