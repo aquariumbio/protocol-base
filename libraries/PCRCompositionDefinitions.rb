@@ -9,8 +9,6 @@ module PCRCompositionDefinitions
   include Units
   include CommonInputOutputNames
 
-  private_constant :COMPONENTS
-
   POLYMERASE = 'Polymerase'
   DYE = 'Dye'
   WATER = 'Molecular Grade Water'
@@ -239,11 +237,13 @@ module PCRCompositionDefinitions
     }
   }.freeze
 
+  private_constant :COMPONENTS
+
   # Gets the Hash that defines the compostion for the given name
   #
   # @param name [String]
   # @return [Hash]
   def get_composition_def(name:)
-    PCRCompositionDefinitions::COMPONENTS[name]
+    COMPONENTS[name]
   end
 end
