@@ -7,7 +7,7 @@
 
 needs 'Standard Libs/Units'
 needs 'Standard Libs/Debug'
-needs 'Standard Libs/AssociationManagement'
+needs 'Standard Libs/AssociationManagewment'
 needs 'Collection_Management/CollectionLocation'
 needs 'Collection_Management/CollectionData'
 
@@ -77,7 +77,7 @@ module CollectionTransfer
   # @param to_collection [Collection] (Should have samples already associated to it)
   # @param transfer_vol [Int] volume in sample to transfer
   def transfer_subsamples_to_working_plate(fv_array, to_collection: nil, collection_type: nil, transfer_vol: nil,
-                                                     instructions: nil)
+                                                     instructions: true, add_column_wise: false)
     # was transfer_to_collection_from_fv_array
     part_grouping = fv_array.group_by{|fv| fv.part?}
     collections = []
@@ -86,38 +86,72 @@ module CollectionTransfer
         collections += transfer_collection_to_collection(fv_array, to_collection: to_collection,
                                                 collection_type: collection_type,
                                                 transfer_vol: transfer_vol,
-                                                instructions: instructions)
+                                                instructions: instructions,
+                                                add_column_wise: add_column_wise)
       else
         collections += transfer_items_to_collection(fv_array, to_collection: to_collection,
                                                collection_type: collection_type,
                                                transfer_vol: transfer_vol,
-                                               instructions: instructions)
+                                               instructions: instructions,
+                                               add_column_wise: add_column_wise)
       end
     end
     collections.uniq{|col| col.id}
   end
 
+  
 
-  # Handles grouping and transfer of a subset of samples in multiple collections
-  # into a collection/subset of collections.
-  # Will automatically populate the collection
+  # Handles transfers of samples from one collection to another collection
   #
-  # @param fv_array Array<FieldValues>] an array of field values of collections
-  # @param to_collection [Collection] (Should have samples already associated to it)
-  # @param transfer_vol [String/Int] volume in sample to transfer
-  # @param instructions [Boolean] true if instructions are to be shown
-  def transfer_collection_to_collection(fv_array, to_collection: nil, collection_type: nil, transfer_vol: nil,
-                                              instructions: nil, association_map: nil)
-    sample_array_by_collection = fv_array.group_by { |fv| fv.collection }
-    sample_array_by_collection.each do |from_collection, fv_array|
-      sample_array = fv_array.map { |fv| fv.sample }
-      transfer_from_collection_to_collection(from_collection, to_collection: to_collection,
-                                                              collection_type: collection_type,
-                                                              transfer_vol: transfer_vol,
-                                                              array_of_samples: sample_array,
-                                                              instructions: instructions)
+  # If an 'association_map' is given 'to_collection' must also be given
+  #    it will assume that the plate is already plated.
+  #    'array_of_samples', 'one_to_one', and 'populate_collection' will be ignored
+  #
+  # If array_of_samples is not given then it will be assumed that all samples are to be
+  #     transferred.
+  # 
+  #
+  # @param input_collection [Collection] the collection samples come from
+  # @param to_collection[Collection] the collection samples will move to
+  # @param transfer_vol [String] volume of sample to transfer (INCLUDE UNITS)
+  # @param populate_collection [Boolean] true if the to_collection needs to be
+  #        populated false if the to_collection has already been populated.
+  # @param array_of_samples [Array<Sample>] Optional
+  # @param instructions [Boolean] default true to include instructions
+  # @param association_map [Array<{to_loc: [row, col], from_loc: [row, col]}, ...>]
+  #        a map showing the associations from one collection to another.
+  def transfer_from_collection_to_collection(from_collection, 
+                                             to_collection: nil,
+                                             collection_type: nil,
+                                             transfer_vol: nil,
+                                             populate_collection: true,
+                                             array_of_samples: nil,
+                                             instructions: true,
+                                             one_to_one: false,
+                                             association_map: nil,
+                                             column_wise: false)
+
+    collections, association_map = determine_collections_and_association_map(from_collection, 
+                                                                to_collection: to_collection,
+                                                                collection_type: collection_type,
+                                                                populate_collection: populate_collection,
+                                                                array_of_samples: array_of_samples,
+                                                                instructions: instructions,
+                                                                one_to_one: one_to_one,
+                                                                association_map: association_map,
+                                                                column_wise: column_wise)
+
+    collections.each do |collection|
+      associate_plate_to_plate(to_collection: collection, from_collection: from_collection,
+                              association_map: association_map, transfer_vol: transfer_vol)
+      if instructions
+        collection_to_collection_transfer_instructions(to_collection: collection, from_collection: from_collection,
+                                       association_map: association_map, transfer_vol: transfer_vol)
+      end
     end
+    collections
   end
+
 
 
   # (Verified)
@@ -137,13 +171,15 @@ module CollectionTransfer
                                              collection_type: nil,
                                              transfer_vol: nil,
                                              instructions: true,
-                                             association_map: nil)
+                                             association_map: nil,
+                                             add_column_wise: false)
     sample_array = fv_array.map{ |fv| fv.sample }
 
     if association_map.nil?
       collections = make_and_populate_collection(sample_array, first_collection: to_collection,
                                                         collection_type: collection_type,
-                                                        label_plates: instructions)
+                                                        label_plates: instructions,
+                                                        add_column_wise: add_column_wise)
       association_map = make_item_to_collection_association_map(fv_array, collection: to_collection)
     end
 
@@ -196,7 +232,8 @@ module CollectionTransfer
     transfer_from_collection_to_collection(from_collection, 
                                            to_collection: to_collection,
                                            instructions: false,
-                                           one_to_one: true)
+                                           one_to_one: true,
+                                           add_column_wise: false)
     show do
       title 'Rename Plate'
       note "Relabel plate <b>#{from_collection.id}</b> with <b>#{to_collection.id}</b>"
@@ -204,55 +241,6 @@ module CollectionTransfer
     from_collection.mark_as_deleted
     from_collection.save
     to_collection
-  end
-
-  # Handles transfers of samples from one collection to another collection
-  #
-  # If an 'association_map' is given 'to_collection' must also be given
-  #    it will assume that the plate is already plated.
-  #    'array_of_samples', 'one_to_one', and 'populate_collection' will be ignored
-  #
-  # If array_of_samples is not given then it will be assumed that all samples are to be
-  #     transferred.
-  # 
-  #
-  # @param input_collection [Collection] the collection samples come from
-  # @param to_collection[Collection] the collection samples will move to
-  # @param transfer_vol [String] volume of sample to transfer (INCLUDE UNITS)
-  # @param populate_collection [Boolean] true if the to_collection needs to be
-  #        populated false if the to_collection has already been populated.
-  # @param array_of_samples [Array<Sample>] Optional
-  # @param instructions [Boolean] default true to include instructions
-  # @param association_map [Array<{to_loc: [row, col], from_loc: [row, col]}, ...>]
-  #        a map showing the associations from one collection to another.
-  def transfer_from_collection_to_collection(from_collection, 
-                                             to_collection: nil,
-                                             collection_type: nil,
-                                             transfer_vol: nil,
-                                             populate_collection: true,
-                                             array_of_samples: nil,
-                                             instructions: true,
-                                             one_to_one: false,
-                                             association_map: nil)
-
-    collections, association_map = determine_collections_and_association_map(from_collection, 
-                                                                to_collection: to_collection,
-                                                                collection_type: collection_type,
-                                                                populate_collection: populate_collection,
-                                                                array_of_samples: array_of_samples,
-                                                                instructions: instructions,
-                                                                one_to_one: one_to_one,
-                                                                association_map: association_map)
-
-    collections.each do |collection|
-      associate_plate_to_plate(to_collection: collection, from_collection: from_collection,
-                              association_map: association_map, transfer_vol: transfer_vol)
-      if instructions
-        collection_to_collection_transfer_instructions(to_collection: collection, from_collection: from_collection,
-                                       association_map: association_map, transfer_vol: transfer_vol)
-      end
-    end
-    collections
   end
 
 
@@ -265,18 +253,21 @@ module CollectionTransfer
                                                 array_of_samples: nil,
                                                 instructions: true,
                                                 one_to_one: false,
-                                                association_map: nil)
+                                                association_map: nil,
+                                                add_column_wise: false)
     unless association_map.nil?
       ProtocolError "to_collection not given" if to_collection.nil?
       collections = [to_collection]
     elsif one_to_one
       ProtocolError 'array_of_samples cannot ge given if one_to_one' unless array_of_samples.nil?
       if populate_collection || to_collection.nil?
+        # TODO this may not work as expected....  need to think about this
         array_of_samples = from_collection.parts.map { |part| part.sample
                                                     if part.class != 'Sample' }
         collections = make_and_populate_collection(samples, first_collection: to_collection,
                                                             collection_type: collection_type,
-                                                            label_plate: instructions)
+                                                            label_plate: instructions,
+                                                            add_column_wise: false)
       else
         collections = [to_collection]
       end
@@ -303,6 +294,25 @@ module CollectionTransfer
                                                           one_to_one: one_to_one)
     end
     [collections, association_map]
+  end
+
+  # @warning Use transfer_subsamples_to_working_plate instead
+  #
+  # @param fv_array Array<FieldValues>] an array of field values of collections
+  # @param to_collection [Collection] (Should have samples already associated to it)
+  # @param transfer_vol [String/Int] volume in sample to transfer
+  # @param instructions [Boolean] true if instructions are to be shown
+  def transfer_collection_to_collection(fv_array, to_collection: nil, collection_type: nil, transfer_vol: nil,
+                                              instructions: nil)
+    sample_array_by_collection = fv_array.group_by { |fv| fv.collection }
+    sample_array_by_collection.each do |from_collection, fv_array|
+      sample_array = fv_array.map { |fv| fv.sample }
+      transfer_from_collection_to_collection(from_collection, to_collection: to_collection,
+                                                              collection_type: collection_type,
+                                                              transfer_vol: transfer_vol,
+                                                              array_of_samples: sample_array,
+                                                              instructions: instructions)
+    end
   end
 end
 

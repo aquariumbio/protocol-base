@@ -1,31 +1,61 @@
-# for managing data associations of collections
-# and ensuring that samples/item data is handled correctly
 needs 'Standard Libs/AssociationManagement'
 
+# for managing data associations of collections
+# and ensuring that samples/item data is handled correctly
 module CollectionData
   include AssociationManagement
 
-  # TODO: write highlight heat map method for table
+  # Is this being used?
+  # Associates data to every part in a plate
+  #
+  # @param plate [Collection] the collection
+  # @param data [Anything] the data to be associated
+  def associate_to_all(plate:, data:, key:)
+    data_map = []
+    parts.each do |part|
+      loc = plate.find(part)
+      loc[2] = data
+      loc[3] = key
+      data_map.push(loc)
+    end
+    associate_value_key_to_parts(plate: plate, data_map: data_map)
+  end
+
   # Creates table for the data associated with said key
+  # Will each data points (that exists) for each key in each well
   #
   # @param collection [Collection] the plate being used
   # @param keys [Array<String>] an array of keys that the data is
   #        associated with.
   # @return table of parts with data information
-  def display_data(collection, keys)
-    rcx_array = []
+
+  def display_all_data(collection, keys)
+    rc_list = []
     parts = collection.parts
     parts.each do |part|
-      loc_array = collection.find(part)
-      loc_array.each do |loc|
-        data_string = ''
-        keys.each_with_index do |key, idx|
-          data_string += ', ' unless idx.zero?
-          data_string += get_associated_data(part, key).to_s
-        end
-        loc.push(data_string)
-        rcx_array.push(loc)
+      rc_list += collection.find(part)
+    end
+    display_data(collection, rc_list, keys)
+  end
+
+  # TODO: write highlight heat map method for table
+  # Creates table illustrating data associated with keys
+  #  for each part noted in rc_list
+  #
+  # @param collection [Collection] the collection
+  # @param rc_list [Array<Array<row, col>...>] array of location of desired wells
+  # @param keys [Array<String>] an array of all keys that point to desired data
+  # @return table of parts with data information
+  def display_data(collection, rc_list, keys)
+    rcx_array = []
+    rc_list.each do |loc|
+      data_string = ''
+      keys.each_with_index do |key, idx|
+        data_string += ', ' unless idx.zero?
+        data_string += get_associated_data(part, key).to_s
       end
+      loc.push(data_string)
+      rcx_array.push(loc)
     end
     highlight_collection_rcx(collection, rcx_array, check: false)
   end
@@ -57,22 +87,6 @@ module CollectionData
       key = key_value_map[3]
       associate_data(part, key.to_sym, data_value) unless part.nil?
     end
-  end
-
-  # Is this being used?
-  # Associates data to every part in a plate
-  #
-  # @param plate [Collection] the collection
-  # @param data [Anything] the data to be associated
-  def associate_to_all(plate:, data:, key:)
-    data_map = []
-    parts.each do |part|
-      loc = plate.find(part)
-      loc[2] = data
-      loc[3] = key
-      data_map.push(loc)
-    end
-    associate_value_key_to_parts(plate: plate, data_map: data_map)
   end
 
   # Adds provenance history to to_object from from_object

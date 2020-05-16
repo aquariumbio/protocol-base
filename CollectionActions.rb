@@ -167,7 +167,7 @@ module CollectionActions
 
   # Instructions for tech on how and where to store materials
   #
-  # @deprecated wrapper for meterial_storage_locations_table
+  # @deprecated wrapper for material_storage_locations_table
   def store_collection_materials(operations, location: nil, role: nil, all_items: false)
     material_storage_locations_table(operations, role: role, location: location, all_items: all_items)
   end
