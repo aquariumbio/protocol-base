@@ -3,11 +3,9 @@
 #
 # Methods for transferring items into and out of collections
 
-# TODO Make 'mix in' methods
-
 needs 'Standard Libs/Units'
 needs 'Standard Libs/Debug'
-needs 'Standard Libs/AssociationManagewment'
+needs 'Standard Libs/AssociationManagement'
 needs 'Collection_Management/CollectionLocation'
 needs 'Collection_Management/CollectionData'
 

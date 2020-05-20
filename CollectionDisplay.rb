@@ -119,7 +119,7 @@ module CollectionDisplay
   # Makes an alpha numerical display of collection wells listed in rcx_list
   #
   # @param collection [Collection] the collection
-  # @param rc_list [Array] Array of rows and colums [[row,col,x],...]
+  # @param rc_list [Array] Array of rows and columns [[row,col,x],...]
   #         row,column are int, x is string
   # @param check [Boolean] Default True weather cells are checkable
   # @param &rc_block [Block] Optional tbd
