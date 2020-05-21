@@ -164,6 +164,7 @@ module CollectionTransfer
   # @param transfer_volume [Float] the volume that is to be transferred
   # @param instructions [Boolean] true if instructions are to be displayed
   #
+
   # @param association_map [Array<{to_loc: [row, col], from_loc: item},...>]
   #        if a map is given then the plate is assumed to be populated already
   #
@@ -201,6 +202,7 @@ module CollectionTransfer
                                                     transfer_vol: transfer_vol)
       next unless instructions
 
+
       item_to_collection_transfer_instructions(to_collection: collection,
                                                association_map: map,
                                                transfer_vol: transfer_vol)
@@ -211,6 +213,7 @@ module CollectionTransfer
   # Assist with the transfer from a collection to an item.
   # An association map must first be created
   #
+
   # @param from_collection [Collection] the collection that is being transferred
   # @param association_map [Array<{to_loc: item, from_loc: [row, col]}, ...>]
   # @param transfer_vol [String/Int] the volume being transferred
@@ -279,6 +282,7 @@ module CollectionTransfer
         raise 'array_of_samples cannot ge given if one_to_one'
       end
 
+
       if populate_collection || to_collection.nil?
         # TODO this may not work as expected....  need to think about this
         array_of_samples = get_samples_from_obj(from_collection.parts)
@@ -301,6 +305,7 @@ module CollectionTransfer
       if array_of_samples.nil?
         array_of_samples = get_samples_from_obj(from_collection.parts)
       end
+
 
       array_of_samples.map! do |object| 
         if object.is_a? Sample
@@ -367,6 +372,7 @@ module CollectionTransfer
 
   # Transfer instructions for tech
   #
+
   # @param to_collection [Collection] the to collection
   # @param from_collection [Collection] the from collection
   # @param association_map [Array<{to_loc: loc, from_loc: loc}, ...>] optional
@@ -381,6 +387,7 @@ module CollectionTransfer
     else
         amount_to_transfer = {transfer_vol}.to_s
     end
+
 
     if association_map.nil?
       association_map = one_to_one_association_map(to_collection: to_collection,
@@ -435,6 +442,7 @@ module CollectionTransfer
       association_map.each do |map|
         to_location = map[:to_loc]
         convert_location_to_coordinates(to_location) if to_location.is_a? String
+
 
         from_item = map[:from_loc]
         from_item = Item.find(from_item) unless from_item.is_a? Item
@@ -495,6 +503,7 @@ module CollectionTransfer
         rcx_list.push([from_location[0], from_location[1], to_item.id])
       end
 
+
       show do
         title "Get items for transfer"
         note 'Please get the following items'
@@ -537,6 +546,7 @@ module CollectionTransfer
       end
       association_map
     end
+
 
     # Tracks provenance and adds transfer vol association
     # for item to well transfers

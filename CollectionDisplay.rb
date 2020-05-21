@@ -132,7 +132,7 @@ module CollectionDisplay
     end
     tbl
   end
-
+  
   # Creates a table with the same dimensions as the input collection
   #
   # @param collection [Collection] the collection to be represented by the table
@@ -260,6 +260,7 @@ module CollectionDisplay
     tables
   end
 
+  
   # TODO: write highlight heat map method for table
   # Creates table illustrating data associated with keys
   #  for each part noted in rc_list
@@ -281,6 +282,8 @@ module CollectionDisplay
           data_string += ', ' unless idx.zero?
           data_string += data
         end
+        loc.push(data_string)
+        rcx_array.push(loc)
       end
       loc.push(data_string)
       rcx_array.push(loc)
