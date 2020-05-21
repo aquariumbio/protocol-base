@@ -11,29 +11,24 @@ module CollectionLocation
   #
   # @param collection [Collection] the collection containing the sample
   # @param sample [Sample] the Sample that you want to locate
-  # @return [String] the Alpha Numeric location(s) e.g. A1, A2
-  def get_alpha_num_location(collection, obj_to_find)
-    unless obj-to_find.is_a? Array
-      array_of_objs = [obj_to_find] 
-    else
-      array_of_objs = obj_to_find
-    end
+  # @return [Hash{sample: location}] the Alpha Numeric location(s) e.g. A1, A2
+  def get_alpha_num_location(collection, items)
+    items = [items] unless items.is_a?(Array)
 
-    hash_of_samples = Hash.new
-    array_of_objs.each do |sample|
-      coordinates = get_obj_location(collection, sample)
+    hash_of_samples = {}
+    items.each do |sample|
+      coordinates = collection.find(sample)
       alpha_num_locations = []
       coordinates.each do |coordinate_set|
         alpha_num_locations << convert_coordinates_to_location(coordinate_set)
       end
-      locations.join(',') # removes the ["A1"] the brackets and parentheses
-      return locations unless obj_to_find.is_a? Array
+      locations.join(',')
       hash_of_samples[sample] = locations
     end
     hash_of_samples
   end
 
-  # converts an array containing row and column coordinates to alphanumeric locations
+  # Converts an array of coordinates to alpha numerical locations
   #
   # @param coordinates [Array<row,column>] set of coordinates
   # @return [String] alpha numerical location
@@ -47,55 +42,36 @@ module CollectionLocation
   # @return [Array<r,c>] array of row and column
   def convert_location_to_coordinates(alpha)
     alpha_characters = ''
-    alpha.length.times |idx|
-      char = alpha(idx, idx+1) 
-      alpha_characters += alpha(idx, idx+1) unless char.is_an_integer?
+    alpha.length.times do |idx|
+      char = alpha[idx, idx+1]
+      alpha_characters += char unless float(char).nil?
     end
-    inspect alpha_characters #TODO remove this once confirmed to work
     row = ALPHA26.find_index(alpha_characters)
     column = alpha[1..-1].to_i - 1
     [row, column]
   end
 
-
-  # @depreciated wrapper for old uses
-  def get_item_sample_location(collection, obj_to_find)
-    get_obj_location(collection, obj_to_find)
-  end
-
-  # Finds the location coordinates of an Item or Sample
+  # Finds the location coordinates of an multiple items/samples
   #
   # @param collection [Collection] the Collection containing the Item or Sample
-  # @param obj_to_find [Item, Part, Sample] Item, Part, or Sample to be found or array of such
-  # @return [Array] Array of item, part, or sample locations in form [[r1,c1],[r2,c1]]
-  def get_obj_location(collection, obj_to_find)
-    if obj_to_find.is_a? Array
-      hash_of_locations = Hash.new
-      obj_to_find.each do |part|
-        hash_of_locations[part] = collection.find(obj_to_find)
-      end
-      return hash_of_locations
-    else
-      return collection.find(obj_to_find)
+  # @param items [Array<objects>] Item, Part, or Sample to be found
+  # @return [Hash{sample: [row, column]}] 
+  def get_items_coordinates(collection, items)
+    hash_of_locations = {}
+    items.each do |item|
+      hash_of_locations[item] = collection.find(item)
     end
+    hash_of_locations
   end
 
   # Finds a part from an alpha numerical string location(e.g. A1, B1)
+  #  TODO Move to krill
   #
   # @param collection [Collection] the collection that contains the part
-  # @param location [String] the location of the part within the collection (A1, B3, C7)
+  # @param location [String] the location of the part within the collection
   # @return part [Item] the item at the given location
-  def locate_part(collection, location)
+  def get_part(collection, location)
     row, column = convert_location_to_coordinates(location)
-    dimensions = collection.dimensions
-    raise 'Location outside collection dimensions' if row > dimensions[0] || column > dimensions[1]
-
     collection.part(row, column)
   end
-
-  # @deprecated Wrapper to New Method
-  def part_alpha_num(collection, alpha)
-    locate_part(collection, alpha)
-  end
-  
 end

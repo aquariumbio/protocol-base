@@ -89,8 +89,8 @@ module CollectionDisplay
     highlight_collection_rcx(collection, rcx_list, check: check)
   end
 
-  # Highlights all cells in ROW/COLUMN/X (CHANGED NAME)
-  # X can be any string that is to be displayed in cell
+  # Highlights all cells in ROW/COLUMN/X
+  #
   #
   # @param collection [Collection] the collection
   # @param rcx_list [Array] array of [[row, colum, x],...]
@@ -99,7 +99,8 @@ module CollectionDisplay
   #     x = string
   # @return [Table]
   def highlight_collection_rcx(collection, rcx_list, check: true)
-    table = create_collection_table(collection)
+    rows, columns = collection.dimensions
+    table = create_collection_table(rows: rows, columns: columns)
     highlight_rcx(table, rcx_list, check: check)
   end
 
@@ -124,7 +125,8 @@ module CollectionDisplay
   # @param check [Boolean] Default True weather cells are checkable
   # @param &rc_block [Block] Optional tbd
   def highlight_alpha_rcx(collection, rcx_list, check: true)
-    tbl = create_alpha_numeric_table(collection)
+    rows, columns = collection.dimensions
+    tbl = create_collection_table(rows: rows, columns: columns)
     rcx_list.each do |r, c, x|
       highlight_cell(tbl, r, c, x, check: check)
     end
@@ -136,9 +138,7 @@ module CollectionDisplay
   # @param collection [Collection] the collection to be represented by the table
   # @param add_headers [Boolean] optional True
   # @return tab [Table] a table to be displayed
-  def create_collection_table(collection)
-    rows = collection.object_type.rows
-    columns = collection.object_type.columns
+  def create_collection_table(rows:, columns:)
     size = rows * columns
     slots = (1..size + rows + columns + 1).to_a
     tab = slots.each_slice(collection.object_type.columns + 1).map do |row|
@@ -168,21 +168,15 @@ module CollectionDisplay
   #
   # @param num [Integer] the integer to be converted
   def get_alpha(num)
-    alpha = ('A'...'AA').to_a
-    number_parts = []
-    iterations = 0
-    until (num / 26).zero? || num == 26 || iterations == 20
-      div_parts = num.divmod(26)
-      number_parts.push(div_parts[1])
-      num = div_parts[0]
-      iterations += 1
+    return '' if num < 1
+
+    string = ''
+    loop do
+      num, r = (num-1).divmod(26)
+      s.prepend(alpha26[r])
+      break if num.zero?
     end
-    number_parts.push(num % 26)
-    alpha_string = ''
-    number_parts.reverse_each do |let|
-      alpha_string += alpha[let - 1]
-    end
-    alpha_string
+    string
   end
 
   # Highlights a specific location in a table (TODO TABLE CLASS)
@@ -191,10 +185,10 @@ module CollectionDisplay
   # @param row [Integer] the row
   # @param col [Integer] the column
   # @param id [String] what will be printed in the table
-  #                    (TODO EMPTY STRING/DONT REPLACE CONTENT)
+  #                    (TODO EMPTY STRING/DON'T REPLACE CONTENT)
   # @param check [Boolean] optional determines if cell is checkable or not
   def highlight_cell(tbl, row, col, id, check: true)
-    tbl[row + 1][col + 1] = { content: id, class: 'td-filled-slot', check: check }
+    tbl[row + 1][col + 1] = { content: id, class: 'td-filled-slot', check: check}
   end
 
   # Highlights all cells in ROW/COLUMN/X  (TODO TABLE CLASS)
@@ -207,10 +201,6 @@ module CollectionDisplay
   #     x = string
   # @return [table]
   def highlight_rcx(table, rcx_list, check: true)
-    if table.class == 'Collection'
-      raise "Passed Collection when Table needed.  You may want to use
-            'highlight_collection_rcx' instead"
-    end
     rcx_list.each do |rcx|
       rcx.push(check)
     end
@@ -238,40 +228,21 @@ module CollectionDisplay
   # @param rc_list [Array] array of rc [[row,col],...]
   #                       row = int
   #                       col = int
-  # @param check [Boolean] wheather cells should be Checkable
+  # @param check [Boolean] true if cells should be Checkable
   # @param &rc_block [Block] to determine rc list
   # @return [Table]
   def highlight_rc(table, rc_list, check: true, &_rc_block)
     rcx_list = rc_list.map { |r, c|
-      block_given? ? [r, c, yield(r, c)] : [r, c, ""]
+      block_given? ? [r, c, yield(r, c)] : [r, c, '']
     }
     highlight_rcx(table, rcx_list, check: check)
-  end
-
-  # Unknown/TBD
-  #
-  # @param collection [Collection] the collection
-  # @param row [Integer] row integer
-  # @param column [Integer] column integer
-  def r_c_to_slot(collection, row, column)
-    _rows, cols = collection.dimensions = collection.object_type.rows
-    row * cols + column + 1
-  end
-
-  # Makes an Alpha Numeric Table from Collection
-  # A wrapper for a new method that has been renamed
-  #
-  # @param collection [Collection] the collection that the table is based from
-  def create_alpha_numeric_table(collection)
-    inspect 'Does it use this? If you see this message delete line of code'
-    create_collection_table(collection)
   end
 
   # Highlights all slots in all collections in operation list
   #
   # @param ops [OperationList] Operation list
-  # @param id_block [Block] Optional Unkown
-  # @param check [Boolean] Optional weather cells are checkable
+  # @param id_block [Block] Optional Unknown
+  # @param check [Boolean] true if cells should be Checkable
   # @param &fv_block [Block] Optional Unknown
   # @return [Table]
   def highlight_collection(ops, id_block: nil, check: true, &fv_block)
@@ -287,5 +258,33 @@ module CollectionDisplay
       [collection, tbl]
     end
     tables
+  end
+
+  # TODO: write highlight heat map method for table
+  # Creates table illustrating data associated with keys
+  #  for each part noted in rc_list
+  #
+  # @param collection [Collection] the collection
+  # @param keys [Array<String>] an array of all keys that point to desired data
+  # @param rc_list [Array<Array<row, col>...>] optional array of locations
+  #        if not given will display all non_empty
+  # @return table of parts with data information
+  def display_data(collection, keys, rc_list: nil)
+    rc_list = collection.get_non_empty if rc_list.nil?
+    rcx_array = []
+    rc_list.each do |loc|
+      data_string = ''
+      keys.each_with_index do |key, idx|
+        part = collection.part(loc[0], loc[1])
+        data = get_associated_data(part, key).to_s
+        unless data.nil?
+          data_string += ', ' unless idx.zero?
+          data_string += data
+        end
+      end
+      loc.push(data_string)
+      rcx_array.push(loc)
+    end
+    highlight_collection_rcx(collection, rcx_array, check: false)
   end
 end
