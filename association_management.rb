@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # Module with methods and classes that seek to help with associating data
 # to, and retrieving data from, items, operations, plans, collections, and parts.
 #
@@ -82,7 +80,7 @@ module AssociationManagement
 
     # All in one static method which associates a key and value
     # to the associations hash of a given object.
-    # If an association already exists at the given key, it will be replaced. 
+    # If an association already exists at the given key, it will be replaced.
     # Can associate to parts of collection either
     # using a part field value, or an optional coordinate specification with a collection
     #
@@ -98,7 +96,7 @@ module AssociationManagement
       defaults = { data_matrix: DATAMATRIX_KEY }
       opts.merge defaults
       raise 'Bad Arguments: cannot associate to a part and specify coords at the same time' if object.is_a?(FieldValue) && opts[:coord]
- 
+
       if object.is_a?(FieldValue)
         assoc_map = AssociationMap.new(object.collection)
         assoc_map.putrc(object.row, object.column, key, data)
@@ -129,6 +127,7 @@ module AssociationManagement
       defaults = { data_matrix: DATAMATRIX_KEY }
       opts.merge defaults
       raise 'Bad Arguments: cannot get data from a part and specify coords at the same time' if object.is_a?(FieldValue) && opts[:coord]
+
       if object.is_a?(FieldValue)
         assoc_map = AssociationMap.new(object.collection)
         return assoc_map.getrc(object.row, object.column, key)
@@ -183,6 +182,7 @@ module AssociationManagement
     # for example, you might have the default part data, alongside a routing matrix
     def initialize_part_data(data_matrix = DATAMATRIX_KEY)
       raise "Invalid Method Call: cannot associate part data to an object that isn't a collection" unless @object.is_a?(Collection)
+
       # TODO: fix the following so that can use the Base method
       # coll = collection_from(@object.id)
       coll = Collection.find(@object.id)
@@ -273,6 +273,7 @@ module AssociationManagement
 
       coll.each_row_col(matrix, offset: offset) do |x, y, ox, oy|
         next unless !matrix[x][y].nil? && pm[ox][oy] # this part has das
+
         matrix[x][y].each do |k, v|
           if pm[ox][oy]
             if dms_by_key[k][ox][oy]
@@ -319,7 +320,7 @@ module AssociationManagement
   end
 
   # Utilizes the part-data matrix of collections to store information about the history of
-  # parts of a collection. 
+  # parts of a collection.
   # PartProvenance initializes and relies on two fields of every part-data
   # slot: `source` and `destination`.
   # `source` will store a list of item ids (with rc index if applicable),
