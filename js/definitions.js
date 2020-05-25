@@ -24,6 +24,12 @@ var config = {
         contents: [
 
           
+            {
+              name: 'PCR Test',
+              path: 'operation_types/PCR_Test' + '.md',
+              type: "local-md"
+            },
+          
 
         ]
 
