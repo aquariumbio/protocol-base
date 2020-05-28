@@ -141,7 +141,7 @@ module CollectionDisplay
   def create_collection_table(rows:, columns:)
     size = rows * columns
     slots = (1..size + rows + columns + 1).to_a
-    tab = slots.each_slice(collection.object_type.columns + 1).map do |row|
+    tab = slots.each_slice(columns + 1).map do |row|
       row.map do
         { class: 'td-empty-slot' }
       end
@@ -173,7 +173,7 @@ module CollectionDisplay
     string = ''
     loop do
       num, r = (num-1).divmod(26)
-      s.prepend(alpha26[r])
+      string.prepend(alpha26[r])
       break if num.zero?
     end
     string
