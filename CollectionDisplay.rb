@@ -132,7 +132,7 @@ module CollectionDisplay
     end
     tbl
   end
-  
+
   # Creates a table with the same dimensions as the input collection
   #
   # @param collection [Collection] the collection to be represented by the table
@@ -168,9 +168,9 @@ module CollectionDisplay
   #
   # @param num [Integer] the integer to be converted
   def get_alpha(num)
-    return '' if num < 1
-
-    string = ''
+    alpha26 = ('A'...'AA').to_a
+    return "" if num < 1
+    string = ""
     loop do
       num, r = (num-1).divmod(26)
       string.prepend(alpha26[r])
@@ -188,7 +188,7 @@ module CollectionDisplay
   #                    (TODO EMPTY STRING/DON'T REPLACE CONTENT)
   # @param check [Boolean] optional determines if cell is checkable or not
   def highlight_cell(tbl, row, col, id, check: true)
-    tbl[row + 1][col + 1] = { content: id, class: 'td-filled-slot', check: check}
+    tbl[row + 1][col + 1] = { content: id, class: 'td-filled-slot', check: check }
   end
 
   # Highlights all cells in ROW/COLUMN/X  (TODO TABLE CLASS)
@@ -232,9 +232,9 @@ module CollectionDisplay
   # @param &rc_block [Block] to determine rc list
   # @return [Table]
   def highlight_rc(table, rc_list, check: true, &_rc_block)
-    rcx_list = rc_list.map { |r, c|
-      block_given? ? [r, c, yield(r, c)] : [r, c, '']
-    }
+    rcx_list = rc_list.map do |r, c|
+      block_given? ? [r, c, yield(r, c)] : [r, c, ""]
+    end
     highlight_rcx(table, rcx_list, check: check)
   end
 
@@ -260,7 +260,6 @@ module CollectionDisplay
     tables
   end
 
-  
   # TODO: write highlight heat map method for table
   # Creates table illustrating data associated with keys
   #  for each part noted in rc_list
@@ -271,7 +270,9 @@ module CollectionDisplay
   #        if not given will display all non_empty
   # @return table of parts with data information
   def display_data(collection, keys, rc_list: nil)
-    rc_list = collection.get_non_empty if rc_list.nil?
+    if rc_list.nil?
+      rc_list = collection.get_non_empty
+    end
     rcx_array = []
     rc_list.each do |loc|
       data_string = ''
@@ -282,8 +283,6 @@ module CollectionDisplay
           data_string += ', ' unless idx.zero?
           data_string += data
         end
-        loc.push(data_string)
-        rcx_array.push(loc)
       end
       loc.push(data_string)
       rcx_array.push(loc)
