@@ -1,4 +1,10 @@
 # CollectionManagement
+
+<b>Requirements</b>:
+needs [Standard Libs](https://github.com/klavinslab/standard-libraries)
+
+<b>Note</b>: Standard libs needs updates to ItemActions (coming soon)
+
 A series of libraries for managing and controlling collection and samples inside of collections
 
 This document is meant to as a guide to the basic uses of this library.  It does not, however, cover everything that can be done.  Please explore the library or the <b>HowToCollectionManagement</b> to learn more.
