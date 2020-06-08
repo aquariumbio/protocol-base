@@ -5,8 +5,6 @@
 #
 # Methods to facilitate sample management within collections
 module CollectionLocation
-  ALPHA26 = ('A'...'Z').to_a
-
   # Gets the location string of a sample in a collection
   #
   # @param collection [Collection] the collection containing the sample
@@ -33,21 +31,19 @@ module CollectionLocation
   # @param coordinates [Array<row,column>] set of coordinates
   # @return [String] alpha numerical location
   def convert_coordinates_to_location(coordinates)
-    ALPHA26[coordinates[0]] + (coordinates[1] + 1).to_s
+    r = index_to_letter(coordinates[0])
+    c = coordinates[1] + 1
+    (r + c).to_s
   end
 
   # Converts alpha numerical location to an Array of coordinates
   #
-  # @param alpha [String] alpha numerical location
+  # @param alphanum [String] alpha numerical location
   # @return [Array<r,c>] array of row and column
-  def convert_location_to_coordinates(alpha)
-    alpha_characters = ''
-    alpha.length.times do |idx|
-      char = alpha[idx, idx+1]
-      alpha_characters += char unless float(char).nil?
-    end
-    row = ALPHA26.find_index(alpha_characters)
-    column = alpha[1..-1].to_i - 1
+  def convert_location_to_coordinates(alphanum)
+    alpha = alpha_component(alphanum)
+    row = letter_to_index(alpha)
+    column = numeric_component(alphanum)
     [row, column]
   end
 
@@ -55,7 +51,7 @@ module CollectionLocation
   #
   # @param collection [Collection] the Collection containing the Item or Sample
   # @param items [Array<objects>] Item, Part, or Sample to be found
-  # @return [Hash{sample: [row, column]}] 
+  # @return [Hash{sample: [row, column]}]
   def get_items_coordinates(collection, items)
     hash_of_locations = {}
     items.each do |item|
@@ -73,5 +69,48 @@ module CollectionLocation
   def get_part(collection, location)
     row, column = convert_location_to_coordinates(location)
     collection.part(row, column)
+  end
+
+  # Convert a letter to the corresponding array index
+  #
+  # @param letter [String] the letter (usually of a row)
+  # @return Fixnum
+  def letter_to_index(letter)
+    alphabet_array.index(letter.upcase)
+  end
+
+  # Convert an array index to the corresponding letter of the alphabet
+  #
+  # @param index [Fixnum] the index (usually of a row)
+  # @return String
+  def index_to_letter(index)
+    alphabet_array[index]
+  end
+
+  # Array of all letters of the alphablet in uppercase
+  #
+  # @return Array<String>
+  def alphabet_array
+    ('A'..'Z').to_a
+  end
+
+  # Get the alpha component of an alphanumumeric coordinate
+  #
+  # @param alphanum [String]
+  # @return [String, nil] the first contiguous run of letters or nil if no
+  #   letters are found
+  def alpha_component(alphanum)
+    mtch = alphanum.match(/[[:alpha:]]+/)
+    return mtch[0] if mtch
+  end
+
+  # Get the numeric component of an alphanumumeric coordinate
+  #
+  # @param alphanum [String]
+  # @return [Fixnum, nil] the first contiguous run of digits or nil if no
+  #   digits are found
+  def numeric_component(alphanum)
+    mtch = alphanum.match(/\d+/)
+    return mtch[0].to_i if mtch
   end
 end
