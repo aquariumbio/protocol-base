@@ -1,0 +1,10 @@
+{
+  "id": 25,
+  "name": "PlateLayoutGenerator Test",
+  "parent_class": "OperationType",
+  "category": "Test",
+  "inputs": [],
+  "outputs": [],
+  "on_the_fly": null,
+  "user_id": 1
+}
