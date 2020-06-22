@@ -11,21 +11,27 @@ class Protocol
 
   def main
     raise 'Too many' if operations.length > 22
+    
+    group_size = [1,2,3,4]
 
-    layout_table = Array.new(8) { |_| Array.new(12) }
+      group_size.each do |size|
 
-    clg = PlateLayoutGeneratorFactory.build(group_size: 3)
+      layout_table = Array.new(8) { |_| Array.new(12) }
 
-    clg.next_group.each { |r, c| layout_table[r][c] = 'NTC' }
+      clg = PlateLayoutGeneratorFactory.build(group_size: size)
 
-    clg.next_group(column: 11).each { |r, c| layout_table[r][c] = 'nCoVPC' }
+      clg.next_group.each { |r, c| layout_table[r][c] = 'NTC' }
 
-    operations.each do |op|
-      clg.next_group.each { |r, c| layout_table[r][c] = op.id }
-    end
+      clg.next_group(column: 11).each { |r, c| layout_table[r][c] = 'nCoVPC' }
 
-    show do
-      table layout_table
+      operations.each do |op|
+        clg.next_group.each { |r, c| layout_table[r][c] = op.id }
+      end
+
+      show do
+        table layout_table
+      end
+
     end
 
     {}
