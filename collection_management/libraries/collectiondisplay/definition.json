@@ -1,7 +1,7 @@
 {
-  "id": 17,
+  "id": 4,
   "name": "CollectionDisplay",
   "parent_class": "Library",
-  "category": "Collection_Management",
+  "category": "Collection Management",
   "user_id": 1
 }
