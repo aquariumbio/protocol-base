@@ -234,6 +234,14 @@ module PCRCompositionDefinitions
         input_name: TEMPLATE,
         qty: 5.0, units: MICROLITERS
       }
+    },
+
+    # Modified CDC COVID-19 detection protocol
+    'Modified_CDC': {
+      template: {
+        input_name: TEMPLATE,
+        qty: 5.0, units: MICROLITERS
+      }
     }
   }.freeze
 
