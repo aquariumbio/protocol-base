@@ -13,10 +13,28 @@ module CollectionTransfer
   include Units
   # include Debug
   include AssociationManagement
-  # include CollectionLocation
+  include CollectionLocation
   # include CollectionData
 
   VOL_TRANSFER = 'Volume Transferred'.to_sym
+
+  def to_association_map(collection:, item:)
+    association_map = []
+    locations = collection.find(item)
+    locations.each do |loc|
+      association_map.push( { to_loc: loc } )
+    end
+    association_map
+  end
+
+  def from_association_map(collection:, item:)
+    association_map = []
+    locations = collection.find(item)
+    location.each do |loc|
+      association_map.push( { from_loc: loc } )
+    end
+    association_map
+  end
 
   # Direction to use multichannel pipettor to pipet from an item
   # into a collection
@@ -27,9 +45,9 @@ module CollectionTransfer
   # @param association_map [Array<{ to_loc: [row,col] }>] all the
   #        coordinate of where stuff is to go
   def multichannel_item_to_collection(to_collection:,
-                                 source:,
-                                 volume:,
-                                 association_map:)
+                                      source:,
+                                      volume:,
+                                      association_map:)
     pipettor = get_multichannel_pipettor(volume: volume)
     channels = pipettor.channels
     association_map.each_slice(channels).each do |rc_slice|
@@ -53,11 +71,11 @@ module CollectionTransfer
                                         source:,
                                         volume:,
                                         association_map:)
-    pipettor = get_single_channel_pipettor(volume)
+    pipettor = get_single_channel_pipettor(volume: volume)
     pipet_into_collection(to_collection: to_collection,
                           source: source,
                           volume: volume,
-                          rc_list: association_map,
+                          association_map: association_map,
                           pipettor: pipettor)
   end
 
@@ -143,7 +161,7 @@ module CollectionTransfer
                             pipettor:,
                             volume:,
                             association_map:)
-    rc_list = association_map.each { |hash| hash[:to_loc] }
+    rc_list = association_map.map { |hash| hash[:to_loc] }
     show do
       title "Pipet from #{source} to Collection"
       note pipettor.pipet(volume: volume,
