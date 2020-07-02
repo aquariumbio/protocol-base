@@ -24,13 +24,16 @@ class Protocol
 
     microtiter_plate = MicrotiterPlateFactory.build(
       collection: collection,
-      data_matrix: KEY,
       group_size: GROUP_SIZE,
       method: METHOD
     )
 
-    # Should skip the first column becasue it has `patient_sample` filled
-    inspect microtiter_plate.next_empty_group.to_s
+    # Should skip the first column becasue it has `patient_sample` filled:
+    # [[0, 1], [1, 1], [2, 1]]
+    # NOT
+    # [[0, 0], [1, 0], [2, 0]]
+    #
+    inspect microtiter_plate.next_empty_group(key: KEY).to_s
 
     {}
 

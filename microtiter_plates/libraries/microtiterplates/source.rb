@@ -55,35 +55,33 @@ class MicrotiterPlateFactory
   # Builds a new `MicrotiterPlate`
   #
   # @param collection [Collection] the `Collection` that is to be managed
-  # @param data_matrix [String] the data matrix layer that is indicates whether
-  #   the collection has been filled
-  # @param group_size [Fixnum] the size of groups of wells, e.g., correspinding
+  # @param group_size [Fixnum] the size of groups of wells, e.g., corresponding
   #   to replicates (see `PlateLayoutGenerator`)
   # @param method [String] the method for creating a new `PlateLayoutGenerator`
   # @return [MicrotiterPlate]
-  def self.build(collection:, data_matrix:, group_size:, method:)
+  def self.build(collection:, group_size:, method:)
     MicrotiterPlate.new(
       collection: collection,
-      data_matrix: data_matrix,
       group_size: group_size,
       method: method
     )
   end
 end
 
+# Class for modeling the addition of samples to a microtiter (e.g, 96-well)
+#   plate
+# @author Devin Strickland <strcklnd@uw.edu>
+#
 class MicrotiterPlate
   # Instantiates `MicrotiterPlate`
   #
   # @param collection [Collection] the `Collection` that is to be managed
-  # @param data_matrix [String] the data matrix layer that is indicates whether
-  #   the collection has been filled
-  # @param group_size [Fixnum] the size of groups of wells, e.g., correspinding
+  # @param group_size [Fixnum] the size of groups of wells, e.g., correspionding
   #   to replicates (see `PlateLayoutGenerator`)
   # @param method [String] the method for creating a new `PlateLayoutGenerator`
   # @return [MicrotiterPlate]
-  def initialize(collection:, data_matrix:, group_size:, method:)
+  def initialize(collection:, group_size:, method:)
     @collection = collection
-    @data_matrix = data_matrix
     @plate_layout_generator = PlateLayoutGeneratorFactory.build(
       group_size: group_size,
       method: method
@@ -91,37 +89,33 @@ class MicrotiterPlate
   end
 
   # Returns the next `PlateLayoutGenerator` index that does not point to a
-  #   slot that is already filled in the `data_matrix` layer of
-  #   the `Collection`
+  #   `Part` that already has a `DataAssociation` for `key`
   #
-  # @param data_matrix [String] label of a data matrix for the collection that
-  #   this `MicrotiterPlate` works on
+  # @param key [String] the key pointing to the relevant `DataAssociation`
   # @param column [Fixnum] an alternative column index to start with
-  def next_empty(column: nil)
+  def next_empty(key:, column: nil)
     nxt = nil
     loop do
       nxt = @plate_layout_generator.next(column: column)
       prt = @collection.part(nxt[0], nxt[1])
-      break unless prt.associations[@data_matrix].present?
+      break unless prt.associations[key].present?
     end
     nxt
   end
 
   # Returns the next `PlateLayoutGenerator` group that does not point to any
-  #   slots that are already filled in the `data_matrix` layer of
-  #   the `Collection`
+  #   `Part` that already has a `DataAssociation` for `key`
   #
-  # @param data_matrix [String] label of a data matrix for the collection that
-  #   this `MicrotiterPlate` works on
+  # @param key [String] the key pointing to the relevant `DataAssociation`
   # @param column [Fixnum] an alternative column index to start with
-  def next_empty_group(column: nil)
+  def next_empty_group(key:, column: nil)
     nxt_grp = nil
     loop do
       present = false
       nxt_grp = @plate_layout_generator.next_group(column: column)
       nxt_grp.each do |nxt|
         prt = @collection.part(nxt[0], nxt[1])
-        present = true if prt.associations[@data_matrix].present?
+        present = true if prt.associations[key].present?
       end
       break unless present
     end
