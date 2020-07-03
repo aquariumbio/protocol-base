@@ -1,6 +1,6 @@
 {
-  "id": 53,
-  "name": "MicrotiterPlate",
+  "id": 10,
+  "name": "MicrotiterPlates",
   "parent_class": "Library",
   "category": "Microtiter Plates",
   "user_id": 1

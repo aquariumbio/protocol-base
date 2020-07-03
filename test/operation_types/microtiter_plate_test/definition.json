@@ -1,0 +1,24 @@
+{
+  "id": 25,
+  "name": "Microtiter Plate Test",
+  "parent_class": "OperationType",
+  "category": "Test",
+  "inputs": [
+    {
+      "name": "PCR Plate",
+      "part": null,
+      "array": null,
+      "routing": "P"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "PCR Plate",
+      "part": null,
+      "array": null,
+      "routing": "P"
+    }
+  ],
+  "on_the_fly": null,
+  "user_id": 1
+}
