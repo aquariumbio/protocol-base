@@ -73,6 +73,8 @@ end
 # @author Devin Strickland <strcklnd@uw.edu>
 #
 class MicrotiterPlate
+  attr_reader :collection
+
   # Instantiates `MicrotiterPlate`
   #
   # @param collection [Collection] the `Collection` that is to be managed
@@ -88,11 +90,40 @@ class MicrotiterPlate
     )
   end
 
+  # Associates the provided data to the next `PlateLayoutGenerator` index
+  #   that does not point to a `Part` that already has a `DataAssociation`
+  #   for `key` and returns the index
+  #
+  # @param key [String] the key pointing to the relevant `DataAssociation`
+  # @param data [serializable object]  the data for the association
+  # @param column [Fixnum] an alternative column index to start with
+  # @return [Array<Fixnum>]
+  def associate_next_empty(key:, data:, column: nil)
+    nxt = next_empty(key: key, column: column)
+    associate(index: nxt, key: key, data: data)
+    nxt
+  end
+
+  # Associates the provided data to the next `PlateLayoutGenerator` group
+  #   that does not point to any `Part` that already has a `DataAssociation`
+  #   for `key` and returns the group
+  #
+  # @param key [String] the key pointing to the relevant `DataAssociation`
+  # @param data [serializable object]  the data for the association
+  # @param column [Fixnum] an alternative column index to start with
+  # @return [Array<Array<Fixnum>>]
+  def associate_next_empty_group(key:, data:, column: nil)
+    nxt_grp = next_empty_group(key: key, column: column)
+    nxt_grp.each { |nxt| associate(index: nxt, key: key, data: data) }
+    nxt_grp
+  end
+
   # Returns the next `PlateLayoutGenerator` index that does not point to a
   #   `Part` that already has a `DataAssociation` for `key`
   #
   # @param key [String] the key pointing to the relevant `DataAssociation`
   # @param column [Fixnum] an alternative column index to start with
+  # @return [Array<Fixnum>]
   def next_empty(key:, column: nil)
     nxt = nil
     loop do
@@ -108,6 +139,7 @@ class MicrotiterPlate
   #
   # @param key [String] the key pointing to the relevant `DataAssociation`
   # @param column [Fixnum] an alternative column index to start with
+  # @return [Array<Array<Fixnum>>]
   def next_empty_group(key:, column: nil)
     nxt_grp = nil
     loop do
@@ -120,5 +152,12 @@ class MicrotiterPlate
       break unless present
     end
     nxt_grp
+  end
+
+  private
+
+  def associate(index:, key:, data:)
+    part = @collection.part(index[0], index[1])
+    part.associate(key, data)
   end
 end
