@@ -27,7 +27,7 @@ module CollectionDisplay
   # @param &rc_block [Block] Optional block to determine rc_list
   # @return [Table]
   def highlight_empty(collection, check: true, &rc_block)
-    highlight_collection_rc(collection, collection.get_empty,
+    highlight_collection_rcx(collection, collection.get_empty,
                             check: check, &rc_block)
   end
 
@@ -38,7 +38,11 @@ module CollectionDisplay
   # @param &rc_block [Block] Optional block to determine rc_list
   # @return [Table]
   def highlight_alpha_non_empty(collection, check: true, &rc_block)
-    highlight_alpha_rc(collection, collection.get_non_empty,
+    rcx = collection.get_non_empty
+    rcx.each do |coor|
+      coor.push(get_alpha(coor.first + 1) + (coor[1] + 1).to_s)
+    end
+    highlight_alpha_rcx(collection, rcx,
                        check: check, &rc_block)
   end
 
@@ -49,6 +53,10 @@ module CollectionDisplay
   # @param &rc_block [Block] Optional block to determine rc_list
   # @return [Table]
   def highlight_alpha_empty(collection, check: true, &rc_block)
+    rcx = collection.get_empty
+    rcx.each do |coor|
+      coor.push(get_alpha(coor.first) + coor[1].to_s)
+    end
     highlight_alpha_rc(collection, collection.get_empty,
                        check: check, &rc_block)
   end
@@ -63,14 +71,16 @@ module CollectionDisplay
   def get_rcx_list(collection, samples)
     coordinates_and_data = []
     samples.each do |sample|
-      sample_coordinates = get_obj_location(collection, sample)
+      sample_coordinates = get_items_coordinates(collection, [sample])
       sample_locations = get_alpha_num_location(collection, sample)
 
       sample_coordinates.each do |coordinates|
-        coordinates.push(sample_locations) # [0,0,A1]
+        raise "sample locations #{sample_locations[sample].class}"
+        coordinates.push(sample_locations[sample]) # [0,0,A1]
         coordinates_and_data.push(coordinates)
       end
     end
+    coordinates_and_data
   end
 
   # Highlights all cells listed in rc_list (CHANGED NAME)
@@ -78,7 +88,7 @@ module CollectionDisplay
   # @param collection [Collection] the collection which should be highlighted
   # @param rc_list [Array] array of rc [[row,col],...]
   #                       row = int
-  #                       col = int
+  #                       col = int4
   # @param check [Boolean] Optional whether cells should be Checkable
   # @param &rc_block [Block] to determine rc list
   # @return [Table]
@@ -100,7 +110,7 @@ module CollectionDisplay
   # @return [Table]
   def highlight_collection_rcx(collection, rcx_list, check: true)
     rows, columns = collection.dimensions
-    table = create_collection_table(rows: rows, columns: columns)
+    table = create_collection_table(rows: rows, columns: columns, col_id: collection.id)
     highlight_rcx(table, rcx_list, check: check)
   end
 
@@ -111,9 +121,9 @@ module CollectionDisplay
   # @param check [Boolean] Default True weather cells are checkable
   # @param &rc_block [Block] Optional tbd
   def highlight_alpha_rc(collection, rc_list, check: true, &_rc_block)
-    rcx_list = rc_list.map { |r, c|
-      block_given? ? [r, c, yield(r, c)] : [r, c, '']
-    }
+    rcx_list = rc_list.map do |r, c|
+      block_given? ? [r, c, yield(r, c)] : [r, c, get_alpha(r+1) + (c+1).to_s]
+    end
     highlight_alpha_rcx(collection, rcx_list, check: check)
   end
 
@@ -126,7 +136,7 @@ module CollectionDisplay
   # @param &rc_block [Block] Optional tbd
   def highlight_alpha_rcx(collection, rcx_list, check: true)
     rows, columns = collection.dimensions
-    tbl = create_collection_table(rows: rows, columns: columns)
+    tbl = create_collection_table(rows: rows, columns: columns, col_id: collection.id)
     rcx_list.each do |r, c, x|
       highlight_cell(tbl, r, c, x, check: check)
     end
@@ -138,7 +148,9 @@ module CollectionDisplay
   # @param collection [Collection] the collection to be represented by the table
   # @param add_headers [Boolean] optional True
   # @return tab [Table] a table to be displayed
-  def create_collection_table(rows:, columns:)
+  def create_collection_table(rows:, columns:, col_id:)
+    col_id = col_id.to_s.chars
+    rows = rows + 1
     size = rows * columns
     slots = (1..size + rows + columns + 1).to_a
     tab = slots.each_slice(columns + 1).map do |row|
@@ -147,20 +159,29 @@ module CollectionDisplay
       end
     end
 
-    labels = Array(1...size + 1)
+    #labels = Array(1...size + 1)
     tab.each_with_index do |row, row_idx|
       row.each_with_index do |col, col_idx|
-        if row_idx.zero?
-          col[:content] = "<b><u>#{col_idx}</u></b>"
+        if row_idx == 0
+          if col_idx == 0
+            content = 'ID:'
+          else
+            content = col_id[col_idx-1]
+          end
+          col[:content] = 
+            "<font color = 'black'> <b>#{content}</b> </font>"
+        elsif row_idx == 1
+          col[:content] = 
+            "<font color = 'blue'> <b>#{col_idx}</b> </font>"
         elsif col_idx.zero?
-          col[:content] = "<b><u>#{get_alpha(row_idx)}</u></b>"
+          col[:content] = 
+            "<font color = 'blue' <b>#{get_alpha(row_idx-1)}</b> </font>"
         else
-          col[:content] = labels.first
-          labels = labels.drop(1)
+          col[:content] = '-'
         end
       end
     end
-    tab.first.first[:content] = '<b>:)</b>'
+    tab[1].first[:content] = '&#129514'
     tab
   end
 
@@ -188,7 +209,7 @@ module CollectionDisplay
   #                    (TODO EMPTY STRING/DON'T REPLACE CONTENT)
   # @param check [Boolean] optional determines if cell is checkable or not
   def highlight_cell(tbl, row, col, id, check: true)
-    tbl[row + 1][col + 1] = { content: id, class: 'td-filled-slot', check: check }
+    tbl[row + 2][col + 1] = { content: id, class: 'td-filled-slot', check: check }
   end
 
   # Highlights all cells in ROW/COLUMN/X  (TODO TABLE CLASS)
@@ -288,5 +309,24 @@ module CollectionDisplay
       rcx_array.push(loc)
     end
     highlight_collection_rcx(collection, rcx_array, check: false)
+  end
+
+  # Displays all sample id's
+  #
+  # @param collection [Collection] the collection
+  # @param rc_list [Array<r,c,>] optional if not then all existing parts
+  # @param check [Boolean]
+  # @return table
+  def display_sample_id(collection, rc_list: nil, check: false, opts: {})
+    rc_list = collection.get_non_empty if rc_list.nil?
+    rcx_list = []
+    rc_list.each do |r,c|
+      part = collection.part(r, c)
+
+      rcx_list.push([r, c, part.id]); next if opts[:part_id]
+
+      rcx_list.push([r, c, part.sample.id])
+    end
+    highlight_collection_rcx(collection, rcx_list, check: check)
   end
 end
