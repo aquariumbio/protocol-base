@@ -167,4 +167,20 @@ module CollectionActions
       end
     end
   end
+
+    # Provides instructions to cover plate
+  #
+  # @param collection [Collection]
+  # @param rc_list [Array<[r,c]>] specify certain wells to cover
+  def seal_plate(collection, rc_list: nil)
+    show do
+      title 'Seal Wells'
+      note "Using an area seal carefully seal plate #{collection.id}"
+      unless rc_list.nil?
+        warning 'ONLY seal the highlighted wells'
+        table highlight_collection_rc(collection, rc_list)
+      end
+    end
+  end
+
 end
