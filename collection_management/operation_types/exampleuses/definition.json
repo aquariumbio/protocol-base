@@ -2,29 +2,9 @@
   "id": 27,
   "name": "ExampleUses",
   "parent_class": "OperationType",
-  "category": "Collection_Management",
-  "inputs": [
-    {
-      "name": "InputArray",
-      "part": null,
-      "array": true,
-      "routing": "I"
-    },
-    {
-      "name": "Input",
-      "part": null,
-      "array": null,
-      "routing": null
-    }
-  ],
-  "outputs": [
-    {
-      "name": "OutputArray",
-      "part": null,
-      "array": true,
-      "routing": "O"
-    }
-  ],
+  "category": "Collection Management",
+  "inputs": [],
+  "outputs": [],
   "on_the_fly": null,
   "user_id": 1
 }
