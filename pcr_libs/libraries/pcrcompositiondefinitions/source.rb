@@ -21,8 +21,7 @@ module PCRCompositionDefinitions
       polymerase: {
         input_name: POLYMERASE,
         qty: 16, units: MICROLITERS,
-        sample_name: 'Kapa HF Master Mix',
-        object_name: 'Enzyme Stock'
+        sample_name: 'Kapa HF Master Mix'
       },
       forward_primer: {
         input_name: FORWARD_PRIMER,
@@ -35,8 +34,7 @@ module PCRCompositionDefinitions
       dye: {
         input_name: DYE,
         qty: 1.6, units: MICROLITERS,
-        sample_name: 'Eva Green',
-        object_name: 'Screw Cap Tube'
+        sample_name: 'Eva Green'
       },
       water: {
         input_name: WATER,
@@ -54,8 +52,7 @@ module PCRCompositionDefinitions
       polymerase: {
         input_name: POLYMERASE,
         qty: 25, units: MICROLITERS,
-        sample_name: 'Kapa HF Master Mix',
-        object_name: 'Enzyme Stock'
+        sample_name: 'Kapa HF Master Mix'
       },
       forward_primer: {
         input_name: FORWARD_PRIMER,
@@ -68,8 +65,7 @@ module PCRCompositionDefinitions
       dye: {
         input_name: DYE,
         qty: 2.5, units: MICROLITERS,
-        sample_name: 'Eva Green',
-        object_name: 'Screw Cap Tube'
+        sample_name: 'Eva Green'
       },
       water: {
         input_name: WATER,
@@ -87,8 +83,7 @@ module PCRCompositionDefinitions
       polymerase: {
         input_name: POLYMERASE,
         qty: 12.5, units: MICROLITERS,
-        sample_name: 'Kapa HF Master Mix',
-        object_name: 'Enzyme Stock'
+        sample_name: 'Kapa HF Master Mix'
       },
       forward_primer: {
         input_name: FORWARD_PRIMER,
@@ -101,8 +96,7 @@ module PCRCompositionDefinitions
       dye: {
         input_name: DYE,
         qty: 1.25, units: MICROLITERS,
-        sample_name: 'Eva Green',
-        object_name: 'Screw Cap Tube'
+        sample_name: 'Eva Green'
       },
       water: {
         input_name: WATER,
@@ -120,8 +114,7 @@ module PCRCompositionDefinitions
       polymerase: {
         input_name: POLYMERASE,
         qty: 25, units: MICROLITERS,
-        sample_name: 'Kapa HF Master Mix',
-        object_name: 'Enzyme Stock'
+        sample_name: 'Kapa HF Master Mix'
       },
       forward_primer: {
         input_name: FORWARD_PRIMER,
@@ -134,8 +127,7 @@ module PCRCompositionDefinitions
       dye: {
         input_name: DYE,
         qty: 2.5, units: MICROLITERS,
-        sample_name: 'Eva Green',
-        object_name: 'Screw Cap Tube'
+        sample_name: 'Eva Green'
       },
       water: {
         input_name: WATER,
@@ -230,6 +222,14 @@ module PCRCompositionDefinitions
         qty: 0.4, units: MICROLITERS,
         sample_name: 'Go Script RT Mix for 1-Step RT-qPCR'
       },
+      template: {
+        input_name: TEMPLATE,
+        qty: 5.0, units: MICROLITERS
+      }
+    },
+
+    # Modified CDC COVID-19 detection protocol
+    'Modified_CDC' => {
       template: {
         input_name: TEMPLATE,
         qty: 5.0, units: MICROLITERS
