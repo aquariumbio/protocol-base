@@ -114,7 +114,7 @@ class MicrotiterPlate
   # @return [Array<Array<Fixnum>>]
   def associate_next_empty_group(key:, data:, column: nil)
     nxt_grp = next_empty_group(key: key, column: column)
-    nxt_grp.each { |nxt| associate(index: nxt, key: key, data: data) }
+    associate_group(group: nxt_grp, key: key, data: data)
     nxt_grp
   end
 
@@ -152,6 +152,16 @@ class MicrotiterPlate
       break unless present
     end
     nxt_grp
+  end
+
+  # Associates the provided data to indices of the provided group
+  #
+  # @param group [Array<Array<Fixnum>>]
+  # @param key [String] the key pointing to the relevant `DataAssociation`
+  # @param data [serializable object]  the data for the association
+  # @return [void]
+  def associate_group(group:, key:, data:)
+    group.each { |i| associate(index: i, key: key, data: data) }
   end
 
   private
