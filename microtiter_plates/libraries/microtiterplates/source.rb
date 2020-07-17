@@ -118,7 +118,7 @@ class MicrotiterPlate
   # @return [Array<Array<Fixnum>>]
   def associate_next_empty_group(key:, data:, column: nil)
     nxt_grp = next_empty_group(key: key, column: column)
-    associate_provenance_group(group: nxt_grp, key: key, data: data)
+    associate_group(group: nxt_grp, key: key, data: data)
     nxt_grp
   end
 
@@ -210,13 +210,25 @@ class MicrotiterPlate
     group.each { |i| associate_provenance(index: i, key: key, data: data) }
   end
 
-  private
-
+  # Make a simple data association on a part
+  #
+  # @param index [Array<Fixnum>] the row, column pair pointing to the part
+  # @param key [String] the key pointing to the relevant `DataAssociation`
+  # @param data [serializable object]  the data for the association
+  # @return [void]
   def associate(index:, key:, data:)
     part = @collection.part(index[0], index[1])
     part.associate(key, data)
   end
 
+  # Uses `PartProvenance` to associate the provided provenance data to
+  #   a part
+  #
+  # @param index [Array<Fixnum>] the row, column pair pointing to the part
+  # @param key [String] the key pointing to the relevant `DataAssociation`
+  # @param data [serializable object] the data for the association; Hash must
+  #   include an `item: Item` pair
+  # @return [void]
   def associate_provenance(index:, key:, data:)
     to_item = @collection.part(index[0], index[1])
     data.each do |datum|
@@ -234,6 +246,15 @@ class MicrotiterPlate
     associate(index: index, key: key, data: 'added')
   end
 
+  private
+
+  # Add provenance data to a source-destination pair of items
+  #
+  # @param from_item [Item]
+  # @param to_item [Item]
+  # @param additional_relation_data [serializable object] additional data that
+  #   will be added to the provenace association
+  # @return [void]
   def add_one_to_one_provenance(from_item:, to_item:, additional_relation_data:)
     from_map = AssociationMap.new(from_item)
     to_map = AssociationMap.new(to_item)
