@@ -22,8 +22,7 @@ Reaction compositions are modeled by `class PCRComposition`, which includes desc
   polymerase: {
     input_name: POLYMERASE,
     qty: 16, units: MICROLITERS,
-    sample_name: 'Kapa HF Master Mix',
-    object_name: 'Enzyme Stock'
+    sample_name: 'Kapa HF Master Mix'
   },
   forward_primer: {
     input_name: FORWARD_PRIMER,
@@ -36,8 +35,7 @@ Reaction compositions are modeled by `class PCRComposition`, which includes desc
   dye: {
     input_name: DYE,
     qty: 1.6, units: MICROLITERS,
-    sample_name: 'Eva Green',
-    object_name: 'Screw Cap Tube'
+    sample_name: 'Eva Green'
   },
   water: {
     input_name: WATER,
