@@ -255,7 +255,8 @@ class MicrotiterPlate
   # @param additional_relation_data [serializable object] additional data that
   #   will be added to the provenace association
   # @return [void]
-  def add_one_to_one_provenance(from_item:, to_item:, additional_relation_data:)
+  def add_one_to_one_provenance(from_item:, to_item:,
+                                additional_relation_data: nil)
     from_map = AssociationMap.new(from_item)
     to_map = AssociationMap.new(to_item)
 
