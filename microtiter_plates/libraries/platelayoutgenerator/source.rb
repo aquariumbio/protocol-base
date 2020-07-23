@@ -24,9 +24,9 @@ class PlateLayoutGenerator
   def initialize(group_size: 1, method: nil, dimensions: [8, 12])
     @group_size = group_size
     method ||= :cdc_sample_layout
+    @layout = send(method)
     @rows = dimensions[0]
     @columns = dimensions[1]
-    @layout = send(method)
     @ii = []
     @column = []
     @first_index = []
