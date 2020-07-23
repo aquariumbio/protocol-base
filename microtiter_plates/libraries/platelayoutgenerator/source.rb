@@ -43,7 +43,7 @@ class PlateLayoutGenerator
   end
 
   def iterate_column(column)
-    return nil if column.nil?
+    return nil if column.blank?
     if column < @columns
       column += 1
     else
@@ -85,16 +85,6 @@ class PlateLayoutGenerator
     lyt
   end
 
-  def modified_primer_layout_two
-    lyt = []
-    2.times do |i|
-      make_modified_start_array(2).each do |j|
-        @columns.times { |k| lyt << [i + j, k] }
-      end
-    end
-    lyt
-  end
-
   def modified_sample_layout_one
     lyt = []
     make_modified_start_array(1).each do |j|
@@ -104,7 +94,7 @@ class PlateLayoutGenerator
     lyt
   end
 
-  def modified_primer_layout_one
+  def modified_primer_layout
     lyt = []
     1.times do |i|
       make_modified_start_array(1).each do |j|
