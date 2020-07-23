@@ -13,7 +13,7 @@ module PCRCompositionDefinitions
   DYE = 'Dye'
   WATER = 'Molecular Grade Water'
   MASTER_MIX = 'Master Mix'
-  PRIMER_PROBE_MIX = 'Combined Primer/Probe Mix'
+  PRIMER_PROBE_MIX = 'Primer/Probe Mix'
 
   COMPONENTS = {
     # qPCR2: 2nd qPCR in NGS prep.
@@ -233,6 +233,10 @@ module PCRCompositionDefinitions
       template: {
         input_name: TEMPLATE,
         qty: 5.0, units: MICROLITERS
+      },
+      primer_probe_mix: {
+        input_name: PRIMER_PROBE_MIX,
+        qty: 5.0, units: MICROLITERS  # unsure what units should be since its the whole dried volume..
       }
     }
   }.freeze
