@@ -236,7 +236,7 @@ module PCRCompositionDefinitions
       },
       primer_probe_mix: {
         input_name: PRIMER_PROBE_MIX,
-        qty: 5.0, units: MICROLITERS  # unsure what units should be since its the whole dried volume..
+        qty: 0.0, units: MICROLITERS
       }
     }
   }.freeze
