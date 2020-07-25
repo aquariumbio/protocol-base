@@ -1,6 +1,7 @@
 # typed: false
 # frozen_string_literal: true
 
+needs 'Standard Libs/AssociationManagement'
 needs 'Microtiter Plates/PlateLayoutGenerator'
 
 module MicrotiterPlates
@@ -73,6 +74,9 @@ end
 # @author Devin Strickland <strcklnd@uw.edu>
 #
 class MicrotiterPlate
+  include AssociationManagement
+  include PartProvenance
+
   attr_reader :collection
 
   # Instantiates `MicrotiterPlate`
@@ -115,6 +119,36 @@ class MicrotiterPlate
   def associate_next_empty_group(key:, data:, column: nil)
     nxt_grp = next_empty_group(key: key, column: column)
     associate_group(group: nxt_grp, key: key, data: data)
+    nxt_grp
+  end
+
+  # Uses `PartProvenance` to associate the the provided provenance data to
+  #   the next `PlateLayoutGenerator` index that does not point to a `Part`
+  #   that already has a `DataAssociation` for `key` and returns the index
+  #
+  # @param key [String] the key pointing to the relevant `DataAssociation`
+  # @param data [Array<Hash>] the data for the association; each Hash must
+  #   include an `item: Item` pair
+  # @param column [Fixnum] an alternative column index to start with
+  # @return [Array<Fixnum>]
+  def associate_provenance_next_empty(key:, data:, column: nil)
+    nxt = next_empty(key: key, column: column)
+    associate_provenance(index: nxt, key: key, data: data)
+    nxt
+  end
+
+  # Uses `PartProvenance` to associate the the provided provenance data to
+  #   the next `PlateLayoutGenerator` group that does not point to any `Part`
+  #    that already has a `DataAssociation` for `key` and returns the group
+  #
+  # @param key [String] the key pointing to the relevant `DataAssociation`
+  # @param data [Array<Hash>] the data for the association; each Hash must
+  #   include an `item: Item` pair
+  # @param column [Fixnum] an alternative column index to start with
+  # @return [Array<Array<Fixnum>>]
+  def associate_provenance_next_empty_group(key:, data:, column: nil)
+    nxt_grp = next_empty_group(key: key, column: column)
+    associate_provenance_group(group: nxt_grp, key: key, data: data)
     nxt_grp
   end
 
@@ -164,10 +198,74 @@ class MicrotiterPlate
     group.each { |i| associate(index: i, key: key, data: data) }
   end
 
-  private
+  # Uses `PartProvenance` to associate the provided provenance data to
+  #   indices of the provided group
+  #
+  # @param group [Array<Array<Fixnum>>]
+  # @param key [String] the key pointing to the relevant `DataAssociation`
+  # @param data [Array<Hash>] the data for the association; each Hash must
+  #   include an `item: Item` pair
+  # @return [void]
+  def associate_provenance_group(group:, key:, data:)
+    group.each { |i| associate_provenance(index: i, key: key, data: data) }
+  end
 
+  # Make a simple data association on a part
+  #
+  # @param index [Array<Fixnum>] the row, column pair pointing to the part
+  # @param key [String] the key pointing to the relevant `DataAssociation`
+  # @param data [serializable object]  the data for the association
+  # @return [void]
   def associate(index:, key:, data:)
     part = @collection.part(index[0], index[1])
     part.associate(key, data)
+  end
+
+  # Uses `PartProvenance` to associate the provided provenance data to
+  #   a part
+  #
+  # @param index [Array<Fixnum>] the row, column pair pointing to the part
+  # @param key [String] the key pointing to the relevant `DataAssociation`
+  # @param data [serializable object] the data for the association; Hash must
+  #   include an `item: Item` pair
+  # @return [void]
+  def associate_provenance(index:, key:, data:)
+    to_item = @collection.part(index[0], index[1])
+    data.each do |datum|
+      # Make sure you aren't modifying a shared data structure
+      datum = datum.dup
+      from_item = datum.delete(:item)
+      next unless from_item
+
+      add_one_to_one_provenance(
+        from_item: from_item,
+        to_item: to_item,
+        additional_relation_data: datum
+      )
+    end
+    associate(index: index, key: key, data: 'added')
+  end
+
+  private
+
+  # Add provenance data to a source-destination pair of items
+  #
+  # @param from_item [Item]
+  # @param to_item [Item]
+  # @param additional_relation_data [serializable object] additional data that
+  #   will be added to the provenace association
+  # @return [void]
+  def add_one_to_one_provenance(from_item:, to_item:,
+                                additional_relation_data: nil)
+    from_map = AssociationMap.new(from_item)
+    to_map = AssociationMap.new(to_item)
+
+    add_provenance(
+      from: from_item, from_map: from_map,
+      to: to_item, to_map: to_map,
+      additional_relation_data: additional_relation_data
+    )
+    from_map.save
+    to_map.save
   end
 end
