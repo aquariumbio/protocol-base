@@ -11,7 +11,7 @@ var config = {
         { name: "Introduction", type: "local-md", path: "README.md" },
         { name: "About this Workflow", type: "local-md", path: "ABOUT.md" },
         { name: "License", type: "local-md", path: "LICENSE.md" },
-        { name: "Issues", type: "external-link", path: 'https://github.com/dvnstrcklnd/aq-microtiter-plates/issues' }
+        { name: "Issues", type: "external-link", path: 'https://github.com/aquariumbio/microtiter-plates/issues' }
       ]
     },
 
@@ -23,6 +23,12 @@ var config = {
 
         contents: [
 
+          
+            {
+              name: 'Microtiter Plate Test',
+              path: 'operation_types/Microtiter_Plate_Test' + '.md',
+              type: "local-md"
+            },
           
 
         ]
@@ -41,8 +47,8 @@ var config = {
 
           
             {
-              name: 'MicrotiterPlate',
-              path: 'libraries/MicrotiterPlate' + '.html',
+              name: 'MicrotiterPlates',
+              path: 'libraries/MicrotiterPlates' + '.html',
               type: "local-webpage"
             },
           
@@ -63,10 +69,28 @@ var config = {
       { category: "Sample Types",
         contents: [
           
+            {
+              name: 'Master Mix',
+              path: 'sample_types/Master_Mix'  + '.md',
+              type: "local-md"
+            },
+          
+            {
+              name: 'qPCR Reaction',
+              path: 'sample_types/qPCR_Reaction'  + '.md',
+              type: "local-md"
+            },
+          
         ]
       },
       { category: "Containers",
         contents: [
+          
+            {
+              name: '96-well qPCR Plate',
+              path: 'object_types/96-well_qPCR_Plate'  + '.md',
+              type: "local-md"
+            },
           
         ]
       }
