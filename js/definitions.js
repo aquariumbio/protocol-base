@@ -11,7 +11,7 @@ var config = {
         { name: "Introduction", type: "local-md", path: "README.md" },
         { name: "About this Workflow", type: "local-md", path: "ABOUT.md" },
         { name: "License", type: "local-md", path: "LICENSE.md" },
-        { name: "Issues", type: "external-link", path: 'https://github.com/malloc3/aq-collection-management/issues' }
+        { name: "Issues", type: "external-link", path: 'https://github.com/klavinslab/aq-collection-management/issues' }
       ]
     },
 
@@ -23,6 +23,12 @@ var config = {
 
         contents: [
 
+          
+            {
+              name: 'ExampleUses',
+              path: 'operation_types/ExampleUses' + '.md',
+              type: "local-md"
+            },
           
 
         ]
