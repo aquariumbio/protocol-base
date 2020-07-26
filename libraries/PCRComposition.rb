@@ -61,6 +61,12 @@ class PCRComposition
     input(POLYMERASE)
   end
 
+  # Specifications for the master mix component
+  # @return (see #input)
+  def master_mix
+    input(MASTER_MIX)
+  end
+
   # Specifications for the forward primer component
   # @return (see #input)
   def forward_primer
@@ -71,6 +77,12 @@ class PCRComposition
   # @return (see #input)
   def reverse_primer
     input(REVERSE_PRIMER)
+  end
+
+  # Specifications for the primer/probe component
+  # @return (see #input)
+  def primer_probe_mix
+    input(PRIMER_PROBE_MIX)
   end
 
   # Specifications for the template component
@@ -130,6 +142,12 @@ class PCRComposition
   def added_components
     components.select(&:added?)
   end
+
+  # Gets the `Item`s from `ReactionComponent`s and returns them as an array
+  # @return [Array<Item>]
+  def items
+    components.map(&:item)
+  end
 end
 
 # Models a component of a biochemical reaction
@@ -150,21 +168,38 @@ class ReactionComponent
   #   used for this component
   # @param object_name [String] the ObjectType (Container) that this
   #   component should be found in
-  def initialize(input_name:, qty:, units:, sample_name: nil, object_name: nil)
+  def initialize(input_name:, qty:, units:, sample_name: nil)
     @input_name = input_name
     @qty = qty
     @units = units
     @sample = sample_name ? Sample.find_by_name(sample_name) : nil
-
-    @item = (sample.in(object_name).first if sample && object_name)
-
+    @item = nil
     @added = false
+  end
+
+  # Sets `item`
+  #
+  # @param item [Item]
+  def item=(item)
+    if sample
+      raise ProtocolError, 'Item / Sample mismatch' unless sample == item.sample
+    else
+      @sample = item.sample
+    end
+    @item = item
   end
 
   # The input name, formatted for display in protocols
   # @return [String]
   def display_name
     input_name
+  end
+
+  # The volume as a qty, units hash
+  #
+  # @return [Hash]
+  def volume_hash
+    { qty: qty, units: units }
   end
 
   # Displays the volume (`qty`) with units
