@@ -1,6 +1,6 @@
 # Aquarium PCR Models, version 0.1.2
 
-Libraries to model PCR composition and program, and help with master mixes [[Download](aq-pcr-models.aq)] [[Github Repo](https://github.com/dvnstrcklnd/aq-pcr-models)]
+Libraries to model PCR composition and program, and help with master mixes [[Download](pcr-models.aq)] [[Github Repo](https://github.com/dvnstrcklnd/pcr-models)]
 
 &copy; University of Washington
 
@@ -10,6 +10,7 @@ Libraries to model PCR composition and program, and help with master mixes [[Dow
 
 ### Authors
   - Devin Strickland, University of Washington
+  - Cannon Mallory, University of Washington
 
 ### Acknowledgements
   - Ben Keller, University of Washington
