@@ -22,8 +22,8 @@ module CollectionLocation
       coordinates.each do |coordinate_set|
         alpha_num_locations << convert_coordinates_to_location(coordinate_set)
       end
-      locations.join(',')
-      hash_of_samples[sample] = locations
+      alpha_num_locations.join(',')
+      hash_of_samples[sample] = alpha_num_locations
     end
     hash_of_samples
   end
