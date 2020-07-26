@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # Cannon Mallory
 # malloc3@uw.edu
 #
@@ -21,6 +19,23 @@ module CollectionActions
     working_plate = Collection.new_collection(c_type)
     get_and_label_new_plate(working_plate) if label_plate
     working_plate
+  end
+
+  # Makes an exact copy of the from collection.
+  # Will make the to_collection if needed
+  #
+  # @param from_collection [Collection]
+  # @param to_collection [Collection]
+  # @param label_plates [Boolean]
+  # @return to_Collection [Collection]
+  def exact_copy(from_collection, to_collection: nil, label_plates: false)
+    collection_type = from_collection.object_type
+    if to_collection.nil?
+      to_collection = make_new_plate(collection_type, label_plate: label_plates)
+    end
+    matrix = from_collection.matrix
+    to_collection.matrix = matrix
+    to_collection
   end
 
   # Makes the required number of collections and populates with samples
@@ -47,7 +62,7 @@ module CollectionActions
 
     capacity = nil
     if collection_type.nil?
-      collection_type = fisrt_collection.object_type.name
+      collection_type = first_collection.object_type.name
       capacity = first_collection.capacity
       remaining_space = first_collection.get_empty.length
       add_samples_to_collection(samples[0...remaining_space - 1],
@@ -149,6 +164,21 @@ module CollectionActions
       r_c = collection.find(fv.sample).first
       unless r_c.nil?
         fv.set(collection: collection, row: r_c[0], column: r_c[1])
+      end
+    end
+  end
+  
+  # Provides instructions to cover plate
+  #
+  # @param collection [Collection]
+  # @param rc_list [Array<[r,c]>] specify certain wells to cover
+  def seal_plate(collection, rc_list: nil)
+    show do
+      title 'Seal Wells'
+      note "Using an area seal carefully seal plate #{collection.id}"
+      unless rc_list.nil?
+        warning 'ONLY seal the highlighted wells'
+        table highlight_collection_rc(collection, rc_list)
       end
     end
   end
