@@ -232,7 +232,7 @@ module PCRCompositionDefinitions
     'Modified_CDC' => {
       template: {
         input_name: TEMPLATE,
-        qty: 5.0, units: MICROLITERS
+        qty: 20.0, units: MICROLITERS
       },
       primer_probe_mix: {
         input_name: PRIMER_PROBE_MIX,

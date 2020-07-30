@@ -237,6 +237,29 @@ module PCRProgramDefinitions
         duration: { qty: 30, units: SECONDS }
       },
       step5: { goto: 3, times: 44 }
+    },
+    
+    'Modified_CDC' => {
+      program_template_name: 'Modified_CDC',
+      layout_template_name: 'Modified_CDC',
+      volume: 20,
+      step1: {
+        temperature: { qty: 50, units: DEGREES_C },
+        duration: { qty: 8, units: MINUTES }
+      },
+      step2: {
+        temperature: { qty: 94, units: DEGREES_C },
+        duration: { qty: 2, units: MINUTES }
+      },
+      step3: {
+        temperature: { qty: 94, units: DEGREES_C },
+        duration: { qty: 1, units: SECONDS }
+      },
+      step4: {
+        temperature: { qty: 57, units: DEGREES_C },
+        duration: { qty: 30, units: SECONDS }
+      },
+      step5: { goto: 3, times: 50 }
     }
   }.freeze
 
