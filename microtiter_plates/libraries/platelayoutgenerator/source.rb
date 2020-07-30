@@ -22,11 +22,11 @@ end
 # @author Devin Strickland <strcklnd@uw.edu>
 class PlateLayoutGenerator
   def initialize(group_size: 1, method: nil, dimensions: [8, 12])
+    @rows = dimensions[0]
+    @columns = dimensions[1]
     @group_size = group_size
     method ||= :cdc_sample_layout
     @layout = send(method)
-    @rows = dimensions[0]
-    @columns = dimensions[1]
     @ii = []
     @column = []
     @first_index = []
@@ -96,10 +96,8 @@ class PlateLayoutGenerator
 
   def modified_primer_layout
     lyt = []
-    1.times do |i|
-      make_modified_start_array(1).each do |j|
-        @columns.times { |k| lyt << [i + j, k] }
-      end
+    make_modified_start_array(1).each do |j|
+      @columns.times { |k| lyt << [j, k] }
     end
     lyt
   end

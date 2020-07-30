@@ -90,7 +90,8 @@ class MicrotiterPlate
     @collection = collection
     @plate_layout_generator = PlateLayoutGeneratorFactory.build(
       group_size: group_size,
-      method: method
+      method: method,
+      dimensions: @collection.dimensions
     )
   end
 
@@ -181,6 +182,7 @@ class MicrotiterPlate
       nxt_grp = @plate_layout_generator.next_group(column: column)
       nxt_grp.each do |nxt|
         prt = @collection.part(nxt[0], nxt[1])
+        raise nxt_grp.to_s if prt.nil?
         present = true if prt.associations[key].present?
       end
       break unless present
@@ -231,6 +233,8 @@ class MicrotiterPlate
   # @return [void]
   def associate_provenance(index:, key:, data:)
     to_item = @collection.part(index[0], index[1])
+    rescue 
+        raise index.class.to_s
     data.each do |datum|
       # Make sure you aren't modifying a shared data structure
       datum = datum.dup
