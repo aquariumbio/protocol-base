@@ -233,8 +233,6 @@ class MicrotiterPlate
   # @return [void]
   def associate_provenance(index:, key:, data:)
     to_item = @collection.part(index[0], index[1])
-    rescue 
-        raise index.class.to_s
     data.each do |datum|
       # Make sure you aren't modifying a shared data structure
       datum = datum.dup
