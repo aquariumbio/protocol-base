@@ -90,7 +90,8 @@ class MicrotiterPlate
     @collection = collection
     @plate_layout_generator = PlateLayoutGeneratorFactory.build(
       group_size: group_size,
-      method: method
+      method: method,
+      dimensions: @collection.dimensions
     )
   end
 
@@ -181,6 +182,7 @@ class MicrotiterPlate
       nxt_grp = @plate_layout_generator.next_group(column: column)
       nxt_grp.each do |nxt|
         prt = @collection.part(nxt[0], nxt[1])
+        raise nxt_grp.to_s if prt.nil?
         present = true if prt.associations[key].present?
       end
       break unless present
