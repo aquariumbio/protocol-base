@@ -149,35 +149,38 @@ module CollectionDisplay
   # @param add_headers [Boolean] optional True
   # @return tab [Table] a table to be displayed
   def create_collection_table(rows:, columns:, col_id:)
+    text_color = 'white'
+    border_color = "&#085F92"
+    bg_color = "&#b8b8b8"
     col_id = col_id.to_s.chars
     rows = rows + 1
     size = rows * columns
     slots = (1..size + rows + columns + 1).to_a
-    tab = slots.each_slice(columns + 1).map do |row|
-      row.map do
-        { class: 'td-empty-slot' }
-      end
-    end
-
-    #labels = Array(1...size + 1)
-    tab.each_with_index do |row, row_idx|
-      row.each_with_index do |col, col_idx|
+    tab = slots.each_slice(columns + 1).each_with_index.map do |row, row_idx|
+      row.each_with_index.map do |col, col_idx|
         if row_idx == 0
           if col_idx == 0
-            content = 'ID:'
+            { class: 'td-empty-slot',
+              content: '<b>ID:</b>',
+              style: {color: text_color, 'background-color' => border_color } }
           else
-            content = col_id[col_idx-1]
+            { class: 'td-empty-slot',
+              content: "<b>#{col_id[col_idx-1]}</b>",
+              style: {color: text_color, 'background-color' => border_color } }
           end
-          col[:content] = 
-            "<font color = 'black'> <b>#{content}</b> </font>"
         elsif row_idx == 1
-          col[:content] = 
-            "<font color = 'blue'> <b>#{col_idx}</b> </font>"
+          { class: 'td-empty-slot',
+            content: "<b>#{col_idx}</b>",
+            style: {color: text_color, 'background-color' => border_color } }
         elsif col_idx.zero?
-          col[:content] = 
-            "<font color = 'blue' <b>#{get_alpha(row_idx-1)}</b> </font>"
+          { class: 'td-empty-slot',
+            content: "<b>#{get_alpha(row_idx-1)}</b>",
+            style: {color: text_color, 'background-color' => border_color } }
         else
-          col[:content] = '-'
+          # Normal cells
+          { class: 'td-empty-slot',
+            content: '',
+            style: {'background-color' => bg_color } }
         end
       end
     end
@@ -209,7 +212,11 @@ module CollectionDisplay
   #                    (TODO EMPTY STRING/DON'T REPLACE CONTENT)
   # @param check [Boolean] optional determines if cell is checkable or not
   def highlight_cell(tbl, row, col, id, check: true)
-    tbl[row + 2][col + 1] = { content: id, class: 'td-filled-slot', check: check }
+    bg_color = '&#ADD8E6' unless check
+    tbl[row + 2][col + 1] = { content: id,
+                              check: check,
+                              class: 'td-full-slot',
+                              style: {'background-color'=> bg_color}}
   end
 
   # Highlights all cells in ROW/COLUMN/X  (TODO TABLE CLASS)
