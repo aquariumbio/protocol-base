@@ -149,7 +149,7 @@ module CollectionDisplay
   # @param add_headers [Boolean] optional True
   # @return tab [Table] a table to be displayed
   def create_collection_table(rows:, columns:, col_id:)
-    text_color = 'white'
+    text_color = 'black'
     border_color = "&#085F92"
     bg_color = "&#b8b8b8"
     col_id = col_id.to_s.chars
@@ -166,7 +166,7 @@ module CollectionDisplay
           else
             { class: 'td-empty-slot',
               content: "<b>#{col_id[col_idx-1]}</b>",
-              style: {color: text_color, 'background-color' => border_color } }
+              style: {color: text_color, 'background-color' => border_color, border: '0px' } }
           end
         elsif row_idx == 1
           { class: 'td-empty-slot',
@@ -184,7 +184,7 @@ module CollectionDisplay
         end
       end
     end
-    tab[1].first[:content] = '&#129514'
+    tab[1].first[:content] = ""
     tab
   end
 
