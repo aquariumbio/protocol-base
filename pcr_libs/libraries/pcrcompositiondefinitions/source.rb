@@ -227,7 +227,6 @@ module PCRCompositionDefinitions
         qty: 5.0, units: MICROLITERS
       }
     },
-
     # Modified CDC COVID-19 detection protocol
     'Modified_CDC' => {
       template: {
@@ -237,6 +236,11 @@ module PCRCompositionDefinitions
       primer_probe_mix: {
         input_name: PRIMER_PROBE_MIX,
         qty: 0.0, units: MICROLITERS
+      },
+      master_mix: {
+          input_name: MASTER_MIX,
+          qty: 18, units: MICROLITERS,
+          sample_name: 'Rehydration Buffer'
       }
     }
   }.freeze
