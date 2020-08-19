@@ -174,92 +174,102 @@ module PCRProgramDefinitions
       program_template_name: 'CDC_qScript_XLT_ToughMix',
       layout_template_name: 'CDC_qScript_XLT_ToughMix',
       volume: 20,
-      step1: {
-        temperature: { qty: 50, units: DEGREES_C },
-        duration: { qty: 10, units: MINUTES }
-      },
-      step2: {
-        temperature: { qty: 95, units: DEGREES_C },
-        duration: { qty: 3, units: MINUTES }
-      },
-      step3: {
-        temperature: { qty: 95, units: DEGREES_C },
-        duration: { qty: 3, units: SECONDS }
-      },
-      step4: {
-        temperature: { qty: 55, units: DEGREES_C },
-        duration: { qty: 30, units: SECONDS }
-      },
-      step5: { goto: 3, times: 44 }
+      steps:{
+        step1: {
+          temperature: { qty: 50, units: DEGREES_C },
+          duration: { qty: 10, units: MINUTES }
+        },
+        step2: {
+          temperature: { qty: 95, units: DEGREES_C },
+          duration: { qty: 3, units: MINUTES }
+        },
+        step3: {
+          temperature: { qty: 95, units: DEGREES_C },
+          duration: { qty: 3, units: SECONDS }
+        },
+        step4: {
+          temperature: { qty: 55, units: DEGREES_C },
+          duration: { qty: 30, units: SECONDS }
+        },
+        step5: { goto: 3, times: 44 }
+      }
     },
 
     'CDC_UltraPlex_ToughMix' => {
       program_template_name: 'CDC_UltraPlex_ToughMix',
       layout_template_name: 'CDC_UltraPlex_ToughMix',
       volume: 20,
-      step1: {
-        temperature: { qty: 50, units: DEGREES_C },
-        duration: { qty: 10, units: MINUTES }
-      },
-      step2: {
-        temperature: { qty: 95, units: DEGREES_C },
-        duration: { qty: 3, units: MINUTES }
-      },
-      step3: {
-        temperature: { qty: 95, units: DEGREES_C },
-        duration: { qty: 3, units: SECONDS }
-      },
-      step4: {
-        temperature: { qty: 55, units: DEGREES_C },
-        duration: { qty: 30, units: SECONDS }
-      },
-      step5: { goto: 3, times: 44 }
+      steps: {
+        step1: {
+          temperature: { qty: 50, units: DEGREES_C },
+          duration: { qty: 10, units: MINUTES }
+        },
+        step2: {
+          temperature: { qty: 95, units: DEGREES_C },
+          duration: { qty: 3, units: MINUTES }
+        },
+        step3: {
+          temperature: { qty: 95, units: DEGREES_C },
+          duration: { qty: 3, units: SECONDS }
+        },
+        step4: {
+          temperature: { qty: 55, units: DEGREES_C },
+          duration: { qty: 30, units: SECONDS }
+        },
+        step5: { goto: 3, times: 44 }
+      }
     },
 
     'CDC_GoTaq_Probe_1-Step' => {
       program_template_name: 'CDC_GoTaq_Probe_1-Step',
       layout_template_name: 'CDC_GoTaq_Probe_1-Step',
       volume: 20,
-      step1: {
-        temperature: { qty: 45, units: DEGREES_C },
-        duration: { qty: 15, units: MINUTES }
-      },
-      step2: {
-        temperature: { qty: 95, units: DEGREES_C },
-        duration: { qty: 2, units: MINUTES }
-      },
-      step3: {
-        temperature: { qty: 95, units: DEGREES_C },
-        duration: { qty: 3, units: SECONDS }
-      },
-      step4: {
-        temperature: { qty: 55, units: DEGREES_C },
-        duration: { qty: 30, units: SECONDS }
-      },
-      step5: { goto: 3, times: 44 }
+      steps: {
+        step1: {
+          temperature: { qty: 45, units: DEGREES_C },
+          duration: { qty: 15, units: MINUTES }
+        },
+        step2: {
+          temperature: { qty: 95, units: DEGREES_C },
+          duration: { qty: 2, units: MINUTES }
+        },
+        step3: {
+          temperature: { qty: 95, units: DEGREES_C },
+          duration: { qty: 3, units: SECONDS }
+        },
+        step4: {
+          temperature: { qty: 55, units: DEGREES_C },
+          duration: { qty: 30, units: SECONDS }
+        },
+        step5: { goto: 3, times: 44 }
+      }
     },
     
     'Modified_CDC' => {
       program_template_name: 'Modified_CDC',
       layout_template_name: 'Modified_CDC',
       volume: 20,
-      step1: {
-        temperature: { qty: 50, units: DEGREES_C },
-        duration: { qty: 8, units: MINUTES }
-      },
-      step2: {
-        temperature: { qty: 94, units: DEGREES_C },
-        duration: { qty: 2, units: MINUTES }
-      },
-      step3: {
-        temperature: { qty: 94, units: DEGREES_C },
-        duration: { qty: 1, units: SECONDS }
-      },
-      step4: {
-        temperature: { qty: 57, units: DEGREES_C },
-        duration: { qty: 30, units: SECONDS }
-      },
-      step5: { goto: 3, times: 50 }
+      steps: {
+        step1: {
+          temperature: { qty: 50, units: DEGREES_C },
+          duration: { qty: 8, units: MINUTES }
+        },
+        step2: {
+          temperature: { qty: 94, units: DEGREES_C },
+          duration: { qty: 2, units: MINUTES }
+        },
+        step3: {
+          temperature: { qty: 94, units: DEGREES_C },
+          duration: { qty: 1, units: SECONDS }
+        },
+        step4: {
+          temperature: { qty: 57, units: DEGREES_C },
+          duration: { qty: 30, units: SECONDS }
+        },
+        step5: { 
+          goto: 3, times: 50 
+        }
+      }
     }
   }.freeze
 

@@ -182,7 +182,7 @@ class ReactionComponent
   # @param item [Item]
   def item=(item)
     if sample
-      raise ProtocolError, 'Item / Sample mismatch' unless sample == item.sample
+      raise ProtocolError, "Item / Sample mismatch, #{item.sample.name}, #{sample.name}" unless sample == item.sample
     else
       @sample = item.sample
     end
