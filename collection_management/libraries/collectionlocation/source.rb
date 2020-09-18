@@ -74,4 +74,17 @@ module CollectionLocation
     row, column = convert_location_to_coordinates(location)
     collection.part(row, column)
   end
+  
+  # Returns the exact location of an Part in a collection.
+  #  Will return the location of only that part
+  #
+  # @param collection [Collection]
+  # @param item [Item] item that exists in the collection
+  # @return [row, column] the location in the collection
+  def find_item_in_collection(collection:, item:)
+    collection.get_non_empty.each do |row, column|
+      return [row, column] if collection.part(row, column).id == item.id 
+    end
+  end
+  
 end

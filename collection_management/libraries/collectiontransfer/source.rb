@@ -5,6 +5,7 @@
 
 needs 'Standard Libs/Units'
 needs 'Standard Libs/AssociationManagement'
+needs 'Standard Libs/Pipettors'
 needs 'Collection Management/CollectionLocation'
 needs 'Collection Management/CollectionData'
 
@@ -13,6 +14,7 @@ module CollectionTransfer
   include AssociationManagement
   include CollectionLocation
   include CollectionData
+  include Pipettors
 
   VOL_TRANSFER = 'Volume Transferred'.to_sym
 
@@ -48,12 +50,15 @@ module CollectionTransfer
                                       association_map:)
     pipettor = get_multi_channel_pipettor(volume: volume)
     channels = pipettor.channels
-    association_map.each_slice(channels).each do |rc_slice|
-      pipet_into_collection(to_collection: to_collection,
-                            source: source,
-                            pipettor: pipettor,
-                            volume: volume,
-                            association_map: rc_slice)
+    map_by_row = association_map.group_by { |map| map[:to_loc][0] }
+    map_by_row.each do |_row, association_map|
+      association_map.each_slice(channels).each do |rc_slice|
+        pipet_into_collection(to_collection: to_collection,
+                              source: source,
+                              pipettor: pipettor,
+                              volume: volume,
+                              association_map: rc_slice)
+      end
     end
   end
 
@@ -89,7 +94,7 @@ module CollectionTransfer
                                               from_collection:,
                                               volume:,
                                               association_map:)
-    pipettor = get_single_channel_pipettor(volume)
+    pipettor = get_single_channel_pipettor(volume: volume)
     association_map.each do |loc_hash|
       pipet_collection_to_collection(to_collection: to_collection,
                                      from_collection: from_collection,
@@ -111,8 +116,8 @@ module CollectionTransfer
                                             from_collection:,
                                             volume:,
                                             association_map:)
-    pipettor = get_multichannel_pipettor(volume)
-    association_map.slice(pipettor.channels).each do |map_slice|
+    pipettor = get_multi_channel_pipettor(volume: volume)
+    association_map.each_slice(pipettor.channels).to_a.each do |map_slice|
       pipet_collection_to_collection(to_collection: to_collection,
                                      from_collection: from_collection,
                                      pipettor: pipettor,
@@ -141,14 +146,18 @@ module CollectionTransfer
       from_rc_list.push(loc_hash[:from_loc])
     end
     show do
-      title 'Pipet from Collection to Collection'
+      title 'Pipet from Collection to Wells'
       note pipettor.pipet(volume: volume,
-                          source: to_collection.id,
+                          source: from_collection.id,
                           destination: "<b>#{to_collection.id}</b> as noted below}")
-      table highlight_collection_rc(to_collection, to_rc_list) { |r, c|
+      note '</b>From Collection:</b>'
+      table highlight_collection_rc(from_collection, from_rc_list, check: false) { |r, c|
         convert_coordinates_to_location([r, c])
       }
-      table highlight_collection_rc(from_collection, from_rc_list) { |r, c|
+      separator
+      
+      note '</b>To Collection:</b>'
+      table highlight_collection_rc(to_collection, to_rc_list, check: false) { |r, c|
         convert_coordinates_to_location([r, c])
       }
     end
@@ -161,13 +170,11 @@ module CollectionTransfer
                             association_map:)
     rc_list = association_map.map { |hash| hash[:to_loc] }
     show do
-      title "Pipet from #{source} to Collection"
+      title "Pipet from #{source} to Wells"
       note pipettor.pipet(volume: volume,
                           source: source,
-                          destination: "<b>#{to_collection.id}</b> noted below")
-      table highlight_collection_rc(to_collection, rc_list) { |r, c|
-        convert_coordinates_to_location([r, c])
-      }
+                          destination: "the highlighted wells noted below")
+      table highlight_collection_rc(to_collection, rc_list, check: false)
     end
   end
 
@@ -310,12 +317,13 @@ module CollectionTransfer
   #
   # @param to_collection [Collection] the to collection
   # @param from_collection [Collection] the from collection
-  def one_to_one_association_map(to_collection:, from_collection: nil)
-    rows, cols = to_collection.dimensions
+  def one_to_one_association_map(from_collection:, to_collection: nil)
+    rows, cols = from_collection.dimensions
     association_map = []
     rows.times do |row|
       cols.times do |col|
-        next unless from_collection.nil? || !from_collection.part(row, col).nil?
+        next unless to_collection.nil? || !to_collection.part(row, col).nil?
+        next if from_collection.part(row, col).nil?
 
         loc = [row, col]
         association_map.push({ to_loc: loc, from_loc: loc })
