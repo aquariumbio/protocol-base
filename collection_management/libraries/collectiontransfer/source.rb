@@ -206,6 +206,8 @@ module CollectionTransfer
 
       from_part = from_collection.part(from_loc[0], from_loc[1])
       to_collection.set(to_loc[0], to_loc[1], from_part)
+    rescue
+      raise from_loc.to_s
     end
     associate_transfer_collection_to_collection(from_collection: from_collection,
                                                 to_collection: to_collection,
@@ -318,11 +320,18 @@ module CollectionTransfer
   # @param to_collection [Collection] the to collection
   # @param from_collection [Collection] the from collection
   def one_to_one_association_map(from_collection:, to_collection: nil)
-    rows, cols = from_collection.dimensions
+    from_rows, from_cols = from_collection.dimensions
+    if to_collection
+      to_rows, to_cols = to_collection.dimensions
+      rows = [to_rows, from_rows].min
+      cols = [to_cols, from_cols].min
+    else
+      rows = from_rows
+      cols = from_cols
+    end
     association_map = []
     rows.times do |row|
       cols.times do |col|
-        next unless to_collection.nil? || !to_collection.part(row, col).nil?
         next if from_collection.part(row, col).nil?
 
         loc = [row, col]
