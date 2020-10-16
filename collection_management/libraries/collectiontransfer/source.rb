@@ -5,15 +5,17 @@
 
 needs 'Standard Libs/Units'
 needs 'Standard Libs/AssociationManagement'
-needs 'Standard Libs/Pipettors'
+needs 'Small Instruments/Pipettors'
 needs 'Collection Management/CollectionLocation'
 needs 'Collection Management/CollectionData'
+needs 'Collection Management/CollectionDisplay'
 
 module CollectionTransfer
   include Units
   include AssociationManagement
   include CollectionLocation
   include CollectionData
+  include CollectionDisplay
   include Pipettors
 
   VOL_TRANSFER = 'Volume Transferred'.to_sym
@@ -47,18 +49,27 @@ module CollectionTransfer
   def multichannel_item_to_collection(to_collection:,
                                       source:,
                                       volume:,
-                                      association_map:)
+                                      association_map:,
+                                      verbose: true)
     pipettor = get_multi_channel_pipettor(volume: volume)
     channels = pipettor.channels
-    map_by_row = association_map.group_by { |map| map[:to_loc][0] }
-    map_by_row.each do |_row, association_map|
-      association_map.each_slice(channels).each do |rc_slice|
-        pipet_into_collection(to_collection: to_collection,
-                              source: source,
-                              pipettor: pipettor,
-                              volume: volume,
-                              association_map: rc_slice)
+    if verbose
+      map_by_row = association_map.group_by { |map| map[:to_loc][0] }
+      map_by_row.each do |_row, map|
+        map.each_slice(channels).each do |rc_slice|
+          pipet_into_collection(to_collection: to_collection,
+                                source: source,
+                                pipettor: pipettor,
+                                volume: volume,
+                                association_map: rc_slice)
+        end
       end
+    else
+      pipet_into_collection(to_collection: to_collection,
+                            source: source,
+                            pipettor: pipettor,
+                            volume: volume,
+                            association_map: association_map)
     end
   end
 
@@ -203,11 +214,12 @@ module CollectionTransfer
     association_map.each do |loc_hash|
       to_loc = loc_hash[:to_loc]
       from_loc = loc_hash[:from_loc]
-
-      from_part = from_collection.part(from_loc[0], from_loc[1])
-      to_collection.set(to_loc[0], to_loc[1], from_part)
-    rescue
-      raise from_loc.to_s
+      begin
+        from_part = from_collection.part(from_loc[0], from_loc[1])
+        to_collection.set(to_loc[0], to_loc[1], from_part)
+      rescue
+        raise from_loc.to_s
+      end
     end
     associate_transfer_collection_to_collection(from_collection: from_collection,
                                                 to_collection: to_collection,
@@ -251,11 +263,10 @@ module CollectionTransfer
                                        loc_hash[:from_loc][1])
       to_part = to_collection.part(loc_hash[:to_loc][0],
                                    loc_hash[:to_loc][1])
-      unless transfer_vol.nil?
-        associate_transfer_vol(transfer_vol, VOL_TRANSFER, to_part: to_part,
-                                                           from_part: from_part)
-      end
-      from_obj_to_obj_provenance(to_part, from_part)
+      item_to_item_vol_transfer(volume: transfer_vol,
+                                key: VOL_TRANSFER.to_s + from_part.id.to_s,
+                                to_item: to_part,
+                                from_item: from_part)
     end
   end
 
@@ -273,11 +284,10 @@ module CollectionTransfer
     association_map.each do |loc_hash|
       to_part = to_collection.part(loc_hash[:to_loc][0],
                                    loc_hash[:to_loc][1])
-      unless transfer_vol.nil?
-        associate_transfer_vol(transfer_vol, VOL_TRANSFER, to_part: to_part,
-                                                           from_part: from_item)
-      end
-      from_obj_to_obj_provenance(to_part, from_item)
+      item_to_item_vol_transfer(volume: transfer_vol,
+                                key: VOL_TRANSFER.to_s + from_item.id.to_s,
+                                to_item: to_part,
+                                from_item: from_item)
     end
   end
 
@@ -291,28 +301,15 @@ module CollectionTransfer
   def associate_transfer_collection_to_item(from_collection:,
                                             to_item:,
                                             association_map:,
-                                            transfer_vol: nil)
+                                             transfer_vol: nil)
     association_map.each do |loc_hash|
       from_part = from_collection.part(loc_hash[:from_loc][0],
                                        loc_hash[:from_loc][1])
-      unless transfer_vol.nil?
-        associate_transfer_vol(transfer_vol, VOL_TRANSFER, to_part: to_item,
-                                                           from_part: from_part)
-      end
-      from_obj_to_obj_provenance(to_item, from_part)
+      item_to_item_vol_transfer(volume: transfer_vol,
+                                key: VOL_TRANSFER.to_s + from_part.id.to_s,
+                                to_item: to_item,
+                                from_item: from_part)
     end
-  end
-
-  # Records the volume transferred
-  #
-  # @param transfer_vol [{qty: int, units: string}]
-  # @param to_part: part that is being transferred to
-  # @param from_part: part that is being transferred from
-  def associate_transfer_vol(vol, key, to_part:, from_part:)
-    vol_transfer_array = get_associated_data(to_part, key)
-    vol_transfer_array = [] if vol_transfer_array.nil?
-    vol_transfer_array.push([from_part.id, vol])
-    associate_data(to_part, key, vol_transfer_array)
   end
 
   # Creates a one to one association map
@@ -339,5 +336,20 @@ module CollectionTransfer
       end
     end
     association_map
+  end
+
+  # Sets wells of one plate to the same sample as the from plate per
+  # the association map
+  #
+  # @param from_plate [Collection]
+  # @param to_collection [Collection]
+  # @param association_map [Array<Hash>] per previous instructions
+  def copy_wells(from_collection:, to_collection:, association_map:)
+    association_map.each do |map|
+      to_loc = map[:to_loc]
+      from_loc = map[:from_loc]
+      item = from_collection.part(from_loc[0], from_loc[1])
+      to_collection.set(to_loc[0], to_loc[1], item)
+    end
   end
 end

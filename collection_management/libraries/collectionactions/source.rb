@@ -6,9 +6,61 @@
 # NOTE: The collection is doing the whole action
 
 needs 'Standard Libs/ItemActions'
+needs 'Collection Management/CollectionTransfer'
+needs 'Collection Management/CollectionDisplay'
 
 module CollectionActions
   include ItemActions
+  include CollectionTransfer
+  include CollectionDisplay
+
+  # Instructs tech to remove supernatant and discard
+  #
+  # @param item [Array<Item>]
+  # @param amap [Hash<from_loc: [r,c]]
+  def remove_discard_supernatant(items, association_map: nil)
+    group = items.group_by(&:collection?)
+    if group[false].present?
+      remove_item_supernatant(group[false])
+    elsif group[true].present?
+      remove_collection_supernatant(group[true], amap: association_map)
+    end
+  end
+
+  # Instructions to remove supernatant from a collection
+  # USE 'remove_discard_supernatant' instead
+  #
+  # @param plates [Array<Collection>]
+  # @param amap [Hash<from_loc: [r,c]]
+  def remove_collection_supernatant(plates, amap: nil)
+    plates.each do |plate|
+      unless amap.present?
+        amap = one_to_one_association_map(from_collection: plate)
+      end
+
+      rc_list = amap.map { |hash| hash[:from_loc] }
+
+      show do
+        title 'Remove Supernatant'
+        note 'Remove and discard supernatant from the following wells:'
+        table highlight_collection_rc(plate, rc_list)
+      end
+    end
+  end
+
+  # Instructions to remove supernatant from an item
+  # Needed to be here to replace the Item Action version
+  #
+  # @param items [Array<item>]
+  def remove_item_supernatant(items)
+    show do
+      title 'Remove Supernatant'
+      note 'Remove and discard supernatant from:'
+      items.each do |item|
+        bullet item.to_s
+      end
+    end
+  end
 
   # Creates new collection.  Instructions to tech optional
   #
@@ -21,6 +73,7 @@ module CollectionActions
     working_plate
   end
 
+  # TODO This is the same as 'copy_wells' in CollectionTransfer
   # Makes an exact copy of the from collection.
   # Will make the to_collection if needed
   #
@@ -33,8 +86,7 @@ module CollectionActions
     if to_collection.nil?
       to_collection = make_new_plate(collection_type, label_plate: label_plates)
     end
-    matrix = from_collection.matrix
-    to_collection.matrix = matrix
+
     to_collection
   end
 
@@ -172,15 +224,17 @@ module CollectionActions
   #
   # @param collection [Collection]
   # @param rc_list [Array<[r,c]>] specify certain wells to cover
-  def seal_plate(collections, rc_list: nil)
-    unless collection.is_a? Array
+  def seal_plate(collections, rc_list: nil, seal: nil)
+    unless collections.is_a? Array
       collections = [collections]
     end
+
+    seal = 'area seal' if seal.nil?
 
     collections.each do |collection|
       show do
         title 'Seal Wells'
-        note "Using an area seal carefully seal plate #{collection.id}"
+        note "Using a/an <b> #{seal} </b> carefully seal plate #{collection.id}"
         unless rc_list.nil?
           warning 'ONLY seal the highlighted wells'
           table highlight_collection_rc(collection, rc_list)

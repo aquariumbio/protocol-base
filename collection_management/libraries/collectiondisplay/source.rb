@@ -75,8 +75,7 @@ module CollectionDisplay
       sample_locations = get_alpha_num_location(collection, sample)
 
       sample_coordinates.each do |coordinates|
-        raise "sample locations #{sample_locations[sample].class}"
-        coordinates.push(sample_locations[sample]) # [0,0,A1]
+        coordinates.push(sample_locations[sample])
         coordinates_and_data.push(coordinates)
       end
     end
@@ -218,7 +217,7 @@ module CollectionDisplay
   # @param check [Boolean] optional determines if cell is checkable or not
   def highlight_cell(tbl, row, col, id, check: false)
     bg_color = '&#ade6dd' unless check
-    
+
     tbl[row + 2][col + 1] = { content: id,
                               check: check,
                               class: 'td-full-slot',
@@ -299,26 +298,18 @@ module CollectionDisplay
   #  for each part noted in rc_list
   #
   # @param collection [Collection] the collection
-  # @param keys [Array<String>] an array of all keys that point to desired data
+  # @param keys [String] the Key
   # @param rc_list [Array<Array<row, col>...>] optional array of locations
   #        if not given will display all non_empty
   # @return table of parts with data information
-  def display_data(collection, keys, rc_list: nil)
+  def display_data(collection, key, rc_list: nil)
     if rc_list.nil?
       rc_list = collection.get_non_empty
     end
     rcx_array = []
     rc_list.each do |loc|
-      data_string = ''
-      keys.each_with_index do |key, idx|
-        part = collection.part(loc[0], loc[1])
-        data = get_associated_data(part, key).to_s
-        unless data.nil?
-          data_string += ', ' unless idx.zero?
-          data_string += data
-        end
-      end
-      loc.push(data_string)
+      part = collection.part(loc[0], loc[1])
+      loc.push(get_associated_data(part, key))
       rcx_array.push(loc)
     end
     highlight_collection_rcx(collection, rcx_array, check: false)
