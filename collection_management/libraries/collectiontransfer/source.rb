@@ -9,6 +9,7 @@ needs 'Small Instruments/Pipettors'
 needs 'Collection Management/CollectionLocation'
 needs 'Collection Management/CollectionData'
 needs 'Collection Management/CollectionDisplay'
+needs 'Standard Libs/ItemActions'
 
 module CollectionTransfer
   include Units
@@ -17,6 +18,7 @@ module CollectionTransfer
   include CollectionData
   include CollectionDisplay
   include Pipettors
+  include ItemActions
 
   VOL_TRANSFER = 'Volume Transferred'.to_sym
 
@@ -50,7 +52,7 @@ module CollectionTransfer
                                       source:,
                                       volume:,
                                       association_map:,
-                                      verbose: true)
+                                      verbose: false)
     pipettor = get_multi_channel_pipettor(volume: volume)
     channels = pipettor.channels
     if verbose
@@ -71,6 +73,14 @@ module CollectionTransfer
                             volume: volume,
                             association_map: association_map)
     end
+    return {} unless to_collection.is_a?(Collection) && source.is_a?(Item)
+
+    transfer_from_item_to_collection(
+      from_item: source,
+      to_collection: to_collection,
+      association_map: association_map,
+      transfer_vol: volume
+    )
   end
 
   # Direction to use single channel pipettor to pipet from an item
@@ -91,6 +101,14 @@ module CollectionTransfer
                           volume: volume,
                           association_map: association_map,
                           pipettor: pipettor)
+    return {} unless to_collection.is_a?(Collection) && source.is_a?(Item)
+
+    transfer_from_item_to_collection(
+      from_item: source,
+      to_collection: to_collection,
+      association_map: association_map,
+      transfer_vol: volume
+    )
   end
 
   # Direction to use single channel pipettor to pipet from
@@ -113,6 +131,14 @@ module CollectionTransfer
                                      volume: volume,
                                      association_map: [loc_hash])
     end
+    return {} unless to_collection.is_a?(Collection) && from_collection.is_a?(Item)
+
+    transfer_from_collection_to_collection(
+      from_collection: from_collection,
+      to_collection: to_collection,
+      association_map: association_map,
+      transfer_vol: volume
+    )
   end
 
   # Direction to use single channel pipettor to pipet from
@@ -126,15 +152,32 @@ module CollectionTransfer
   def multichannel_collection_to_collection(to_collection:,
                                             from_collection:,
                                             volume:,
-                                            association_map:)
+                                            association_map:,
+                                            verbose: false)
     pipettor = get_multi_channel_pipettor(volume: volume)
-    association_map.each_slice(pipettor.channels).to_a.each do |map_slice|
+    if verbose
+      association_map.each_slice(pipettor.channels).to_a.each do |map_slice|
+        pipet_collection_to_collection(to_collection: to_collection,
+                                       from_collection: from_collection,
+                                       pipettor: pipettor,
+                                       volume: volume,
+                                       association_map: map_slice)
+      end
+    else
       pipet_collection_to_collection(to_collection: to_collection,
                                      from_collection: from_collection,
                                      pipettor: pipettor,
                                      volume: volume,
-                                     association_map: map_slice)
+                                     association_map: association_map)
     end
+    return {} unless to_collection.is_a?(Collection) && from_collection.is_a?(Item)
+
+    transfer_from_collection_to_collection(
+      from_collection: from_collection,
+      to_collection: to_collection,
+      association_map: association_map,
+      transfer_vol: volume
+    )
   end
 
   # Directions to use pipet to transfer from a collection to a collection
@@ -161,30 +204,44 @@ module CollectionTransfer
       note pipettor.pipet(volume: volume,
                           source: from_collection.id,
                           destination: "<b>#{to_collection.id}</b> as noted below}")
-      note '</b>From Collection:</b>'
+      note "</b>From Collection:</b> #{from_collection}"
       table highlight_collection_rc(from_collection, from_rc_list, check: false) { |r, c|
         convert_coordinates_to_location([r, c])
       }
       separator
-      
-      note '</b>To Collection:</b>'
+
+      note "</b>To Collection:</b> #{to_collection}"
       table highlight_collection_rc(to_collection, to_rc_list, check: false) { |r, c|
         convert_coordinates_to_location([r, c])
       }
     end
   end
 
+  # Provides directions for pipetting from an item into a collection
+  #
+  # @param to_collection [Collection]
+  # @param source []
+  # @param volume [Volume] volume class volume being transferred
+  # @param association_map [Array<{ to_loc: [row,col], from_loc: {row, col} }>]
+  #     all the coordinate of where parts are
+  # @param pipettor [Pipettor] the pipettor to be used
   def pipet_into_collection(to_collection:,
                             source:,
                             pipettor:,
                             volume:,
                             association_map:)
     rc_list = association_map.map { |hash| hash[:to_loc] }
+
+    if pipettor.class::CHANNELS > 1
+      show_fill_reservoir(source, volume, rc_list.length)
+      source = "Media Reservoir #{source}"
+    end
+
     show do
       title "Pipet from #{source} to Wells"
       note pipettor.pipet(volume: volume,
                           source: source,
-                          destination: "the highlighted wells noted below")
+                          destination: "the highlighted wells of #{to_collection}")
       table highlight_collection_rc(to_collection, rc_list, check: false)
     end
   end
@@ -301,7 +358,7 @@ module CollectionTransfer
   def associate_transfer_collection_to_item(from_collection:,
                                             to_item:,
                                             association_map:,
-                                             transfer_vol: nil)
+                                            transfer_vol: nil)
     association_map.each do |loc_hash|
       from_part = from_collection.part(loc_hash[:from_loc][0],
                                        loc_hash[:from_loc][1])

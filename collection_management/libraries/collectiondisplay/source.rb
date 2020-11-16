@@ -153,32 +153,32 @@ module CollectionDisplay
     border_color = "&#E9E9E9"
     bg_color = "&#b8b8b8"
     col_id = col_id.to_s
-    rows = rows + 1
+    rows = rows
     size = rows * columns
     slots = (1..size + rows + columns + 1).to_a
     tab = slots.each_slice(columns + 1).each_with_index.map do |row, row_idx|
       row.each_with_index.map do |col, col_idx|
+        #if row_idx == 0
+        #  if col_idx == 0
+        #    { class: 'td-empty-slot',
+        #      content: '<b>ID:</b>',
+        #      style: {color: text_color, 'background-color' => border_color } }
+        #  elsif col_idx == 1
+        #    { class: 'td-empty-slot',
+        #      content: "<b>#{col_id}</b>",
+        #      style: {color: text_color, 'background-color' => border_color, border: '0px' } }
+        #  else
+        #    { class: 'td-empty-slot',
+        #      content: '',
+        #      style: {color: text_color, 'background-color' => border_color, border: '0px' } }
+        #  end
         if row_idx == 0
-          if col_idx == 0
-            { class: 'td-empty-slot',
-              content: '<b>ID:</b>',
-              style: {color: text_color, 'background-color' => border_color } }
-          elsif col_idx == 1
-            { class: 'td-empty-slot',
-              content: "<b>#{col_id}</b>",
-              style: {color: text_color, 'background-color' => border_color, border: '0px' } }
-          else
-            { class: 'td-empty-slot',
-              content: '',
-              style: {color: text_color, 'background-color' => border_color, border: '0px' } }
-          end
-        elsif row_idx == 1
           { class: 'td-empty-slot',
             content: "<b>#{plate_on_end ? get_alpha(col_idx) : col_idx}</b>",
             style: {color: text_color, 'background-color' => border_color } }
         elsif col_idx.zero?
           { class: 'td-empty-slot',
-            content: "<b>#{plate_on_end ? row_idx-1 : get_alpha(row_idx-1)}</b>",
+            content: "<b>#{plate_on_end ? row_idx : get_alpha(row_idx)}</b>",
             style: {color: text_color, 'background-color' => border_color } }
         else
           # Normal cells
@@ -188,7 +188,7 @@ module CollectionDisplay
         end
       end
     end
-    tab[1].first[:content] = ""
+    tab[0].first[:content] = ""
     tab
   end
 
@@ -218,7 +218,7 @@ module CollectionDisplay
   def highlight_cell(tbl, row, col, id, check: false)
     bg_color = '&#ade6dd' unless check
 
-    tbl[row + 2][col + 1] = { content: id,
+    tbl[row + 1][col + 1] = { content: id,
                               check: check,
                               class: 'td-full-slot',
                               style: {'background-color'=> bg_color}}

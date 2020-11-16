@@ -101,14 +101,13 @@ module CollectionLocation
       return [row, column] if collection.part(row, column).id == item.id 
     end
   end
-  
-  #=============DEPRECIATED CODE =================#
+
   # DEPRECIATED
   # Converts an array of coordinates to alpha numerical locations
   #
   # @param coordinates [Array<row,column>] set of coordinates
   # @return [String] alpha numerical location
   def convert_coordinates_to_location(coordinates)
-    index_to_letter(coordinates)
+    index_to_letter(coordinates[0]) + coordinates[1].to_s
   end
 end

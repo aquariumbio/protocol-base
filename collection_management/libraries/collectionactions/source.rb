@@ -101,7 +101,6 @@ module CollectionActions
   # @return [Array<Collection>] array of collections created
   def make_and_populate_collection(samples, collection_type: nil,
                                    first_collection: nil,
-                                   add_column_wise: false,
                                    label_plates: false)
 
     if collection_type.nil? && first_collection.nil?
@@ -119,8 +118,7 @@ module CollectionActions
       remaining_space = first_collection.get_empty.length
       add_samples_to_collection(samples[0...remaining_space - 1],
                                 first_collection,
-                                label_plates: label_plates,
-                                add_column_wise: add_column_wise)
+                                label_plates: label_plates)
       samples = samples.drop(remaining_space)
     else
       obj_type = ObjectType.find_by_name(collection_type)
@@ -132,60 +130,42 @@ module CollectionActions
     grouped_samples = samples.in_groups_of(capacity, false)
     grouped_samples.each do |sub_samples|
       collection = make_new_plate(collection_type, label_plate: label_plates)
-      add_samples_to_collection(sub_samples, collection, 
-                                add_column_wise: add_column_wise)
+      add_samples_to_collection(sub_samples, collection)
       collections.push(collection)
     end
     collections
   end
 
   # Assigns samples to specific well locations
+  # The order of the samples and the order of the association map should be
+  # the same
   #
   # @param samples [Array<FieldValue>] or [Array<Samples>]
   # @param to_collection [Collection]
-  # @param add_row_wise [Boolean] default false, will add samples by column
+  # @param association_map map of where samples should go
   # @raise if not enough space in collection
-  def add_samples_to_collection(samples, to_collection, add_column_wise: false)
-    samples.map! do |fv|
-      unless fv.is_a?(Sample)
-        fv = fv.sample
-      end
-      fv
+  def add_samples_to_collection(samples, to_collection, association_map: nil)
+    slots_left = to_collection.get_empty.length
+    if samples.length > slots_left
+      raise "Not enough space in in collection #{to_collection}"
     end
 
-    slots_left = to_collection.get_empty.length
-    raise 'Not enough space in in collection' if samples.length > slots_left
-
-    if add_column_wise
-      add_samples_column_wise(samples, to_collection)
-    else
+    unless association_map.present?
       to_collection.add_samples(samples)
+      return to_collection
+    end
+
+    samples.zip(association_map).each do |sample, map|
+      next if sample.nil?
+
+      if map.nil?
+        to_collection.add(sample)
+        next
+      end
+
+      to_collection.set(rc[0], rc[1], sample)
     end
     to_collection
-  end
-
-  # Adds samples to the first slot in the first available column
-  # as opposed to column wise that the base version does.
-  #
-  # @param samples_to_add [Array<Samples>] an array of samples
-  # @param collection [Collection] the collection to include samples
-  def add_samples_column_wise(samples_to_add, collection)
-    col_matrix = collection.matrix
-    columns = col_matrix.first.size
-    rows = col_matrix.size
-    samples_to_add.each do |sample|
-      break_pattern = false
-      columns.times do |col|
-        rows.times do |row|
-          if collection.part(row, col).nil?
-            collection.set(row, col, sample)
-            break_pattern = true
-            break
-          end
-        end
-        break if break_pattern
-      end
-    end
   end
 
   # Instructions on getting and labeling new plate
@@ -197,6 +177,7 @@ module CollectionActions
       note "Get a <b>#{plate.object_type.name}</b> and
            label it ID: <b>#{plate.id}</b>"
     end
+    plate
   end
 
   # Associates field_values to corresponding samples in a collection
