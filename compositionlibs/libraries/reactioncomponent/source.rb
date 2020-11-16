@@ -9,7 +9,7 @@ class Component
   include Units
 
   attr_reader :input_name, :qty, :units
-  attr_accessor :added, :location, :description
+  attr_accessor :added, :location, :description, :lot_number, :adj_qty
 
   LOT_NUM = 'Lot_Number'
 
@@ -21,6 +21,7 @@ class Component
     @location = location
     @description = description
     @adj_qty = qty
+    @lot_number = nil
   end
 
   # Returns if component is a kit
@@ -44,9 +45,10 @@ class Component
 
   # The volume as a qty, units hash
   #
+  # @param adj_qty [Boolean] true if show adjusted quantity
   # @return [Hash]
-  def volume_hash
-    { qty: qty, units: units }
+  def volume_hash(adj_qty: false)
+    { qty: adj_qty ? @adj_qty : @qty, units: units }
   end
 
   # Displays the volume (`qty`) with units
@@ -58,18 +60,21 @@ class Component
              else
                qty
              end
-    Units.qty_display({ qty: amount.round(round), units: units })
+    amount = amount.round(round) unless amount.nil?
+    Units.qty_display({ qty: amount, units: units })
   end
 
-  # provides the `qty` for display in a table, and markes it as `added`
+  # Adjusts the qty by a given factor and, if needed, makes it checkable
+  #   in a table
   #
-  # @param (see #adjusted_qty)
-  # @return (see #adjusted_qty)
-  def add_in_table(mult = 1.0, round = 1, checkable = true)
-    @added = true
-    adjusted_qty(mult, round, checkable)
+  # @param mult [Float] the factor to multiply `qty` by
+  # @param round [FixNum] the number of places to round the result to
+  # @param checkable [Boolean] whether to make the result checkable
+  #   in a table
+  # @return [Numeric, Hash]
+  def adjusted_qty(mult = 1.0, round = 1)
+    @adj_qty = (qty * mult).round(round)
   end
-
 end
 
 # Models a kit of parts in a biochemical reaction
@@ -77,7 +82,7 @@ end
 # @author Cannon Mallory <malloc3@uw.edu>
 class KitComponent < Component
 
-  attr_reader :composition, :lot_number
+  attr_reader :composition
 
   # Initializes the KitComponent and creates sub components
   # for the kit.
@@ -93,11 +98,12 @@ class KitComponent < Component
           qty: qty, units: units,
           location: location,
           description: description)
-    @lot_number = lot_number
     set_default_part_location(components)
     set_default_part_location(consumables)
     @composition = CompositionFactory.build(components: components,
                                             consumables: consumables)
+    @lot_number = lot_number
+    set_lot_numbers
   end
 
   # passes through the input to composition
@@ -127,8 +133,16 @@ class KitComponent < Component
 
   private
 
-  # Sets the default location for kit parts to the kit name. 
-  # Will not reset user defined locations.  
+  # Sets all components lot numbers to the kit lot number
+  #
+  def set_lot_numbers
+    @composition.components.each do |comp|
+      comp.lot_number = @lot_number
+    end
+  end
+
+  # Sets the default location for kit parts to the kit name.
+  # Will not reset user defined locations.
   def set_default_part_location(parts)
     name = @input_name.to_s
     name += "-#{@lot_num}" unless @lot_num.nil?
@@ -165,7 +179,7 @@ end
 # @author Devin Strickland <strcklnd@uw.edu>
 # @author Cannon Mallory <strcklnd@uw.edu>
 class ReactionComponent < Component
-  attr_reader :sample, :item, :adj_qty
+  attr_reader :sample, :item, :adj_qty, :object_type
 
   # Instantiates the class
   #
@@ -182,15 +196,15 @@ class ReactionComponent < Component
                  location: 'unknown')
     super(input_name: input_name, qty: qty, units: units, location: location)
     @sample = sample_name ? Sample.find_by_name(sample_name) : nil
-    @object_type = object_type ? get_object_type(object_type: object_type) : nil
+    @object_type = object_type ? ObjectType.find_by_name(object_type) : nil
     @description = @object_type
     @item = nil
     @added = false
   end
 
-
   # Sets the description to the object_type string
   def description
+    raise ReactionComponentError, "object_type for #{@input_name} is nil" unless @object_type.present?
     if @object_type.is_a? String
       @object_type
     else
@@ -210,49 +224,6 @@ class ReactionComponent < Component
     @location = location
   end
 
-  # Finds an item unless item is already specified
-  # @return [Item]
-  def find_random_item(object_type: nil)
-    return @item if @item
-
-    ot = @object_type || object_type
-    raise 'Sample Id is nil' if @sample.nil?
-
-    ot = get_object_type(object_type: ot)
-    ite = Item.where(sample_id: @sample.id,
-                     object_type: ot).first
-
-    unless ite.present?
-      raise "Item Not found sample: #{sample.id}, ot: #{ot.name}"
-    end
-
-    self.item = ite
-
-    @item
-  end
-
-  # Makes an item unless the item is already created
-  # @return [Item]
-  def make_item(object_type: nil, lot_number: nil)
-    return @item if @item
-
-    ot = @object_type || object_type
-    raise 'Sample ID is nil' if @sample.nil?
-
-    ot = ObjectType.find_by_name(ot) if ot.is_a? String
-
-    if ot.collection_type?
-      col = Collection.new_collection(ot.name.to_s)
-      samples = Array.new(col.get_empty.length, @sample)
-      col.add_samples(samples)
-      self.item = col
-    else
-      self.item = @sample.make_item(ot.name.to_s)
-    end
-    @item.associate(LOT_NUM, lot_number) if lot_number.present?
-    @item
-  end
-
   # Sets `item`
   #
   # @param item [Item]
@@ -262,7 +233,7 @@ class ReactionComponent < Component
     else
       if @sample
         unless @sample == item.sample
-          raise ProtocolError, "Item / Sample mismatch, #{item.sample.name}, #{@sample.name}"
+          raise ReactionComponentError, "Item / Sample mismatch, #{item.sample.name}, #{@sample.name}"
         end
       else
         @sample = item.sample
@@ -271,29 +242,6 @@ class ReactionComponent < Component
     end
   end
 
-  # Adjusts the qty by a given factor and, if needed, makes it checkable
-  #   in a table
-  #
-  # @param mult [Float] the factor to multiply `qty` by
-  # @param round [FixNum] the number of places to round the result to
-  # @param checkable [Boolean] whether to make the result checkable
-  #   in a table
-  # @return [Numeric, Hash]
-  def adjusted_qty(mult = 1.0, round = 1, checkable = true)
-    @adj_qty = (qty * mult).round(round)
-    return { content: adj_qty, check: true } if checkable
-
-    @adj_qty
-  end
-
-  private
-
-  # Finds the right object type depending on if given string or object type
-  def get_object_type(object_type:)
-    raise 'Object Type is Nil' if object_type.nil?
-
-    return object_type if object_type.is_a? ObjectType
-
-    ObjectType.find_by_name(object_type)
-  end
 end
+
+class ReactionComponentError < ProtocolError; end

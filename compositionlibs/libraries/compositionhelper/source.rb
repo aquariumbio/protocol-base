@@ -1,20 +1,23 @@
 # frozen_string_literal: true
 
 needs 'Standard Libs/ItemActions'
+needs 'Standard Libs/AssociationManagement'
 needs 'Standard Libs/Debug'
 needs 'Small Instruments/Centrifuges'
 needs 'Small Instruments/Shakers'
+needs 'Small Instruments/Pipettors'
 
 module CompositionHelper
   include ItemActions
+  include AssociationManagement
   include Debug
   include Shakers
   include Centrifuges
 
   def show_get_composition(composition:)
-    show_retrieve_components(composition.components)
-    show_retrieve_consumables(composition.consumables)
-    show_retrieve_kits(composition.kits)
+    show_retrieve_components(composition.components) if composition.components.present?
+    show_retrieve_consumables(composition.consumables) if composition.consumables.present?
+    show_retrieve_kits(composition.kits) if composition.kits.present?
   end
 
   # =========== Component Methods =========#
@@ -22,7 +25,7 @@ module CompositionHelper
   def show_retrieve_components(components)
     existing_items = []
     non_existing_items = []
-    components.each do |component| 
+    components.each do |component|
       if component.item.nil?
         non_existing_items.append(component)
       else
@@ -39,7 +42,7 @@ module CompositionHelper
   # @param multi [Integer/Double]
   # @param round [Integer] how much to round
   def adjust_volume(components:, multi:, round: 1)
-    components.each do |comp|
+    components.each_with_index do |comp, idx|
       comp.adjusted_qty(multi, round)
     end
   end
@@ -48,16 +51,29 @@ module CompositionHelper
   #
   # @param components [Array<Component>]
   # @param vessel [consumable] the vessel 
-  def create_master_mix(components:, vessel:)
+  def create_master_mix(components:, master_mix_item:, adj_qty: false, vortex: true)
     show do
       title 'Create Master Mix'
-      note "Add the following to a #{vessel.input_name}"
+      note "Add the following to #{master_mix_item}"
       components.each do |comp|
-        note "#{comp.qty_display(adj_quantities: true)} - #{comp.item} #{comp.item.sample.name}"
+        unless comp.item.present?
+          raise CompositionHelperError, "Item #{comp.input_name} not present"
+        end
+
+        note pipet(volume: comp.volume_hash(adj_qty: adj_qty),
+                   source: comp.item,
+                   destination: master_mix_item)
       end
     end
 
-    shake(items: [vessel.input_name], type: 'Vortex Mixer')
+    shake(items: [master_mix_item], type: 'Vortex Mixer') if vortex
+
+    components.each do |comp|
+      item_to_item_vol_transfer(volume: comp.volume_hash(adj_qty: adj_qty),
+                                key: 'volume_transfer',
+                                to_item: comp.item,
+                                from_item: master_mix_item)
+    end
   end
 
   #========= Consumable Methods ===========#
@@ -68,6 +84,7 @@ module CompositionHelper
 
   # =========== Kit Methods  ==============#
   def show_retrieve_kits(kits, record_lot_number: true)
+    return nil unless kits.present?
     show_retrieve_parts(kits)
     kits.each do |kit|
       show_record_lot_number(kit) if record_lot_number
@@ -104,13 +121,16 @@ module CompositionHelper
         label: "#{kit_name} Lot Number",
         default: 0)
       end
-    return rand(100) if debug
-    kit.lot_number = responses.get_response('lot_number')
+    kit.lot_number = if debug
+                       rand(100)
+                     else
+                       kit.lot_number = responses.get_response('lot_number')
+                     end
   end
 
   # =========== Universal Method ========= #
   def location_table(objects)
-    location_table = [%w(Name Desctiption Location Quantity)]
+    location_table = [%w(Name Description Location Quantity)]
     objects.each do |obj|
       location_table.push([obj.input_name, obj.description, obj.location, obj.qty_display])
     end
@@ -128,3 +148,5 @@ module CompositionHelper
     end
   end
 end
+
+class CompositionHelperError < ProtocolError; end

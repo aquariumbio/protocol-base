@@ -5,6 +5,8 @@ needs 'Standard Libs/CommonInputOutputNames'
 
 needs 'CompositionLibs/ReactionComponent'
 
+needs 'Standard Libs/ItemActions'
+
 # module AbstractCompositionDefinitions
 #   include Units
 #   include CommonInputOutputNames
@@ -30,7 +32,7 @@ class CompositionFactory
                  kits: nil,
                  composition_class: AbstractComposition::NAME)
 
-    if composition_class == AbstractComposition::NAME && !kits.nil?
+    if composition_class == AbstractComposition::NAME && kits.present?
       composition_class = AbstractKitComposition::NAME
     end
 
@@ -56,6 +58,7 @@ end
 # @note As much as possible, Protocols using this class should draw
 #  input names from 'CommonInputOutputNames'
 class AbstractComposition
+  include ItemActions
 
   attr_reader :components, :consumables, :kits
 
@@ -82,12 +85,21 @@ class AbstractComposition
 
   # Find random items for all components that haven't been assigned an item
   def find_component_items
-    @components.each(&:find_random_item)
+    @components.each do |comp|
+      next if comp.item.present?
+      comp.item = find_random_item(sample: comp.sample,
+                                   object_type: comp.object_type)
+    end
   end
 
   # Makes items for all components that haven't been assigned an item
   def make_component_items
-    @components.each(&:make_item)
+    @components.each do |comp|
+      next if comp.item.present?
+      comp.item = make_item(sample: comp.sample,
+                            object_type: comp.object_type,
+                            lot_number: comp.lot_number)
+    end
   end
 
   # Gets the components that have been added
@@ -166,8 +178,7 @@ class AbstractComposition
   #
   # @return [Array<String>]
   def all_input_names
-    names = self.component_input_names
-    names.append(self.consumable_input_names)
+    self.component_input_names + self.consumable_input_names
   end
 
   # returns a list of all component input_names
@@ -195,11 +206,12 @@ class AbstractComposition
   def check_duplicate_names
     names = self.all_input_names
     unless names.uniq.length == names.length
-      raise DuplicateNamesError, 'There are duplicate input names'
+      repeated_names = names.detect{ |name| names.count(name) > 1 }
+      raise DuplicateNamesError, "There are duplicate input names #{repeated_names}"
     end
   end
 
-    # Retrieves consumables by input_name
+  # Retrieves consumables by input_name
   #
   # @param input_name [String] the name of the component to be retrieved
   # @return [ConsumableComponent]
@@ -232,14 +244,27 @@ class AbstractKitComposition < AbstractComposition
 
   # Find random items for all components that haven't been assigned an item
   def find_kit_component_items
-    @kits.each { |kit| kit.components.each(&:find_random_item) }
+    @kits.each do |kit|
+      kit.components.each do |comp|
+        comp.item = find_random_item(sample: comp.sample,
+                                     object_type: comp.object_type)
+      end
+    end
+  end
+
+  # Deprecated 
+  # Use find_component_items
+  def find_random_items
+    find_component_items
   end
 
   # Makes items for all components that haven't been assigned an item
   def make_kit_component_items
-    @kits.each do |kit| 
-      kit.components.each do |c| 
-        c.make_item(lot_number: kit.lot_number)
+    @kits.each do |kit|
+      kit.components.each do |c|
+        c.item = make_item(sample: c.sample,
+                           object_type: c.object_type,
+                           lot_number: c&.lot_number || nil)
       end
     end
   end
