@@ -25,7 +25,7 @@ class PlateLayoutGenerator
     @rows = dimensions[0]
     @columns = dimensions[1]
     @group_size = group_size
-    method ||= :cdc_sample_layout
+    method ||= :row_wise
     @layout = send(method)
     @ii = []
     @column = []
@@ -56,6 +56,12 @@ class PlateLayoutGenerator
 
   def first_index_in(column)
     @layout.index { |x| x[1] == column }
+  end
+
+  def row_wise
+    lyt = []
+    8.times { |r| 12.times { |c| lyt << [r, c] } }
+    lyt
   end
 
   def cdc_sample_layout
