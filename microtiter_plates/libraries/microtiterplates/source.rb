@@ -91,7 +91,7 @@ class MicrotiterPlate
     @plate_layout_generator = PlateLayoutGeneratorFactory.build(
       group_size: group_size,
       method: method,
-      dimensions: collection.dimensions
+      dimensions: @collection.dimensions
     )
   end
 
@@ -119,7 +119,7 @@ class MicrotiterPlate
   # @return [Array<Array<Fixnum>>]
   def associate_next_empty_group(key:, data:, column: nil)
     nxt_grp = next_empty_group(key: key, column: column)
-    nxt_grp.each { |nxt| associate(index: nxt, key: key, data: data) }
+    associate_group(group: nxt_grp, key: key, data: data)
     nxt_grp
   end
 
@@ -164,7 +164,6 @@ class MicrotiterPlate
     loop do
       nxt = @plate_layout_generator.next(column: column)
       prt = @collection.part(nxt[0], nxt[1])
-      raise "row #{nxt[0]}, column #{nxt[1]}" if prt.nil?
       break unless prt.associations[key].present?
     end
     nxt

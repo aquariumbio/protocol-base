@@ -25,7 +25,7 @@ class PlateLayoutGenerator
     @rows = dimensions[0]
     @columns = dimensions[1]
     @group_size = group_size
-    method ||= :cdc_sample_layout
+    method ||= :row_wise
     @layout = send(method)
     @ii = []
     @column = []
