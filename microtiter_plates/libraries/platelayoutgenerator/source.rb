@@ -44,6 +44,7 @@ class PlateLayoutGenerator
 
   def iterate_column(column)
     return nil if column.blank?
+
     if column < @columns
       column += 1
     else

@@ -1,11 +1,13 @@
-def LayoutMethods
-  def row_wise
-     lyt = []
-     8.times { |r| 12.times { |c| lyt << [r, c] } }
-     lyt
-   end
+# frozen_string_literal: true
 
-   def cdc_sample_layout
+module LayoutMethods
+  def row_wise
+    lyt = []
+    8.times { |r| 12.times { |c| lyt << [r, c] } }
+    lyt
+  end
+
+  def cdc_sample_layout
     lyt = []
     [0, 4].each do |j|
       cols = Array.new(12) { |c| c }
