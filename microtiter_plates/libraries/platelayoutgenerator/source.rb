@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+needs 'Microtiter Plates/LayoutMethods'
+
 # Factory class for instantiating `PlateLayoutGenerator`
 #
 # @author Devin Strickland <strcklnd@uw.edu>
@@ -21,6 +23,8 @@ end
 #
 # @author Devin Strickland <strcklnd@uw.edu>
 class PlateLayoutGenerator
+  include LayoutMethods
+
   def initialize(group_size: 1, method: nil, dimensions: [8, 12])
     @rows = dimensions[0]
     @columns = dimensions[1]
