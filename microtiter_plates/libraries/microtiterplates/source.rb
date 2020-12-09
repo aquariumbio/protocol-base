@@ -5,6 +5,18 @@ needs 'Standard Libs/AssociationManagement'
 needs 'Microtiter Plates/PlateLayoutGenerator'
 
 module MicrotiterPlates
+  # Convert an alphanumumeric coordinate to the corresponding
+  #   row, column indices
+  #
+  # @param alphanum [String]
+  # @return Array<Fixnum>
+  def alphanum_to_rc(alphanum)
+    [
+      letter_to_index(alpha_component(alphanum)),
+      numeric_component(alphanum) - 1
+    ]
+  end
+
   # Convert a letter to the corresponding array index
   #
   # @param letter [String] the letter (usually of a row)
