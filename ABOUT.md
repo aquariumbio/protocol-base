@@ -1,13 +1,12 @@
-# Standard Libraries, version 0.0.1
-
-Standard libraries for UW BIOFAB, Klavins Lab, and others [[Download](standard-libraries.aq)] [[Github Repo](https://github.com/aquariumbio/standard-libraries)]
+# Protocol Base, version 0.0.1
 
 &copy; University of Washington
 
 ### Keywords
 constants, association, input/output, provenance, tube labels, units
-### Maintainer
+### Maintainers
 - Ben Keller, <bjkeller@uw.edu>
+- Devin Strickland, <dvn.strcklnd@gmail.com>
 
 ### Authors
   - Garret Newman, University of Washington
@@ -20,12 +19,3 @@ constants, association, input/output, provenance, tube labels, units
   - Jon Luntzel, University of Washington
   - Cannon Mallory, University of Washington
   - Ben Keller, University of Washington
-
-### Acknowledgements
-
-### Details
-This workflow and these documents were automatically generated from
-[Aquarium](http://www.aquarium.bio) version <%= Bioturk::Application.config.aquarium_version %> and
-[aquadoc](https://github.com/klavinslab/aquadoc) version 1.0.2.
-Make sure that you are running the same or a newer version of Aquarium before you attempt to
-import workflow.
