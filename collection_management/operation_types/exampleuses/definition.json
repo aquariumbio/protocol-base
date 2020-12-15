@@ -1,0 +1,10 @@
+{
+  "id": 27,
+  "name": "ExampleUses",
+  "parent_class": "OperationType",
+  "category": "Collection Management",
+  "inputs": [],
+  "outputs": [],
+  "on_the_fly": null,
+  "user_id": 1
+}

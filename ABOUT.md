@@ -1,12 +1,14 @@
+<<<<<<< HEAD
 # Protocol Base, version 0.0.1
 
-&copy; University of Washington
+&copy; 2020 University of Washington
 
 ### Keywords
 constants, association, input/output, provenance, tube labels, units
 ### Maintainers
 - Ben Keller, <bjkeller@uw.edu>
 - Devin Strickland, <dvn.strcklnd@gmail.com>
+- Cannon Mallory, <malloc3@uw.edu>
 
 ### Authors
   - Garret Newman, University of Washington
@@ -19,3 +21,5 @@ constants, association, input/output, provenance, tube labels, units
   - Jon Luntzel, University of Washington
   - Cannon Mallory, University of Washington
   - Ben Keller, University of Washington
+  - Amy Cash, University of Washington
+  - Justin Vrana, University of Washington
