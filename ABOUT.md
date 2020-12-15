@@ -6,9 +6,9 @@
 ### Keywords
 constants, association, input/output, provenance, tube labels, units
 ### Maintainers
-- Ben Keller, <bjkeller@uw.edu>
-- Devin Strickland, <dvn.strcklnd@gmail.com>
-- Cannon Mallory, <malloc3@uw.edu>
+  - Ben Keller, <bjkeller@uw.edu>
+  - Devin Strickland, <dvn.strcklnd@gmail.com>
+  - Cannon Mallory, <malloc3@uw.edu>
 
 ### Authors
   - Garret Newman, University of Washington
