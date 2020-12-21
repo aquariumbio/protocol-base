@@ -9,11 +9,12 @@ class Component
   include Units
 
   attr_reader :input_name, :qty, :units
-  attr_accessor :added, :location, :description, :lot_number, :adj_qty
+  attr_accessor :added, :location, :description, :lot_number, :adj_qty, :notes
 
   LOT_NUM = 'Lot_Number'
 
-  def initialize(input_name:, qty:, units:, location: 'unknown', description: nil)
+  def initialize(input_name:, qty:, units:, location: 'unknown',
+                 description: nil, notes: 'na')
     @input_name = input_name
     @qty = qty
     @units = units
@@ -22,13 +23,7 @@ class Component
     @description = description
     @adj_qty = qty
     @lot_number = nil
-  end
-
-  # Returns if component is a kit
-  #
-  # @return [Boolean]
-  def kit?
-    false
+    @notes = notes
   end
 
   # Checks if `self` has been added
@@ -41,6 +36,13 @@ class Component
   # @return [String]
   def display_name
     input_name
+  end
+
+  # To string method
+  #
+  # @return [String]
+  def to_s
+    input_name.to_s
   end
 
   # The volume as a qty, units hash
@@ -73,6 +75,10 @@ class Component
   #   in a table
   # @return [Numeric, Hash]
   def adjusted_qty(mult = 1.0, round = 1)
+    return if qty.nil?
+
+    raise "Multiplier is nil for composition #{input_name}" if mult.nil?
+
     @adj_qty = (qty * mult).round(round)
   end
 end
@@ -80,81 +86,81 @@ end
 # Models a kit of parts in a biochemical reaction
 #
 # @author Cannon Mallory <malloc3@uw.edu>
-class KitComponent < Component
+# class KitComponent < Component
 
-  attr_reader :composition
+#   attr_reader :composition
 
-  # Initializes the KitComponent and creates sub components
-  # for the kit.
-  def initialize(input_name:,
-                 qty: 1,
-                 units: 'Kits',
-                 components: [],
-                 consumables: [],
-                 lot_number: nil,
-                 description: nil,
-                 location: 'unknown')
-    super(input_name: input_name, 
-          qty: qty, units: units,
-          location: location,
-          description: description)
-    set_default_part_location(components)
-    set_default_part_location(consumables)
-    @composition = CompositionFactory.build(components: components,
-                                            consumables: consumables)
-    @lot_number = lot_number
-    set_lot_numbers
-  end
+#   # Initializes the KitComponent and creates sub components
+#   # for the kit.
+#   def initialize(input_name:,
+#                  qty: 1,
+#                  units: 'Kits',
+#                  components: [],
+#                  consumables: [],
+#                  lot_number: nil,
+#                  description: nil,
+#                  location: 'unknown')
+#     super(input_name: input_name, 
+#           qty: qty, units: units,
+#           location: location,
+#           description: description)
+#     set_default_part_location(components)
+#     set_default_part_location(consumables)
+#     @composition = CompositionFactory.build(components: components,
+#                                             consumables: consumables)
+#     @lot_number = lot_number
+#     set_lot_numbers
+#   end
 
-  # passes through the input to composition
-  def input(string)
-    @composition.input(string)
-  end
+#   # passes through the input to composition
+#   def input(string)
+#     @composition.input(string)
+#   end
 
-  # returns the components of the kit
-  def components
-    @composition.components
-  end
+#   # returns the components of the kit
+#   def components
+#     @composition.components
+#   end
 
-  def consumables
-    @composition.consumables
-  end
+#   def consumables
+#     @composition.consumables
+#   end
 
-  # Tells if the composition is a kit
-  #
-  # @return [Boolean]
-  def kit?
-    true
-  end
+#   # Tells if the composition is a kit
+#   #
+#   # @return [Boolean]
+#   def kit?
+#     true
+#   end
 
-  def lot_number=(lot_num)
-    @lot_num = lot_num
-  end
+#   def lot_number=(lot_num)
+#     @lot_num = lot_num
+#   end
 
-  private
+#   private
 
-  # Sets all components lot numbers to the kit lot number
-  #
-  def set_lot_numbers
-    @composition.components.each do |comp|
-      comp.lot_number = @lot_number
-    end
-  end
+#   # Sets all components lot numbers to the kit lot number
+#   #
+#   def set_lot_numbers
+#     @composition.components.each do |comp|
+#       comp.lot_number = @lot_number
+#     end
+#   end
 
-  # Sets the default location for kit parts to the kit name.
-  # Will not reset user defined locations.
-  def set_default_part_location(parts)
-    name = @input_name.to_s
-    name += "-#{@lot_num}" unless @lot_num.nil?
-    parts.each do |part|
-      existing_loc = part[:location]
-      next unless existing_loc.nil? || existing_loc == 'unknown'
+#   # Sets the default location for kit parts to the kit name.
+#   # Will not reset user defined locations.
+#   def set_default_part_location(parts)
+#     name = @input_name.to_s
+#     name += "-#{@lot_num}" unless @lot_num.nil?
+#     parts.each do |part|
+#       existing_loc = part[:location]
+#       next unless existing_loc.nil? || existing_loc == 'unknown'
 
-      part[:location] = name + ' Parts'
-    end
-  end
+#       part[:location] = name + ' Parts'
+#     end
+#   end
 
-end
+# end
 
 # Models a consumable component of a biochemical reaction
 # These are things like Pipette Tips, spin columns, etc that
@@ -193,18 +199,18 @@ class ReactionComponent < Component
   #   component should be found in
   def initialize(input_name:, qty:, units:,
                  sample_name: nil, object_type: nil,
-                 location: 'unknown')
-    super(input_name: input_name, qty: qty, units: units, location: location)
+                 location: 'unknown', notes: 'na')
+    super(input_name: input_name, qty: qty,
+          units: units, location: location, notes: notes)
     @sample = sample_name ? Sample.find_by_name(sample_name) : nil
-    @object_type = object_type ? ObjectType.find_by_name(object_type) : nil
-    @description = @object_type
+    @object_type = ObjectType.find_by_name(object_type) || object_type
     @item = nil
     @added = false
   end
 
   # Sets the description to the object_type string
   def description
-    raise ReactionComponentError, "object_type for #{@input_name} is nil" unless @object_type.present?
+    raise ReactionComponentError, "object_type for #{@input_name} is #{@object_type.class}" unless @object_type.present?
     if @object_type.is_a? String
       @object_type
     else
@@ -224,6 +230,23 @@ class ReactionComponent < Component
     @location = location
   end
 
+  # To string method
+  #
+  # @return [String]
+  def to_s
+    if sample.nil?
+      "#{input_name}-#{item}"
+    else
+      return "#{input_name}-#{item}" if sample.properties['Kit'] == 'true'
+
+      return "#{sample.name}-#{item}" unless item.nil? || sample.nil?
+
+      return sample.name.to_s unless sample.nil?
+
+      input_name.to_s
+    end
+  end
+
   # Sets `item`
   #
   # @param item [Item]
@@ -233,12 +256,15 @@ class ReactionComponent < Component
     else
       if @sample
         unless @sample == item.sample
-          raise ReactionComponentError, "Item / Sample mismatch, #{item.sample.name}, #{@sample.name}"
+          raise ReactionComponentError, "Item / Sample mismatch, Item: #{item.sample.name}, Sample: #{@sample.name}"
         end
       else
         @sample = item.sample
       end
       @item = item
+    end
+    if object_type.nil?
+      @object_type = item.object_type
     end
   end
 

@@ -40,10 +40,6 @@ class CompositionFactory
     when AbstractComposition::NAME
       AbstractComposition.new(component_data: components,
                               consumable_data: consumables)
-    when AbstractKitComposition::NAME
-      AbstractKitComposition.new(component_data: components,
-                                 consumable_data: consumables,
-                                 kit_data: kits)
     else
       msg = "Unknown composition class #{composition_class}"
       raise UnknownCompositionError, msg
@@ -79,7 +75,9 @@ class AbstractComposition
   #
   # @input component_data [Array<hash>]] per the standard # TODO link to example
   def add_components(component_data:)
-    component_data&.each { |c| @components.append(ReactionComponent.new(c)) }
+    component_data&.each do |c|
+      @components.append(ReactionComponent.new(c))
+    end
     check_duplicate_names
   end
 
@@ -232,91 +230,91 @@ class AbstractComposition
 
 end
 
-class AbstractKitComposition < AbstractComposition
-  attr_reader :kits
-  NAME = 'AbstractKit'.freeze
+# class AbstractKitComposition < AbstractComposition
+#   attr_reader :kits
+#   NAME = 'AbstractKit'.freeze
 
-  def initialize(component_data: nil, consumable_data: nil, kit_data: nil)
-    @kits = []
-    add_kit(kit_data: kit_data)
-    super(component_data: component_data, consumable_data: consumable_data)
-  end
+#   def initialize(component_data: nil, consumable_data: nil, kit_data: nil)
+#     @kits = []
+#     add_kit(kit_data: kit_data)
+#     super(component_data: component_data, consumable_data: consumable_data)
+#   end
 
-  # Find random items for all components that haven't been assigned an item
-  def find_kit_component_items
-    @kits.each do |kit|
-      kit.components.each do |comp|
-        comp.item = find_random_item(sample: comp.sample,
-                                     object_type: comp.object_type)
-      end
-    end
-  end
+#   # Find random items for all components that haven't been assigned an item
+#   def find_kit_component_items
+#     @kits.each do |kit|
+#       kit.components.each do |comp|
+#         comp.item = find_random_item(sample: comp.sample,
+#                                      object_type: comp.object_type)
+#       end
+#     end
+#   end
 
-  # Deprecated 
-  # Use find_component_items
-  def find_random_items
-    find_component_items
-  end
+#   # Deprecated 
+#   # Use find_component_items
+#   def find_random_items
+#     find_component_items
+#   end
 
-  # Makes items for all components that haven't been assigned an item
-  def make_kit_component_items
-    @kits.each do |kit|
-      kit.components.each do |c|
-        c.item = make_item(sample: c.sample,
-                           object_type: c.object_type,
-                           lot_number: c&.lot_number || nil)
-      end
-    end
-  end
+#   # Makes items for all components that haven't been assigned an item
+#   def make_kit_component_items
+#     @kits.each do |kit|
+#       kit.components.each do |c|
+#         c.item = make_item(sample: c.sample,
+#                            object_type: c.object_type,
+#                            lot_number: c&.lot_number || nil)
+#       end
+#     end
+#   end
 
-  # Adds kit to the composition
-  #
-  # @param kit_data [Array<Hash>] follow standard TODO Add example
-  def add_kit(kit_data:)
-    kit_data&.each { |c| @kits.append(KitComponent.new(c)) }
-    check_duplicate_names
-  end
+#   # Adds kit to the composition
+#   #
+#   # @param kit_data [Array<Hash>] follow standard TODO Add example
+#   def add_kit(kit_data:)
+#     kit_data&.each { |c| @kits.append(KitComponent.new(c)) }
+#     check_duplicate_names
+#   end
 
-  # Retrieves components by input_name
-  # Will check components first and if nil then
-  #   checks in consumables.   No two things should
-  #   share input name
-  #
-  # @param input_name [String] the name of the component to be retrieved
-  # @return [Component]
-  def input(input_name)
-    sup = super(input_name)
-    kits = kit_input(input_name)
-    return sup || kits
-  end
+#   # Retrieves components by input_name
+#   # Will check components first and if nil then
+#   #   checks in consumables.   No two things should
+#   #   share input name
+#   #
+#   # @param input_name [String] the name of the component to be retrieved
+#   # @return [Component]
+#   def input(input_name)
+#     sup = super(input_name)
+#     kits = kit_input(input_name)
+#     return sup || kits
+#   end
 
-  # Returns all input names
-  #
-  # @return [Array<String>]
-  def all_input_names
-    super.append(self.kit_input_names)
-  end
+#   # Returns all input names
+#   #
+#   # @return [Array<String>]
+#   def all_input_names
+#     super.append(self.kit_input_names)
+#   end
 
-  # returns a list of all kit input_names
-  #
-  # @return [Array<String>]
-  def kit_input_names
-    names = []
-    @kits&.each { |c| names.append(c.input_name) }
-    names
-  end
+#   # returns a list of all kit input_names
+#   #
+#   # @return [Array<String>]
+#   def kit_input_names
+#     names = []
+#     @kits&.each { |c| names.append(c.input_name) }
+#     names
+#   end
 
-  private
+#   private
 
-  # Retrieves kit by input_name
-  #
-  # @param input_name [String] the name of the component to be retrieved
-  # @return [KitComponent]
-  def kit_input(input_name)
-    kits.find { |c| c.input_name == input_name }
-  end
+#   # Retrieves kit by input_name
+#   #
+#   # @param input_name [String] the name of the component to be retrieved
+#   # @return [KitComponent]
+#   def kit_input(input_name)
+#     kits.find { |c| c.input_name == input_name }
+#   end
 
-end
+# end
 
 class DuplicateNamesError < ProtocolError; end
 class UnknownCompositionError < ProtocolError; end
