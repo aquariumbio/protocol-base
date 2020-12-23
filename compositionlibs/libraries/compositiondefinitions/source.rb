@@ -15,13 +15,4 @@ module AbstractCompositionDefinitions
       object_type: 'Nasopharyngeal Swab'
     ]
   end
-
-  def consumables
-    [
-      {
-        input_name: 'Pipette Tips',
-        qty: 300, units: 'Each'
-      }
-    ]
-  end
 end

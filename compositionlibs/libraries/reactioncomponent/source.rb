@@ -4,7 +4,7 @@ needs 'Standard Libs/Units'
 
 # Modules a component needed for a biochemical reaction
 #
-# Super class over both 'reagents' and 'consumables'
+# Super class over both 'reagents'
 class Component
   include Units
 
@@ -81,103 +81,6 @@ class Component
 
     @adj_qty = (qty * mult).round(round)
   end
-end
-
-# Models a kit of parts in a biochemical reaction
-#
-# @author Cannon Mallory <malloc3@uw.edu>
-# class KitComponent < Component
-
-#   attr_reader :composition
-
-#   # Initializes the KitComponent and creates sub components
-#   # for the kit.
-#   def initialize(input_name:,
-#                  qty: 1,
-#                  units: 'Kits',
-#                  components: [],
-#                  consumables: [],
-#                  lot_number: nil,
-#                  description: nil,
-#                  location: 'unknown')
-#     super(input_name: input_name, 
-#           qty: qty, units: units,
-#           location: location,
-#           description: description)
-#     set_default_part_location(components)
-#     set_default_part_location(consumables)
-#     @composition = CompositionFactory.build(components: components,
-#                                             consumables: consumables)
-#     @lot_number = lot_number
-#     set_lot_numbers
-#   end
-
-#   # passes through the input to composition
-#   def input(string)
-#     @composition.input(string)
-#   end
-
-#   # returns the components of the kit
-#   def components
-#     @composition.components
-#   end
-
-#   def consumables
-#     @composition.consumables
-#   end
-
-#   # Tells if the composition is a kit
-#   #
-#   # @return [Boolean]
-#   def kit?
-#     true
-#   end
-
-#   def lot_number=(lot_num)
-#     @lot_num = lot_num
-#   end
-
-#   private
-
-#   # Sets all components lot numbers to the kit lot number
-#   #
-#   def set_lot_numbers
-#     @composition.components.each do |comp|
-#       comp.lot_number = @lot_number
-#     end
-#   end
-
-#   # Sets the default location for kit parts to the kit name.
-#   # Will not reset user defined locations.
-#   def set_default_part_location(parts)
-#     name = @input_name.to_s
-#     name += "-#{@lot_num}" unless @lot_num.nil?
-#     parts.each do |part|
-#       existing_loc = part[:location]
-#       next unless existing_loc.nil? || existing_loc == 'unknown'
-
-#       part[:location] = name + ' Parts'
-#     end
-#   end
-
-# end
-
-# Models a consumable component of a biochemical reaction
-# These are things like Pipette Tips, spin columns, etc that
-# people will use and dispose of.
-#
-# @author Cannon Mallory <malloc3@uw.edu>
-class ConsumableComponent < Component
-
-  attr_reader :description
-
-  # initializes the ConsumableComponent
-  def initialize(input_name:, qty:, units:,
-                 description: nil, location: 'unknown')
-    super(input_name: input_name, qty: qty,
-          units: units, location: location, description: description)
-  end
-
 end
 
 

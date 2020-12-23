@@ -28,7 +28,6 @@ class CompositionFactory
   # Instantiates 'Composition' class
   #
   def self.build(components: nil,
-                 consumables: nil,
                  kits: nil,
                  composition_class: AbstractComposition::NAME)
 
@@ -38,8 +37,7 @@ class CompositionFactory
 
     case composition_class
     when AbstractComposition::NAME
-      AbstractComposition.new(component_data: components,
-                              consumable_data: consumables)
+      AbstractComposition.new(component_data: components)
     else
       msg = "Unknown composition class #{composition_class}"
       raise UnknownCompositionError, msg
@@ -56,17 +54,15 @@ end
 class AbstractComposition
   include ItemActions
 
-  attr_reader :components, :consumables, :kits
+  attr_reader :components, :kits
 
   NAME = 'AbstractComposition'.freeze
 
   # Instantiates the class
   #
-  def initialize(component_data: nil, consumable_data: nil)
+  def initialize(component_data: nil)
     @components = []
-    @consumables = []
     add_components(component_data: component_data)
-    add_consumable(consumable_data: consumable_data)
   end
 
   # ========= Components =========#
@@ -139,29 +135,15 @@ class AbstractComposition
     added_components.map(&:qty).reduce(:+).round(round)
   end
 
-  # ============= Consumable Methods ============#
-
-  # Adds consumable to the consumable array
-  #
-  # @input component_data [Array<hash>]] per the standard # TODO link to example
-  def add_consumable(consumable_data:)
-    consumable_data&.each { |c| @consumables.append(ConsumableComponent.new(c)) }
-    check_duplicate_names
-  end
-
-  #======== Universal/Common Methods ========#
-
   # Retrieves components by input_name
   # Will check components first and if nil then
-  #   checks in consumables.   No two things should
-  #   share input name
+  #    No two things should
+  #      share input name
   #
   # @param input_name [String] the name of the component to be retrieved
   # @return [Component]
   def input(input_name)
-    component = component_input(input_name)
-    consumable = consumable_input(input_name)
-    return component || consumable
+    components.find { |c| c.input_name == input_name }
   end
 
   # Displays the total reaction volume with units
@@ -176,25 +158,14 @@ class AbstractComposition
   #
   # @return [Array<String>]
   def all_input_names
-    self.component_input_names + self.consumable_input_names
+    self.component_input_names
   end
 
   # returns a list of all component input_names
   #
   # @return [Array<String>]
   def component_input_names
-    names = []
-    @components&.each { |c| names.append(c.input_name) }
-    names
-  end
-
-  # returns a list of all consumable input_names
-  #
-  # @return [Array<String>]
-  def consumable_input_names
-    names = []
-    @consumables&.each { |c| names.append(c.input_name) }
-    names
+    @components&.map(&:input_name)
   end
 
   private
@@ -209,112 +180,7 @@ class AbstractComposition
     end
   end
 
-  # Retrieves consumables by input_name
-  #
-  # @param input_name [String] the name of the component to be retrieved
-  # @return [ConsumableComponent]
-  def consumable_input(input_name)
-    consumables.find { |c| c.input_name == input_name }
-  end
-
-  # Retrieves components by input name
-  # Generally the named methods should be used.
-  # However, this method can be convenient in loops, especially when
-  #   the Protocol draws input names from `CommonInputOutputNames`
-  #
-  # @param input_name [String] the name of the component to be retrieved
-  # @return [ReactionComponent]
-  def component_input(input_name)
-    components.find { |c| c.input_name == input_name }
-  end
-
 end
-
-# class AbstractKitComposition < AbstractComposition
-#   attr_reader :kits
-#   NAME = 'AbstractKit'.freeze
-
-#   def initialize(component_data: nil, consumable_data: nil, kit_data: nil)
-#     @kits = []
-#     add_kit(kit_data: kit_data)
-#     super(component_data: component_data, consumable_data: consumable_data)
-#   end
-
-#   # Find random items for all components that haven't been assigned an item
-#   def find_kit_component_items
-#     @kits.each do |kit|
-#       kit.components.each do |comp|
-#         comp.item = find_random_item(sample: comp.sample,
-#                                      object_type: comp.object_type)
-#       end
-#     end
-#   end
-
-#   # Deprecated 
-#   # Use find_component_items
-#   def find_random_items
-#     find_component_items
-#   end
-
-#   # Makes items for all components that haven't been assigned an item
-#   def make_kit_component_items
-#     @kits.each do |kit|
-#       kit.components.each do |c|
-#         c.item = make_item(sample: c.sample,
-#                            object_type: c.object_type,
-#                            lot_number: c&.lot_number || nil)
-#       end
-#     end
-#   end
-
-#   # Adds kit to the composition
-#   #
-#   # @param kit_data [Array<Hash>] follow standard TODO Add example
-#   def add_kit(kit_data:)
-#     kit_data&.each { |c| @kits.append(KitComponent.new(c)) }
-#     check_duplicate_names
-#   end
-
-#   # Retrieves components by input_name
-#   # Will check components first and if nil then
-#   #   checks in consumables.   No two things should
-#   #   share input name
-#   #
-#   # @param input_name [String] the name of the component to be retrieved
-#   # @return [Component]
-#   def input(input_name)
-#     sup = super(input_name)
-#     kits = kit_input(input_name)
-#     return sup || kits
-#   end
-
-#   # Returns all input names
-#   #
-#   # @return [Array<String>]
-#   def all_input_names
-#     super.append(self.kit_input_names)
-#   end
-
-#   # returns a list of all kit input_names
-#   #
-#   # @return [Array<String>]
-#   def kit_input_names
-#     names = []
-#     @kits&.each { |c| names.append(c.input_name) }
-#     names
-#   end
-
-#   private
-
-#   # Retrieves kit by input_name
-#   #
-#   # @param input_name [String] the name of the component to be retrieved
-#   # @return [KitComponent]
-#   def kit_input(input_name)
-#     kits.find { |c| c.input_name == input_name }
-#   end
-
-# end
 
 class DuplicateNamesError < ProtocolError; end
 class UnknownCompositionError < ProtocolError; end
