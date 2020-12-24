@@ -1,0 +1,7 @@
+{
+  "id": 52,
+  "name": "AbstractThermocycler",
+  "parent_class": "Library",
+  "category": "Thermocyclers",
+  "user_id": 1
+}
