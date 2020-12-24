@@ -1,6 +1,6 @@
 # Aquarium PCR Models, version 0.1.2
 
-Libraries to model PCR composition and program, and help with master mixes [[Download](pcr-models.aq)] [[Github Repo](https://github.com/dvnstrcklnd/pcr-models)]
+Libraries to model PCR composition and program, and help with master mixes [[Download](pcr-models.aq)] [[Github Repo](https://github.com/aquariumbio/pcr-models)]
 
 &copy; University of Washington
 
