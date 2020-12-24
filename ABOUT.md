@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Protocol Base, version 0.0.1
 
 &copy; 2020 University of Washington
