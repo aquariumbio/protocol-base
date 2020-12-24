@@ -1,0 +1,17 @@
+{
+  "id": 7,
+  "name": "Options Test",
+  "parent_class": "OperationType",
+  "category": "Test",
+  "inputs": [
+    {
+      "name": "Options",
+      "part": null,
+      "array": null,
+      "routing": null
+    }
+  ],
+  "outputs": [],
+  "on_the_fly": null,
+  "user_id": 1
+}

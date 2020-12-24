@@ -1,23 +1,24 @@
-# Aquarium Microtiter Plates, version 0.0.1
+# Protocol Base, version 0.0.1
 
-Models for working with microtiter plates [[Download](microtiter-plates.aq)] [[Github Repo](https://github.com/aquariumbio/microtiter-plates)]
+&copy; 2020 University of Washington
 
-&copy; University of Washington
-
-
-### Maintainer
-- Devin Strickland, <strcklnd@uw.edu>
+### Keywords
+constants, association, input/output, provenance, tube labels, units
+### Maintainers
+  - Ben Keller, <bjkeller@uw.edu>
+  - Devin Strickland, <dvn.strcklnd@gmail.com>
+  - Cannon Mallory, <malloc3@uw.edu>
 
 ### Authors
+  - Garret Newman, University of Washington
   - Devin Strickland, University of Washington
+  - Abraham Miller, University of Washington
+  - Orlando de Lange, University of Washington
+  - Yokesh Jayakumar, University of Washington
+  - Sarah Goldberg, University of Washington
+  - Erriberto Lopez, University of Washington
+  - Jon Luntzel, University of Washington
   - Cannon Mallory, University of Washington
-
-### Acknowledgements
-  - Benjamin Keller, University of Washington
-
-### Details
-This workflow and these documents were automatically generated from
-[Aquarium](http://www.aquarium.bio) version <%= Bioturk::Application.config.aquarium_version %> and
-[aquadoc](https://github.com/klavinslab/aquadoc) version 1.0.2.
-Make sure that you are running the same or a newer version of Aquarium before you attempt to
-import workflow.
+  - Ben Keller, University of Washington
+  - Amy Cash, University of Washington
+  - Justin Vrana, University of Washington

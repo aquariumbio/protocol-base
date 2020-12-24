@@ -1,0 +1,10 @@
+{
+  "id": 21,
+  "name": "Pipettors Test",
+  "parent_class": "OperationType",
+  "category": "Test",
+  "inputs": [],
+  "outputs": [],
+  "on_the_fly": null,
+  "user_id": 1
+}
