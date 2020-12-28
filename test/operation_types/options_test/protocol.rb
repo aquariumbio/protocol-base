@@ -48,13 +48,29 @@ class Protocol
   ########## MAIN ##########
 
   def main
+    rval = {}
+
     setup_test_options(operations: operations) if debug
 
-    # Check the initial state
+    # Check the defaults
     inspect default_job_params, 'default_job_params'
+    rval[:default_job_params] = default_job_params
+
     inspect default_operation_params, 'default_operation_params'
-    opts = operations.first.plan.associations[:options]
-    inspect parse_options(opts), 'plan options'
+    rval[:default_operation_params] = default_operation_params
+
+    # Check the plan params
+    plan_params = parse_options(operations.first.plan.associations[:options])
+    inspect plan_params, 'plan_params'
+    rval[:plan_params] = plan_params
+
+    # Check the planned operation params
+    operations.each_with_index do |op, i|
+      key = "operation_#{i + 1}_input_options"
+      val = op.input('Options').val
+      inspect val, key
+      rval[key.to_sym] = val
+    end
 
     @job_params = update_job_params(
       operations: operations,
@@ -62,21 +78,23 @@ class Protocol
     )
     return {} if operations.errored.any?
 
-    # Check the updated job_params
-    inspect @job_params, 'final job_params'
-    # Check the operation options
-    operations.each_with_index do |op, i|
-      inspect op.input('Options').val, "Operation #{i + 1} input options"
-    end
+    # Check the final job params
+    inspect @job_params, 'final_job_params'
+    rval[:final_job_params] = @job_params
 
     update_operation_params(
       operations: operations,
       default_operation_params: default_operation_params
     )
 
-    # Check the updated operation options
+    # Check the final operation params
     operations.each_with_index do |op, i|
-      inspect op.temporary[:options], "Operation #{i + 1} final options"
+      key = "operation_#{i + 1}_final_options"
+      val = op.temporary[:options]
+      inspect val, key
+      rval[key.to_sym] = val
     end
+
+    rval
   end
 end
