@@ -6,7 +6,8 @@ class ProtocolTest < ProtocolTestBase
   end
 
   def analyze
-    log('Hello from Nemo')
     assert_equal(@backtrace.last[:operation], 'complete')
+    rval = @backtrace.last[:rval]
+    assert_equal(rval[:next_empty_group], [[0,3],[0,4],[0,5]])
   end
 end
