@@ -14,6 +14,7 @@ module PCRCompositionDefinitions
   WATER = 'Molecular Grade Water'
   MASTER_MIX = 'Master Mix'
   PRIMER_PROBE_MIX = 'Primer/Probe Mix'
+  BUFFER = 'Buffer'
 
   COMPONENTS = {
     # qPCR2: 2nd qPCR in NGS prep.
