@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 needs 'PCR Libs/PCRComposition'
-needs 'Standard Libs/Debug'
+needs 'Standard Libs/TestFixtures'
 
 class Protocol
   include PCRCompositionDefinitions
-  include Debug
+  include TestFixtures
 
   def main
-    rval = { assertions: { assert_equal: [] } }
+    rval = assertions_framework
     assert_equal = rval[:assertions][:assert_equal]
 
     composition = PCRCompositionFactory.build(
@@ -22,7 +22,6 @@ class Protocol
       component_data[:polymerase][:qty],
       'polymerase.volume_hash[:qty]'
     ])
-
     assert_equal.append([
       composition.polymerase.volume_hash[:units],
       component_data[:polymerase][:units],
@@ -65,6 +64,29 @@ class Protocol
       'sum_added_components'
     ])
 
+    # Test component.item=
+    item = generic_item
+    composition.template.item = item
+    assert_equal.append([
+      composition.template.item,
+      item,
+      'component.item='
+    ])
+
+    # Test component.sample
+    assert_equal.append([
+      composition.template.sample,
+      item.sample,
+      'component.sample'
+    ])
+
+    # Test items
+    a = composition.items
+    b = [item, nil, nil, nil, nil]
+    rval[:assertions][:assert].append([
+      (a-b).blank? && a.length == b.length,
+      'composition.items'
+    ])
     rval
   end
 
