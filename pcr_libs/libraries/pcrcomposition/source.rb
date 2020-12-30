@@ -55,6 +55,12 @@ class PCRComposition
     input(DYE)
   end
 
+  # Specifications for the buffer component
+  # @return (see #input)
+  def buffer
+    input(BUFFER)
+  end
+
   # Specifications for the polymerase component
   # @return (see #input)
   def polymerase
