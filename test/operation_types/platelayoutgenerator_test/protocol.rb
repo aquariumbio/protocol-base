@@ -1,39 +1,29 @@
 # frozen_string_literal: true
 
-needs 'Standard Libs/Debug'
 needs 'Microtiter Plates/PlateLayoutGenerator'
 
-# Protocol for setting up a plate with extracted RNA samples
-#
-# @author Devin Strickland <strcklnd@uw.edu>
 class Protocol
-  include Debug
-
   def main
-    raise 'Too many' if operations.length > 22
-    
-    group_size = [1,2,3,4]
+    rval = {}
+    layout_table = Array.new(8) { |_| Array.new(12) }
 
-      group_size.each do |size|
+    plg = PlateLayoutGeneratorFactory.build(group_size: 2)
 
-      layout_table = Array.new(8) { |_| Array.new(12) }
-
-      clg = PlateLayoutGeneratorFactory.build(group_size: size)
-
-      clg.next_group.each { |r, c| layout_table[r][c] = 'NTC' }
-
-      clg.next_group(column: 11).each { |r, c| layout_table[r][c] = 'nCoVPC' }
-
-      operations.each do |op|
-        clg.next_group.each { |r, c| layout_table[r][c] = op.id }
-      end
-
-      show do
-        table layout_table
-      end
-
+    8.times do |_|
+      plg.next_group(column: 0).each { |r, c| layout_table[r][c] = 'P1' }
+      plg.next_group(column: 6).each { |r, c| layout_table[r][c] = 'P2' }
     end
 
-    {}
+    64.times do |i|
+      r, c = plg.next
+      layout_table[r][c] = i
+    end
+
+    show do
+      table layout_table
+    end
+
+    rval[:layout_table] = layout_table
+    rval
   end
 end

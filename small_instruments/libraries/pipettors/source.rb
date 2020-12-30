@@ -1,7 +1,8 @@
-needs "Standard Libs/Units"
+# frozen_string_literal: true
+
+needs 'Standard Libs/Units'
 
 module Pipettors
-
   include Units
 
   # Creates string with directions on which pipet to use and what
@@ -35,12 +36,12 @@ module Pipettors
     pipettor.pipet(
       volume: volume,
       source: source,
-      destination: destination,
+      destination: destination
     )
   end
 
   # Returns a single channel pipet depending on the volume
-  # 
+  #
   # @param volume [{qty: int, unit: string}] the volume per Standard Libs Units
   # @param type [String] the type of pipettor if a specific one is desired
   # @return [Pipet] A class of pipettor
@@ -80,7 +81,7 @@ module Pipettors
     end
   end
 
-  # TODO add comment
+  # TODO: add comment
   class Pipettor
     include Singleton
     include Units
@@ -94,21 +95,21 @@ module Pipettors
     def pipet(volume:, source:, destination:)
       max_volume = self.class::MAX_VOLUME
       if volume[:qty] <= max_volume
-        volume[:qty] = volume[:qty].round(self.class::ROUND_TO) 
+        volume[:qty] = volume[:qty].round(self.class::ROUND_TO)
         a = "Set a <b>#{self.class::NAME}</b> pipet to "\
           "<b>#{qty_display(volume)}</b>."
         b = "  Pipet #{qty_display(volume)} from <b>#{source}</b>"\
           " into <b>#{destination}</b>"
       else
-        sub_volume = {qty: nil, units: volume[:units]}
-        times = (volume[:qty].to_f/max_volume).ceil.to_f
+        sub_volume = { qty: nil, units: volume[:units] }
+        times = (volume[:qty].to_f / max_volume).ceil.to_f
         sub_volume[:qty] = (volume[:qty] / times).round(self.class::ROUND_TO)
         a = "Set a <b>#{self.class::NAME}</b> pipet to "\
           "<b>#{qty_display(sub_volume)}</b>."
         b = "  Pipet #{times.round} times from <b>#{source}</b>"\
           " into <b>#{destination}</b>"
       end
-      [a,b]
+      [a, b]
     end
 
     # Returns the number of channels a pipettor has
@@ -120,7 +121,7 @@ module Pipettors
   end
 
   class PA12X300 < Pipettor
-    NAME = '12 Channel P300'.freeze
+    NAME = '12 Channel P300'
     MIN_VOLUME = 30
     MAX_VOLUME = 300
     ROUND_TO = 0
@@ -128,15 +129,15 @@ module Pipettors
   end
 
   class PA6X1200 < Pipettor
-    NAME = '6 Channel Adjustable Space P1200'.freeze
+    NAME = '6 Channel Adjustable Space P1200'
     MIN_VOLUME = 200.0
     MAX_VOLUME = 1000.0
     ROUND_TO = 0
     CHANNELS = 6
   end
-  
+
   class P8X20 < Pipettor
-    NAME = '8 Channel P20'.freeze
+    NAME = '8 Channel P20'
     MIN_VOLUME = 2.0
     MAX_VOLUME = 20.0
     ROUND_TO = 0
@@ -144,7 +145,7 @@ module Pipettors
   end
 
   class P8X200 < Pipettor
-    NAME = '8 Channel P200'.freeze
+    NAME = '8 Channel P200'
     MIN_VOLUME = 20.0
     MAX_VOLUME = 200.0
     ROUND_TO = 0
@@ -152,7 +153,7 @@ module Pipettors
   end
 
   class P2 < Pipettor
-    NAME = 'P2'.freeze
+    NAME = 'P2'
     MIN_VOLUME = 0.0
     MAX_VOLUME = 2.0
     ROUND_TO = 1
@@ -160,7 +161,7 @@ module Pipettors
   end
 
   class P20 < Pipettor
-    NAME = 'P20'.freeze
+    NAME = 'P20'
     MIN_VOLUME = 2.0
     MAX_VOLUME = 20.0
     ROUND_TO = 1
@@ -168,7 +169,7 @@ module Pipettors
   end
 
   class P200 < Pipettor
-    NAME = 'P200'.freeze
+    NAME = 'P200'
     MIN_VOLUME = 20.0
     MAX_VOLUME = 200.0
     ROUND_TO = 0
@@ -176,7 +177,7 @@ module Pipettors
   end
 
   class P1000 < Pipettor
-    NAME = 'P1000'.freeze
+    NAME = 'P1000'
     MIN_VOLUME = 200.0
     MAX_VOLUME = 1000.0
     ROUND_TO = 0
@@ -184,11 +185,10 @@ module Pipettors
   end
 
   class PipetController < Pipettor
-    NAME = 'Pipet controller'.freeze
+    NAME = 'Pipet controller'
     MIN_VOLUME = 2000.0
-    MAX_VOLUME = 50000.0
+    MAX_VOLUME = 50_000.0
     ROUND_TO = 0
     CHANNELS = 1
   end
-
 end
