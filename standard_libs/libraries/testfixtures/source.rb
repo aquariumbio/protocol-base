@@ -155,7 +155,7 @@ module TestFixtures
     object_type
   end
 
-  def generic_item(sample:)
+  def generic_item(sample: generic_sample)
     item = Item.new(
       quantity: 1, inuse: 0,
       object_type_id: generic_container_type.id,
