@@ -198,4 +198,22 @@ module TestFixtures
   def random_id
     SecureRandom.hex(3)
   end
+
+  # Provides a standard hash for recording assertions to be tested
+  #   in the analyze block of test.rb. This hash should be merged with
+  #   the protocols return value.
+  #
+  # @return [Hash]
+  def assertions_framework
+    {
+      assertions: {
+        assert: [],
+        assert_equal: [],
+        assert_no_match: [],
+        assert_not_equal: [],
+        assert_not_nil: [],
+        assert_not_same: []
+      }
+    }
+  end
 end
