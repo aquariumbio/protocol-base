@@ -1,62 +1,15 @@
 # frozen_string_literal: true
 
 needs 'Standard Libs/Units'
-needs 'Standard Libs/CommonInputOutputNames'
-
-needs 'CompositionLibs/ReactionComponent'
-
-needs 'Standard Libs/ItemActions'
-
-# module AbstractCompositionDefinitions
-#   include Units
-#   include CommonInputOutputNames
-
-#   ABSTRACT_COMPONENT = {
-#     input_name: ABSTRACT_NAME,
-#     qty: 5, units: MICROLITERS,
-#     sample_name: 'Optional Sample Name'
-#   }
-# end
-
-
-# Factory class for instantiating
-# @author Cannon Mallory <malloc3@uw.edu>
-# @author Devin Strickland <strklnd@uw.edu>
-
-class CompositionFactory
-
-  # Instantiates 'Composition' class
-  #
-  def self.build(components: nil,
-                 kits: nil,
-                 composition_class: AbstractComposition::NAME)
-
-    if composition_class == AbstractComposition::NAME && kits.present?
-      composition_class = AbstractKitComposition::NAME
-    end
-
-    case composition_class
-    when AbstractComposition::NAME
-      AbstractComposition.new(component_data: components)
-    else
-      msg = "Unknown composition class #{composition_class}"
-      raise UnknownCompositionError, msg
-    end
-  end
-end
+needs 'Composition Libs/Component'
 
 # Models the composition of a reaction
 # @author Cannon Mallory <malloc3@ue.edu>
 # @author Devin Strickland <strklnd@uw.edu>
 #
-# @note As much as possible, Protocols using this class should draw
-#  input names from 'CommonInputOutputNames'
 class AbstractComposition
-  include ItemActions
 
-  attr_reader :components, :kits
-
-  NAME = 'AbstractComposition'.freeze
+  attr_reader :components
 
   # Instantiates the class
   #
@@ -71,29 +24,10 @@ class AbstractComposition
   #
   # @input component_data [Array<hash>]] per the standard # TODO link to example
   def add_components(component_data:)
-    component_data&.each do |c|
-      @components.append(ReactionComponent.new(c))
+    component_data&.each do |_, c|
+      @components.append(Component.new(c))
     end
     check_duplicate_names
-  end
-
-  # Find random items for all components that haven't been assigned an item
-  def find_component_items
-    @components.each do |comp|
-      next if comp.item.present?
-      comp.item = find_random_item(sample: comp.sample,
-                                   object_type: comp.object_type)
-    end
-  end
-
-  # Makes items for all components that haven't been assigned an item
-  def make_component_items
-    @components.each do |comp|
-      next if comp.item.present?
-      comp.item = make_item(sample: comp.sample,
-                            object_type: comp.object_type,
-                            lot_number: comp.lot_number)
-    end
   end
 
   # Gets the components that have been added
@@ -110,15 +44,8 @@ class AbstractComposition
 
   # Gets the `Item`s from `ReactionComponent`s and returns them as an array
   # @return [Array<Item>]
-  def component_items
+  def items
     components.map(&:item)
-  end
-
-  # The total reaction volume
-  # @note Rounds to one decimal place
-  # @return [Float]
-  def volume
-    sum_components
   end
 
   # The total reaction volume
@@ -127,6 +54,8 @@ class AbstractComposition
   def sum_components(round = 1)
     components.map(&:qty).reduce(:+).round(round)
   end
+
+  alias volume sum_components
 
   # The total volume of all components that have been added
   # @param (see #sum_components)
@@ -154,13 +83,6 @@ class AbstractComposition
     Units.qty_display({ qty: volume, units: MICROLITERS })
   end
 
-  # Returns all input names
-  #
-  # @return [Array<String>]
-  def all_input_names
-    self.component_input_names
-  end
-
   # returns a list of all component input_names
   #
   # @return [Array<String>]
@@ -168,12 +90,14 @@ class AbstractComposition
     @components&.map(&:input_name)
   end
 
+  alias all_input_names component_input_names
+
   private
 
   # checks if any names are duplicated
   # Duplicate input names can cause serious issue
   def check_duplicate_names
-    names = self.all_input_names
+    names = all_input_names
     unless names.uniq.length == names.length
       repeated_names = names.detect{ |name| names.count(name) > 1 }
       raise DuplicateNamesError, "There are duplicate input names #{repeated_names}"

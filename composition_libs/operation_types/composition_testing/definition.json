@@ -1,7 +1,7 @@
 {
   "name": "Composition Testing",
   "parent_class": "OperationType",
-  "category": "CompositionLibs",
+  "category": "Composition Libs",
   "inputs": [],
   "outputs": [],
   "on_the_fly": null,
