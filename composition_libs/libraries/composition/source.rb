@@ -3,22 +3,33 @@
 needs 'Standard Libs/Units'
 needs 'Composition Libs/Component'
 
+# Factory class for instantiating `Composition`
+# @author Devin Strickland <strcklnd@uw.edu>
+class CompositionFactory
+  # Instantiates `Composition`
+  #
+  # @param component_data [Hash] a hash enumerating the components
+  # @return [Composition]
+  def self.build(component_data:)
+    Composition.new(
+      component_data: component_data
+    )
+  end
+end
+
 # Models the composition of a reaction
 # @author Cannon Mallory <malloc3@ue.edu>
 # @author Devin Strickland <strklnd@uw.edu>
 #
 class Composition
-
   attr_reader :components
 
   # Instantiates the class
   #
-  def initialize(component_data: nil)
+  def initialize(component_data:)
     @components = []
     add_components(component_data: component_data)
   end
-
-  # ========= Components =========#
 
   # Adds components to the component array
   #
