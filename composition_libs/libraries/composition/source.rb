@@ -7,7 +7,7 @@ needs 'Composition Libs/Component'
 # @author Cannon Mallory <malloc3@ue.edu>
 # @author Devin Strickland <strklnd@uw.edu>
 #
-class AbstractComposition
+class Composition
 
   attr_reader :components
 

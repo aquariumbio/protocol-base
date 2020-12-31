@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-needs 'Composition Libs/AbstractComposition'
+needs 'Composition Libs/Composition'
 needs 'PCR Libs/PCRCompositionDefinitions'
 
 # Factory class for instantiating `PCRComposition`
@@ -25,7 +25,7 @@ end
 # @author Devin Strickland <strcklnd@uw.edu>
 # @note As much as possible, Protocols using this class should draw
 #   input names from `CommonInputOutputNames`
-class PCRComposition < AbstractComposition
+class PCRComposition < Composition
   include PCRCompositionDefinitions
 
   attr_accessor :components
