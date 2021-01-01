@@ -1,7 +1,7 @@
 {
   "name": "Test Association Management",
   "parent_class": "OperationType",
-  "category": "Test",
+  "category": "Standard Libs",
   "inputs": [
     {
       "name": "Test Container Input",

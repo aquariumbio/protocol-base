@@ -1,7 +1,7 @@
 {
-  "name": "Options Test",
+  "name": "Test Options",
   "parent_class": "OperationType",
-  "category": "Test",
+  "category": "Standard Libs",
   "inputs": [
     {
       "name": "Options",
