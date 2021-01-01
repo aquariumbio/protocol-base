@@ -1,8 +1,7 @@
 {
-  "id": 21,
-  "name": "Pipettors Test",
+  "name": "Demo Pipettors",
   "parent_class": "OperationType",
-  "category": "Test",
+  "category": "Small Instruments",
   "inputs": [],
   "outputs": [],
   "on_the_fly": null,
