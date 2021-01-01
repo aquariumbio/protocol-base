@@ -40,6 +40,13 @@ class Protocol
       'sum_components'
     ])
 
+    # Test volume
+    assert_equal.append([
+      composition.volume,
+      component_data.map { |_, v| v[:qty] }.reduce(:+).round(1),
+      'volume'
+    ])
+
     # Test add_in_table and adjusted_qty
     assert_equal.append([
       composition.polymerase.add_in_table,
@@ -87,6 +94,15 @@ class Protocol
       (a-b).blank? && a.length == b.length,
       'composition.items'
     ])
+
+    # Test all_input_names
+    a = composition.all_input_names
+    b = component_data.map { |_, v| v[:input_name] }
+    rval[:assertions][:assert].append([
+      (a-b).blank? && a.length == b.length,
+      'composition.all_input_names'
+    ])
+
     rval
   end
 
