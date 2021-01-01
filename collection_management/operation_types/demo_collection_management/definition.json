@@ -1,6 +1,5 @@
 {
-  "id": 27,
-  "name": "ExampleUses",
+  "name": "Demo Collection Management",
   "parent_class": "OperationType",
   "category": "Collection Management",
   "inputs": [],
