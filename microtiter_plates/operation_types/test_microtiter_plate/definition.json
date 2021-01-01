@@ -1,8 +1,8 @@
 {
   "id": 25,
-  "name": "Microtiter Plate Test",
+  "name": "Test Microtiter Plate",
   "parent_class": "OperationType",
-  "category": "Test",
+  "category": "Microtiter Plates",
   "inputs": [
     {
       "name": "PCR Plate",

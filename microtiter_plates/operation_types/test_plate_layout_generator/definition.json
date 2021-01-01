@@ -1,7 +1,7 @@
 {
-  "name": "PlateLayoutGenerator Test",
+  "name": "Test Plate Layout Generator",
   "parent_class": "OperationType",
-  "category": "Test",
+  "category": "Microtiter Plates",
   "inputs": [],
   "outputs": [],
   "on_the_fly": null,
