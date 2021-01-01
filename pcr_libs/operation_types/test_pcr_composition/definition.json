@@ -1,7 +1,7 @@
 {
-  "name": "PCR Composition Test",
+  "name": "Test PCR Composition",
   "parent_class": "OperationType",
-  "category": "Test",
+  "category": "PCR Libs",
   "inputs": [],
   "outputs": [],
   "on_the_fly": null,

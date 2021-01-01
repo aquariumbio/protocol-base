@@ -1,8 +1,8 @@
 {
   "id": 9,
-  "name": "PCR Test",
+  "name": "Demo PCR",
   "parent_class": "OperationType",
-  "category": "Test",
+  "category": "PCR Libs",
   "inputs": [],
   "outputs": [],
   "on_the_fly": null,
