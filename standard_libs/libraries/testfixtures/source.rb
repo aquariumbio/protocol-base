@@ -209,10 +209,11 @@ module TestFixtures
       assertions: {
         assert: [],
         assert_equal: [],
-        assert_no_match: [],
         assert_not_equal: [],
-        assert_not_nil: [],
-        assert_not_same: []
+        assert_match: [],
+        assert_no_match: [],
+        assert_nil: [],
+        assert_not_nil: []
       }
     }
   end
