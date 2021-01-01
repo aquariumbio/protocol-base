@@ -4,7 +4,7 @@
 # Provides fixures for testing such as Samples and Collections
 #
 module TestFixtures
-  PROJECT = "Protocol Testing"
+  PROJECT = 'Protocol Testing'
   DESCRIPTION = 'No description'
   GENERIC_SAMPLE = 'Generic Sample'
   GENERIC_SAMPLE_TYPE = "#{GENERIC_SAMPLE} Type"
@@ -56,7 +56,7 @@ module TestFixtures
   def generic_part_io(operation:, role:)
     sample = generic_sample
     collection = generic_collection
-    collection.assign_sample_to_pairs(sample, [[0,0]])
+    collection.assign_sample_to_pairs(sample, [[0, 0]])
 
     field_type = FieldType.new(
       name: GENERIC_COLLECTION,
@@ -136,17 +136,17 @@ module TestFixtures
         description: DESCRIPTION,
         min: 0,
         max: 1,
-        handler: "collection",
-        safety: "No safety information",
-        clean_up: "No cleanup information",
-        data: "No data",
-        vendor: "No vendor information",
-        unit: "each",
+        handler: 'collection',
+        safety: 'No safety information',
+        clean_up: 'No cleanup information',
+        data: 'No data',
+        vendor: 'No vendor information',
+        unit: 'each',
         cost: 0.01,
-        release_method: "return",
-        release_description: "",
-        image: "",
-        prefix: "",
+        release_method: 'return',
+        release_description: '',
+        image: '',
+        prefix: '',
         rows: 8,
         columns: 12
       }
@@ -166,26 +166,26 @@ module TestFixtures
   end
 
   def generic_container_type
-    object_type = ObjectType.find_by_name("Generic Container Type")
+    object_type = ObjectType.find_by_name('Generic Container Type')
     return object_type if object_type.present?
 
     ObjectType.create_from(
       {
-        name: "Generic Container Type",
-        description: "A generic container for testing purposes",
+        name: 'Generic Container Type',
+        description: 'A generic container for testing purposes',
         min: 0,
         max: 1,
-        handler: "sample_container",
-        safety: "No safety information",
-        clean_up: "No cleanup information",
-        data: "No data",
-        vendor: "No vendor information",
-        unit: "each",
+        handler: 'sample_container',
+        safety: 'No safety information',
+        clean_up: 'No cleanup information',
+        data: 'No data',
+        vendor: 'No vendor information',
+        unit: 'each',
         cost: 0.01,
-        release_method: "return",
-        release_description: "",
-        image: "",
-        prefix: "",
+        release_method: 'return',
+        release_description: '',
+        image: '',
+        prefix: '',
         rows: nil,
         columns: nil
       }
