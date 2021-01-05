@@ -1,0 +1,9 @@
+{
+  "name": "Test Test Fixtures",
+  "parent_class": "OperationType",
+  "category": "Standard Libs",
+  "inputs": [],
+  "outputs": [],
+  "on_the_fly": null,
+  "user_id": 1
+}
