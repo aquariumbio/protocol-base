@@ -2,14 +2,7 @@
   "name": "Test Options",
   "parent_class": "OperationType",
   "category": "Standard Libs",
-  "inputs": [
-    {
-      "name": "Options",
-      "part": null,
-      "array": null,
-      "routing": null
-    }
-  ],
+  "inputs": [],
   "outputs": [],
   "on_the_fly": null,
   "user_id": 1
