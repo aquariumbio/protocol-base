@@ -22,22 +22,36 @@ module Centrifuges
     show_spin_down(centrifuge, items: items, speed: speed, time: time)
   end
 
-      # Gives directions to use centrifuge
+  # show_array = []
+  # if shaker.class::ADJUSTABLE
+  #   show_array.append("Set <b>#{shaker.class::NAME}</b> speed to #{qty_display(speed)}")
+  # else
+  #   show_array.append("Go to <b>#{shaker.class::NAME}</b>")
+  # end
+  # show_array.append("Set time to #{qty_display(time)}") if time.present?
+  # show_array.append("Load the following items into a\n <b>#{shaker.class::NAME}</b>")
+  # items.each do |item|
+  #   show_array.append("- #{item}")
+  # end
+  # show_array
+
+  # Gives directions to use centrifuge
   def show_spin_down(centrifuge, items:, speed:, time: nil)
     if speed[:qty] > centrifuge.class::MAX_X_G[:qty]
       raise OverSpeedError, "Speed (#{speed}) is too fast for #{centrifuge.class::NAME}"
     end
-    show do
-      title 'Load Samples to Centrifuge'
-      note "Load the following items into a\n
-            <b>#{centrifuge.class::NAME} Centrifuge</b>"
-      note "Set speed to #{qty_display(speed)}" if centrifuge.class::ADJUSTABLE
-      note "Set time to #{qty_display(time)}" if time.present?
-      items.each do |item|
-        note item
-      end
-      warning '<b>Make sure Centrifuge is balanced</b>'
+    show_array = []
+    if centrifuge.class::ADJUSTABLE
+      show_array.append("Set <b>#{centrifuge.class::NAME}</b> speed to #{qty_display(speed)}")
+    else
+      show_array.append("Go to <b>#{centrifuge.class::NAME}</b>")
     end
+    show_array.append("Set time to #{qty_display(time)}") if time.present?
+    show_array.append("Load the following items into a\n <b>#{centrifuge.class::NAME}</b>")
+    items.each do |item|
+      show_array.append("- #{item}")
+    end
+    show_array.append('<b>Make sure Centrifuge is balanced</b>')
   end
 
 
@@ -57,7 +71,7 @@ module Centrifuges
       Medium.instance
     elsif type == Large::NAME || qty <= Large::MAX_X_G[:qty]
       Large.instance
-    elsif type == Qiagenks::NAME
+    elsif type == Qiagenks::NAME || qty <= Qiagenks::MAX_X_G[:qty]
       Qiagenks.instance
     else
       raise NoValidCentrifuge, 'No centrifuges match requested parameters'
@@ -71,19 +85,19 @@ module Centrifuges
   end
 
   class Small < Centrifuge
-    NAME = 'Small'.freeze
+    NAME = 'Small Centrifuge'.freeze
     MAX_X_G = {qty: 2000.0, units: TIMES_G}
     ADJUSTABLE = false
   end
 
   class Medium < Centrifuge
-    NAME = 'Medium'.freeze
+    NAME = 'Medium Centrifuge'.freeze
     MAX_X_G = {qty: 3114.0, units: TIMES_G}
     ADJUSTABLE = true
   end
 
   class Large < Centrifuge
-    NAME = 'Large'.freeze
+    NAME = 'Large Centrifuge'.freeze
     MAX_X_G = {qty: 4816.0, units: TIMES_G}
     ADJUSTABLE = true
   end
