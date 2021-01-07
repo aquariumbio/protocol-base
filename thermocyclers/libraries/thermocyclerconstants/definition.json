@@ -1,6 +1,6 @@
 {
   "name": "ThermocyclerConstants",
   "parent_class": "Library",
-  "category": "ThermocyclerHelper",
+  "category": "Thermocyclers",
   "user_id": 1
 }
