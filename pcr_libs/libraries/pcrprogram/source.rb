@@ -10,8 +10,8 @@ class PCRProgramFactory
   # @param program_name [String] the name of one of the default program hashes
   # @param volume [Numeric] the reaction volume in MICROLITERS
   # @return [PCRProgram]
-  def self.build(program_name:, volume: nil)
-    PCRProgram.new(program_name: program_name, volume: volume)
+  def self.build(program: nil, program_name: nil, volume: nil)
+    PCRProgram.new(program_name: program_name, volume: volume, program: program)
   end
 end
 
@@ -29,8 +29,8 @@ class PCRProgram
   # @param volume [Numeric] the reaction volume in MICROLITERS
   # @return [PCRProgram]
   def initialize(args = {})
-    @program_name = args[:program_name]
-    program = get_program_def(name: program_name)
+    @program_name = args[:program_name] || 'Custom Program'
+    program = args[:program] || get_program_def(name: program_name)
     @program_template_name = program[:program_template_name]
     @name = @program_template
     @plate = program[:plate]
