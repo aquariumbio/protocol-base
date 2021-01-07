@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 needs "Standard Libs/Units"
 
 module Pipettors
@@ -40,7 +42,7 @@ module Pipettors
   end
 
   # Returns a single channel pipet depending on the volume
-  # 
+  #
   # @param volume [{qty: int, unit: string}] the volume per Standard Libs Units
   # @param type [String] the type of pipettor if a specific one is desired
   # @return [Pipet] A class of pipettor

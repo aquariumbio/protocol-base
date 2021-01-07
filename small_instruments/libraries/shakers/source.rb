@@ -19,9 +19,9 @@ module Shakers
     check_speed(speed: speed, shaker: shaker) if speed.present?
 
     if shaker.class::NAME == Vortex::NAME
-       return vortex(items)
+      vortex(items)
     else
-      return show_shake(shaker, items: items, speed: speed, time: time)
+      show_shake(shaker, items: items, speed: speed, time: time)
     end
   end
 
