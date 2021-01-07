@@ -15,7 +15,7 @@ module CollectionDisplay
   # @param check [Boolean] Optional weather cells should be Checkable
   # @param &rc_block [Block] Optional block to determine rc_list
   # @return [Table]
-  def highlight_non_empty(collection, check: true, &rc_block)
+  def highlight_non_empty(collection, check: false, &rc_block)
     highlight_collection_rc(collection, collection.get_non_empty,
                             check: check, &rc_block)
   end
@@ -26,7 +26,7 @@ module CollectionDisplay
   # @param check [Boolean] Optional weather cells should be Checkable
   # @param &rc_block [Block] Optional block to determine rc_list
   # @return [Table]
-  def highlight_empty(collection, check: true, &rc_block)
+  def highlight_empty(collection, check: false, &rc_block)
     highlight_collection_rcx(collection, collection.get_empty,
                             check: check, &rc_block)
   end
@@ -37,7 +37,7 @@ module CollectionDisplay
   # @param check [Boolean] Optional weather cells should be Checkable
   # @param &rc_block [Block] Optional block to determine rc_list
   # @return [Table]
-  def highlight_alpha_non_empty(collection, check: true, &rc_block)
+  def highlight_alpha_non_empty(collection, check: false, &rc_block)
     rcx = collection.get_non_empty
     rcx.each do |coor|
       coor.push(get_alpha(coor.first + 1) + (coor[1] + 1).to_s)
@@ -52,7 +52,7 @@ module CollectionDisplay
   # @param check [Boolean] Optional weather cells should be Checkable
   # @param &rc_block [Block] Optional block to determine rc_list
   # @return [Table]
-  def highlight_alpha_empty(collection, check: true, &rc_block)
+  def highlight_alpha_empty(collection, check: false, &rc_block)
     rcx = collection.get_empty
     rcx.each do |coor|
       coor.push(get_alpha(coor.first) + coor[1].to_s)
@@ -75,8 +75,7 @@ module CollectionDisplay
       sample_locations = get_alpha_num_location(collection, sample)
 
       sample_coordinates.each do |coordinates|
-        raise "sample locations #{sample_locations[sample].class}"
-        coordinates.push(sample_locations[sample]) # [0,0,A1]
+        coordinates.push(sample_locations[sample])
         coordinates_and_data.push(coordinates)
       end
     end
@@ -92,7 +91,7 @@ module CollectionDisplay
   # @param check [Boolean] Optional whether cells should be Checkable
   # @param &rc_block [Block] to determine rc list
   # @return [Table]
-  def highlight_collection_rc(collection, rc_list, check: true, &_rc_block)
+  def highlight_collection_rc(collection, rc_list, check: false, &_rc_block)
     rcx_list = rc_list.map { |r, c|
       block_given? ? [r, c, yield(r, c)] : [r, c, '']
     }
@@ -108,7 +107,7 @@ module CollectionDisplay
   #     col = int
   #     x = string
   # @return [Table]
-  def highlight_collection_rcx(collection, rcx_list, check: true)
+  def highlight_collection_rcx(collection, rcx_list, check: false)
     rows, columns = collection.dimensions
     table = create_collection_table(rows: rows, columns: columns, col_id: collection.id)
     highlight_rcx(table, rcx_list, check: check)
@@ -120,7 +119,7 @@ module CollectionDisplay
   # @param rc_list [Array] Array of rows and columns [[row,col],...]
   # @param check [Boolean] Default True weather cells are checkable
   # @param &rc_block [Block] Optional tbd
-  def highlight_alpha_rc(collection, rc_list, check: true, &_rc_block)
+  def highlight_alpha_rc(collection, rc_list, check: false, &_rc_block)
     rcx_list = rc_list.map do |r, c|
       block_given? ? [r, c, yield(r, c)] : [r, c, get_alpha(r+1) + (c+1).to_s]
     end
@@ -134,7 +133,7 @@ module CollectionDisplay
   #         row,column are int, x is string
   # @param check [Boolean] Default True weather cells are checkable
   # @param &rc_block [Block] Optional tbd
-  def highlight_alpha_rcx(collection, rcx_list, check: true)
+  def highlight_alpha_rcx(collection, rcx_list, check: false)
     rows, columns = collection.dimensions
     tbl = create_collection_table(rows: rows, columns: columns, col_id: collection.id)
     rcx_list.each do |r, c, x|
@@ -148,33 +147,38 @@ module CollectionDisplay
   # @param collection [Collection] the collection to be represented by the table
   # @param add_headers [Boolean] optional True
   # @return tab [Table] a table to be displayed
-  def create_collection_table(rows:, columns:, col_id:)
+  def create_collection_table(rows:, columns:, col_id:, plate_on_end: nil)
+    plate_on_end ||= rows == 12 && columns == 8 ? true : false
     text_color = 'black'
-    border_color = "&#085F92"
+    border_color = "&#E9E9E9"
     bg_color = "&#b8b8b8"
-    col_id = col_id.to_s.chars
-    rows = rows + 1
+    col_id = col_id.to_s
+    rows = rows
     size = rows * columns
     slots = (1..size + rows + columns + 1).to_a
     tab = slots.each_slice(columns + 1).each_with_index.map do |row, row_idx|
       row.each_with_index.map do |col, col_idx|
+        #if row_idx == 0
+        #  if col_idx == 0
+        #    { class: 'td-empty-slot',
+        #      content: '<b>ID:</b>',
+        #      style: {color: text_color, 'background-color' => border_color } }
+        #  elsif col_idx == 1
+        #    { class: 'td-empty-slot',
+        #      content: "<b>#{col_id}</b>",
+        #      style: {color: text_color, 'background-color' => border_color, border: '0px' } }
+        #  else
+        #    { class: 'td-empty-slot',
+        #      content: '',
+        #      style: {color: text_color, 'background-color' => border_color, border: '0px' } }
+        #  end
         if row_idx == 0
-          if col_idx == 0
-            { class: 'td-empty-slot',
-              content: '<b>ID:</b>',
-              style: {color: text_color, 'background-color' => border_color } }
-          else
-            { class: 'td-empty-slot',
-              content: "<b>#{col_id[col_idx-1]}</b>",
-              style: {color: text_color, 'background-color' => border_color, border: '0px' } }
-          end
-        elsif row_idx == 1
           { class: 'td-empty-slot',
-            content: "<b>#{col_idx}</b>",
+            content: "<b>#{plate_on_end ? get_alpha(col_idx) : col_idx}</b>",
             style: {color: text_color, 'background-color' => border_color } }
         elsif col_idx.zero?
           { class: 'td-empty-slot',
-            content: "<b>#{get_alpha(row_idx-1)}</b>",
+            content: "<b>#{plate_on_end ? row_idx : get_alpha(row_idx)}</b>",
             style: {color: text_color, 'background-color' => border_color } }
         else
           # Normal cells
@@ -184,7 +188,7 @@ module CollectionDisplay
         end
       end
     end
-    tab[1].first[:content] = ""
+    tab[0].first[:content] = ""
     tab
   end
 
@@ -211,9 +215,10 @@ module CollectionDisplay
   # @param id [String] what will be printed in the table
   #                    (TODO EMPTY STRING/DON'T REPLACE CONTENT)
   # @param check [Boolean] optional determines if cell is checkable or not
-  def highlight_cell(tbl, row, col, id, check: true)
-    bg_color = '&#ADD8E6' unless check
-    tbl[row + 2][col + 1] = { content: id,
+  def highlight_cell(tbl, row, col, id, check: false)
+    bg_color = '&#ade6dd' unless check
+
+    tbl[row + 1][col + 1] = { content: id,
                               check: check,
                               class: 'td-full-slot',
                               style: {'background-color'=> bg_color}}
@@ -228,7 +233,7 @@ module CollectionDisplay
   #     col = int
   #     x = string
   # @return [table]
-  def highlight_rcx(table, rcx_list, check: true)
+  def highlight_rcx(table, rcx_list, check: false)
     rcx_list.each do |rcx|
       rcx.push(check)
     end
@@ -259,7 +264,7 @@ module CollectionDisplay
   # @param check [Boolean] true if cells should be Checkable
   # @param &rc_block [Block] to determine rc list
   # @return [Table]
-  def highlight_rc(table, rc_list, check: true, &_rc_block)
+  def highlight_rc(table, rc_list, check: false, &_rc_block)
     rcx_list = rc_list.map do |r, c|
       block_given? ? [r, c, yield(r, c)] : [r, c, ""]
     end
@@ -273,7 +278,7 @@ module CollectionDisplay
   # @param check [Boolean] true if cells should be Checkable
   # @param &fv_block [Block] Optional Unknown
   # @return [Table]
-  def highlight_collection(ops, id_block: nil, check: true, &fv_block)
+  def highlight_collection(ops, id_block: nil, check: false, &fv_block)
     g = ops.group_by { |op| fv_block.call(op).collection }
     tables = g.map do |collection, grouped_ops|
       rcx_list = grouped_ops.map do |op|
@@ -293,26 +298,18 @@ module CollectionDisplay
   #  for each part noted in rc_list
   #
   # @param collection [Collection] the collection
-  # @param keys [Array<String>] an array of all keys that point to desired data
+  # @param keys [String] the Key
   # @param rc_list [Array<Array<row, col>...>] optional array of locations
   #        if not given will display all non_empty
   # @return table of parts with data information
-  def display_data(collection, keys, rc_list: nil)
+  def display_data(collection, key, rc_list: nil)
     if rc_list.nil?
       rc_list = collection.get_non_empty
     end
     rcx_array = []
     rc_list.each do |loc|
-      data_string = ''
-      keys.each_with_index do |key, idx|
-        part = collection.part(loc[0], loc[1])
-        data = get_associated_data(part, key).to_s
-        unless data.nil?
-          data_string += ', ' unless idx.zero?
-          data_string += data
-        end
-      end
-      loc.push(data_string)
+      part = collection.part(loc[0], loc[1])
+      loc.push(get_associated_data(part, key))
       rcx_array.push(loc)
     end
     highlight_collection_rcx(collection, rcx_array, check: false)
