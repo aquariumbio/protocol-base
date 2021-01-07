@@ -1,8 +1,7 @@
-# frozen_string_literal: true
-
-needs 'Standard Libs/Units'
+needs "Standard Libs/Units"
 
 module Pipettors
+
   include Units
 
   # Creates string with directions on which pipet to use and what
@@ -36,17 +35,18 @@ module Pipettors
     pipettor.pipet(
       volume: volume,
       source: source,
-      destination: destination
+      destination: destination,
     )
   end
 
   # Returns a single channel pipet depending on the volume
-  #
+  # 
   # @param volume [{qty: int, unit: string}] the volume per Standard Libs Units
   # @param type [String] the type of pipettor if a specific one is desired
   # @return [Pipet] A class of pipettor
   def get_single_channel_pipettor(volume:, type: nil)
     qty = type.present? ? Float::INFINITY : volume[:qty]
+  
     if type == P2::NAME || qty <= 2
       P2.instance
     elsif type == P20::NAME || qty <= 20
@@ -81,7 +81,7 @@ module Pipettors
     end
   end
 
-  # TODO: add comment
+  # TODO add comment
   class Pipettor
     include Singleton
     include Units
@@ -96,20 +96,16 @@ module Pipettors
       max_volume = self.class::MAX_VOLUME
       if volume[:qty] <= max_volume
         volume[:qty] = volume[:qty].round(self.class::ROUND_TO)
-        a = "Set a <b>#{self.class::NAME}</b> pipet to "\
-          "<b>#{qty_display(volume)}</b>."
-        b = "  Pipet #{qty_display(volume)} from <b>#{source}</b>"\
-          " into <b>#{destination}</b>"
+        "Use a <b>#{self.class::NAME}</b> to pipet <b>#{qty_display(volume)}</b>"\
+          " from <b>#{source}</b> into <b>#{destination}</b>"
       else
-        sub_volume = { qty: nil, units: volume[:units] }
-        times = (volume[:qty].to_f / max_volume).ceil.to_f
+        sub_volume = {qty: nil, units: volume[:units]}
+        times = (volume[:qty].to_f/max_volume).ceil.to_f
         sub_volume[:qty] = (volume[:qty] / times).round(self.class::ROUND_TO)
-        a = "Set a <b>#{self.class::NAME}</b> pipet to "\
-          "<b>#{qty_display(sub_volume)}</b>."
-        b = "  Pipet #{times.round} times from <b>#{source}</b>"\
+        "Use a <b>#{self.class::NAME}</b> #{times.round} times"\
+          " to pipet <b>#{qty_display(volume)}</b> from <b>#{source}</b>"\
           " into <b>#{destination}</b>"
       end
-      [a, b]
     end
 
     # Returns the number of channels a pipettor has
@@ -121,7 +117,7 @@ module Pipettors
   end
 
   class PA12X300 < Pipettor
-    NAME = '12 Channel P300'
+    NAME = '12 Channel P300'.freeze
     MIN_VOLUME = 30
     MAX_VOLUME = 300
     ROUND_TO = 0
@@ -129,15 +125,15 @@ module Pipettors
   end
 
   class PA6X1200 < Pipettor
-    NAME = '6 Channel Adjustable Space P1200'
+    NAME = '6 Channel Adjustable Space P1200'.freeze
     MIN_VOLUME = 200.0
     MAX_VOLUME = 1000.0
     ROUND_TO = 0
     CHANNELS = 6
   end
-
+  
   class P8X20 < Pipettor
-    NAME = '8 Channel P20'
+    NAME = '8 Channel P20'.freeze
     MIN_VOLUME = 2.0
     MAX_VOLUME = 20.0
     ROUND_TO = 0
@@ -145,7 +141,7 @@ module Pipettors
   end
 
   class P8X200 < Pipettor
-    NAME = '8 Channel P200'
+    NAME = '8 Channel P200'.freeze
     MIN_VOLUME = 20.0
     MAX_VOLUME = 200.0
     ROUND_TO = 0
@@ -153,7 +149,7 @@ module Pipettors
   end
 
   class P2 < Pipettor
-    NAME = 'P2'
+    NAME = 'P2'.freeze
     MIN_VOLUME = 0.0
     MAX_VOLUME = 2.0
     ROUND_TO = 1
@@ -161,7 +157,7 @@ module Pipettors
   end
 
   class P20 < Pipettor
-    NAME = 'P20'
+    NAME = 'P20'.freeze
     MIN_VOLUME = 2.0
     MAX_VOLUME = 20.0
     ROUND_TO = 1
@@ -169,7 +165,7 @@ module Pipettors
   end
 
   class P200 < Pipettor
-    NAME = 'P200'
+    NAME = 'P200'.freeze
     MIN_VOLUME = 20.0
     MAX_VOLUME = 200.0
     ROUND_TO = 0
@@ -177,7 +173,7 @@ module Pipettors
   end
 
   class P1000 < Pipettor
-    NAME = 'P1000'
+    NAME = 'P1000'.freeze
     MIN_VOLUME = 200.0
     MAX_VOLUME = 1000.0
     ROUND_TO = 0
@@ -185,10 +181,11 @@ module Pipettors
   end
 
   class PipetController < Pipettor
-    NAME = 'Pipet controller'
+    NAME = 'Pipet controller'.freeze
     MIN_VOLUME = 2000.0
-    MAX_VOLUME = 50_000.0
+    MAX_VOLUME = 50000.0
     ROUND_TO = 0
     CHANNELS = 1
   end
+
 end

@@ -19,9 +19,9 @@ module Shakers
     check_speed(speed: speed, shaker: shaker) if speed.present?
 
     if shaker.class::NAME == Vortex::NAME
-      vortex(items)
+       return vortex(items)
     else
-      show_shake(shaker, items: items, speed: speed, time: time)
+      return show_shake(shaker, items: items, speed: speed, time: time)
     end
   end
 
@@ -35,29 +35,31 @@ module Shakers
   end
 
   # Gives directions to use centrifuge
+  #
+  # @return show_array [Array<String>]
   def show_shake(shaker, items:, speed: nil, time: nil)
-    show do
-      title 'Shake Items'
-      note "Go to <b>#{shaker.class::NAME}</b>"
-      note "Set speed to #{qty_display(speed)}" if shaker.class::ADJUSTABLE
-      note "Set time to #{qty_display(time)}" if time.present?
-      note "Load the following items into a\n
-            <b>#{shaker.class::NAME}</b>"
-      items.each do |item|
-        note item.to_s
-      end
+    show_array = []
+    if shaker.class::ADJUSTABLE
+      show_array.append("Set <b>#{shaker.class::NAME}</b> speed to #{qty_display(speed)}")
+    else
+      show_array.append("Go to <b>#{shaker.class::NAME}</b>")
     end
+    show_array.append("Set time to #{qty_display(time)}") if time.present?
+    show_array.append("Load the following items into a\n <b>#{shaker.class::NAME}</b>")
+    items.each do |item|
+      show_array.append("- #{item}")
+    end
+    show_array
   end
 
   # Gives directions to use vortexer
   def vortex(items)
-    show do
-      title 'Vortex Item'
-      note 'Please vortex the following Items'
-      items.each do |obj|
-        bullet "<b>#{obj}</b>"
-      end
+    show_arry = []
+    show_arry.append('Please vortex the following Items')
+    items.each do |obj|
+      show_arry.append("- #{obj}")
     end
+    show_arry
   end
 
   # Returns a Shaker
