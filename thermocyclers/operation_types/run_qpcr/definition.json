@@ -1,0 +1,29 @@
+{
+  "name": "Run qPCR",
+  "parent_class": "OperationType",
+  "category": "Thermocyclers",
+  "inputs": [
+    {
+      "name": "PCR Plate",
+      "part": false,
+      "array": false,
+      "routing": "P"
+    },
+    {
+      "name": "Options",
+      "part": false,
+      "array": false,
+      "routing": null
+    }
+  ],
+  "outputs": [
+    {
+      "name": "PCR Plate",
+      "part": false,
+      "array": false,
+      "routing": "P"
+    }
+  ],
+  "on_the_fly": false,
+  "user_id": 1
+}

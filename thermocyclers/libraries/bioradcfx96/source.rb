@@ -18,9 +18,9 @@ class BioRadCFX96 < AbstractThermocycler
 
   # Instantiates the class
   #
-  # @return [BioRadCFX96]
-  def initialize
-    super()
+  # @return [TestThermocycler]
+  def initialize(name: 'Unnamed Thermocycler')
+    super(name: name)
   end
 
   # Lab-specific, user-defined parameters
@@ -39,7 +39,7 @@ class BioRadCFX96 < AbstractThermocycler
       close_lid_image: 'close_lid.png',
       start_run_image: 'start_run.png',
       export_measurements_image: 'exporting_qPCR_quantification.png',
-      dimensions: [8,12]
+      dimensions: [8, 12]
     }
   end
 

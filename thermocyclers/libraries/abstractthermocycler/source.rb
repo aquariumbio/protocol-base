@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+needs 'Tube Rack/TubeRack'
+
 # Abstract PCR thermocycler
 #
 # @author Devin Strickland <strcklnd@uw.edu>
@@ -11,13 +13,16 @@ class AbstractThermocycler
 
   private_constant :MODEL, :PROGRAM_EXT
 
-  attr_reader :params
+  attr_reader :params, :tube_rack, :name
 
   # Instantiates the class and sets the `@params` insteance variable
   #
   # @return [Thermocycler]
-  def initialize
+  def initialize(name: 'Unnamed Thermocycler')
     @params = default_params.update(user_defined_params)
+    dimensions = params[:dimensions]
+    @tube_rack = TubeRack.new(dimensions[0], dimensions[1])
+    @name = name
   end
 
   # Lab-specific, user-defined parameters

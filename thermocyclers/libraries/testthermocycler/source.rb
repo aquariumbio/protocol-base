@@ -17,8 +17,8 @@ class TestThermocycler < AbstractThermocycler
   # Instantiates the class
   #
   # @return [TestThermocycler]
-  def initialize
-    super()
+  def initialize(name: 'Unnamed Thermocycler')
+    super(name: name)
   end
 
   # Lab-specific, user-defined parameters
@@ -29,7 +29,7 @@ class TestThermocycler < AbstractThermocycler
       experiment_filepath: 'Desktop/test_experiment_path',
       export_filepath: 'Desktop/test_export_path',
       image_path: 'Actions/TestThermocycler',
-      dimensions: [8,12]
+      dimensions: [8, 12]
     }
   end
 
