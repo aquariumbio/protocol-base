@@ -1,0 +1,8 @@
+pfish push -c 'Collection Management'
+pfish push -c 'Composition Libs'
+pfish push -c 'Microtiter Plates'
+pfish push -c 'PCR Libs'
+pfish push -c 'Sample Models'
+pfish push -c 'Small Instruments'
+pfish push -c 'Standard Libs'
+pfish push -c 'Thermocyclers'
