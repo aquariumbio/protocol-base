@@ -45,6 +45,8 @@ module Units
 
   # Force
   TIMES_G = 'x g'
+  # Rotations
+  RPM = 'rpm'
 
   # R/DNA Length
   BASEPAIRS = 'bp'
@@ -65,6 +67,10 @@ module Units
           end
     "#{qty[:qty]}#{sep}#{qty[:units]}"
   end
+
+ def create_qty(qty:, units:)
+   {qty: qty, units: units}
+ end
 
   def qty_display(qty)
     Units.qty_display(qty)
