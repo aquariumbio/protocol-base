@@ -35,7 +35,7 @@ class Composition
   #
   # @input component_data [Array<hash>]] per the standard # TODO link to example
   def add_components(component_data:)
-    component_data&.each do |_, c|
+    component_data&.each do |c|
       @components.append(Component.new(c))
     end
     check_duplicate_names
