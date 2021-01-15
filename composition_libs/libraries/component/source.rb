@@ -50,14 +50,20 @@ class Component
   # The volume as a qty, units hash
   #
   # @return [Hash]
-  def volume_hash
-    { qty: qty, units: units }
+  def volume_hash(adj_qty: false)
+    { qty: adj_qty ? @adj_qty : @qty, units: units }
   end
 
   # Displays the volume (`qty`) with units
   #
   # @return [String]
-  def qty_display(round = 1)
+  def qty_display(round = 1, adj_quantities: false)
+    amount = if adj_quantities
+               adj_qty
+             else
+               qty
+             end
+    amount = amount.round(round) unless amount.nil?
     Units.qty_display({ qty: qty.round(round), units: units })
   end
 
@@ -70,7 +76,12 @@ class Component
   #   in a table
   # @return [Numeric, Hash]
   def adjusted_qty(mult = 1.0, round = 1, checkable = true)
+    return if qty.nil?
+    
     adj_qty = (qty * mult).round(round)
+
+    raise "Multiplier is nil for composition #{input_name}" if mult.nil?
+
     adj_qty = { content: adj_qty, check: true } if checkable
     adj_qty
   end
