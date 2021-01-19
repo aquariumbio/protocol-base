@@ -7,7 +7,7 @@ needs 'Standard Libs/Units'
 class Component
   include Units
 
-  attr_reader :input_name, :qty, :units, :sample, :item
+  attr_reader :input_name, :qty, :units, :sample, :item, :suggested_ot
   attr_accessor :added
 
   # Instantiates the class
@@ -20,13 +20,14 @@ class Component
   #   used for this component
   # @param object_name [String] the ObjectType (Container) that this
   #   component should be found in
-  def initialize(input_name:, qty:, units:, sample_name: nil)
+  def initialize(input_name:, qty:, units:, sample_name: nil, suggested_ot: nil)
     @input_name = input_name
     @qty = qty
     @units = units
     @sample = sample_name ? Sample.find_by_name(sample_name) : nil
     @item = nil
     @added = false
+    @suggested_ot = suggested_ot
   end
 
   # Sets `item`
@@ -58,13 +59,10 @@ class Component
   #
   # @return [String]
   def qty_display(round = 1, adj_quantities: false)
-    amount = if adj_quantities
-               adj_qty
-             else
-               qty
-             end
+    amount = adj_quantities ? adj_qty : qty
+
     amount = amount.round(round) unless amount.nil?
-    Units.qty_display({ qty: qty.round(round), units: units })
+    Units.qty_display({ qty: amount, units: units })
   end
 
   # Adjusts the qty by a given factor and, if needed, makes it checkable
