@@ -48,7 +48,7 @@ module ItemActions
   def discard_deleted_inputs(operations:)
     input_items = operations.map { |op| op.inputs.map(&:item) }.flatten.compact
     deleted_items = input_items.select(&:deleted?)
-    discard_items(items: deleted_items)
+    discard_items(items: deleted_items) if deleted_items.present?
   end
 
   # Tell the experimenter to discard a list of items
