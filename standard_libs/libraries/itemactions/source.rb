@@ -2,13 +2,72 @@
 
 # Assists with basic actions of items (eg trashing, moving, etc)
 
-needs 'Small Instruments/Shakers'
 needs 'Standard Libs/Units'
+needs 'Standard Libs/TextDisplayHelper'
 
 module ItemActions
-
-  include Shakers
   include Units
+  include TextDisplayHelper
+
+  # Tell the experimenter to get clean containers and label them.
+  #
+  # @note Parameters labels or items, but not both, must be passed
+  # @param container_name [String] the name of the container, will be
+  #   pluralized based on the number of labels or items passed
+  # @param labels [Array<String>] an array of labels for the containers
+  # @param items [Array<Item>] an array of Items; if passed then the labels
+  #   will be the item IDs
+  # @retun [void]
+  def label_containers(container_name:, labels: nil, items: nil)
+    if items && labels
+      raise 'Method label_containers can\'t take both items and labels'
+    elsif items
+      n_containers = items.length
+      labels = id_ranges_display(items: items)
+    elsif labels
+      n_containers = labels.length
+    else
+      raise 'Method label_containers requires either items or labels'
+    end
+
+    containers = container_name.pluralize(n_containers)
+
+    show do
+      title "Label #{containers}"
+
+      note "Get #{n_containers} #{containers}"
+      note "Label the #{containers} #{labels}"
+    end
+  end
+
+  # Tell the experimenter to discard all items that have been marked as deleted.
+  #
+  # @param operations [Array<Operations>] operations from which to collect
+  #   marked items
+  # @return [void]
+  def discard_deleted_inputs(operations:)
+    input_items = operations.map { |op| op.inputs.map(&:item) }.flatten.compact
+    deleted_items = input_items.select(&:deleted?)
+    discard_items(items: deleted_items) if deleted_items.present?
+  end
+
+  # Tell the experimenter to discard a list of items
+  #
+  # @param items [Array<Item>] the list of items to discard
+  # @return [void]
+  def discard_items(items:)
+    item_display = items.map { |i| [i.object_type.name, i.to_s] }.sort
+
+    show do
+      title 'Dispose of used items'
+
+      note 'Dispose of all the following items'
+      warning 'Please ask for help if you are unsure of proper disposal procedures'
+      item_display.each do |name, id|
+        check "#{name} #{id}"
+      end
+    end
+  end
 
   # Instructs tech to remove supernatant and discard
   #
@@ -286,14 +345,6 @@ module ItemActions
     end
     item.associate(LOT_NUM, lot_number) if lot_number.present?
     item
-  end
-
-  def vortex_objs(objs)
-    unless objs.is_a? Array
-      objs = [objs]
-    end
-
-    shake(items: objs)
   end
 
   # Directions to label objects with labels
