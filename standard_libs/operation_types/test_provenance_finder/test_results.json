@@ -1,0 +1,352 @@
+{
+  "result": "ok",
+  "message": "test complete",
+  "error": null,
+  "log": null,
+  "backtrace": [
+    {
+      "operation": "initialize",
+      "arguments": {
+        "operation_type_id": 751
+      },
+      "time": "2021-03-04T10:52:21.714-05:00"
+    },
+    {
+      "operation": "display",
+      "content": [
+        {
+          "note": "289222 (Dilute to 4nM): [289223]"
+        },
+        {
+          "note": "289223 (Qubit concentration): [289224]"
+        },
+        {
+          "note": "289224 (Purify Gel Slice (NGS)): [289225]"
+        },
+        {
+          "note": "289225 (Extract Gel Slice (NGS)): [289226]"
+        },
+        {
+          "note": "289226 (Run Pre-poured Gel): [289227]"
+        },
+        {
+          "note": "289227 (Make qPCR Fragment WITH PLATES): [289228]"
+        },
+        {
+          "note": "289228 (Purify Gel Slice (NGS)): [289229]"
+        },
+        {
+          "note": "289229 (Extract Gel Slice (NGS)): [289230]"
+        },
+        {
+          "note": "289230 (Run Pre-poured Gel): [289231]"
+        },
+        {
+          "note": "289231 (Make qPCR Fragment): [289252]"
+        },
+        {
+          "note": "289252 (Digest Genomic DNA): [289253]"
+        },
+        {
+          "note": "289253 (Yeast Plasmid Extraction): [289254]"
+        },
+        {
+          "note": "289254 (Treat With Zymolyase): [287683]"
+        },
+        {
+          "note": "287683 (Store Yeast Library Sample): [287682]"
+        },
+        {
+          "note": "287682 (Innoculate Yeast Library): [287679]"
+        },
+        {
+          "note": "287679 (Sort Yeast Display Library): [287676]"
+        },
+        {
+          "note": "287676 (Challenge and Label): [287675]"
+        },
+        {
+          "note": "287675 (Dilute Yeast Library): [287564]"
+        },
+        {
+          "note": "287564 (Innoculate Yeast Library): [287561]"
+        },
+        {
+          "note": "287561 (Sort Yeast Display Library): [287558]"
+        },
+        {
+          "note": "287558 (Challenge and Label): [287557]"
+        },
+        {
+          "note": "287557 (Dilute Yeast Library): [287466]"
+        },
+        {
+          "note": "287466 (Innoculate Yeast Library): [287463]"
+        },
+        {
+          "note": "287463 (Sort Yeast Display Library): [287460]"
+        },
+        {
+          "note": "287460 (Challenge and Label): [285624]"
+        },
+        {
+          "note": "285624 (Dilute Yeast Library): [285623]"
+        },
+        {
+          "note": "285623 (Innoculate Yeast Library): [285622]"
+        },
+        {
+          "note": "285622 (Sort Yeast Display Library): [285621]"
+        },
+        {
+          "note": "285621 (Challenge and Label): [285626]"
+        },
+        {
+          "note": "285626 (Dilute Yeast Library): [285631]"
+        },
+        {
+          "note": "285631 (Innoculate Yeast Library): [285452]"
+        },
+        {
+          "note": "285452 (Make Library Glycerol Stocks): [285450]"
+        },
+        {
+          "note": "285450 (High-Efficiency Transformation NEW): [285455]"
+        },
+        {
+          "note": "285455 (Combine and Dry DNA): [285430]"
+        },
+        {
+          "note": "285430 (Ethanol Precipitation Cleanup): [285429]"
+        },
+        {
+          "note": "285429 (DNA ethanol precipitation): [285086]"
+        },
+        {
+          "note": "285086 (Combine Purified Samples): [285078, 285081, 285079, 285080, 285082, 285085, 285083, 285084]"
+        },
+        {
+          "note": "285078 (qPCR Library Purification): [285087]"
+        },
+        {
+          "note": "285087 (Transfer From Stripwell to Tubes): [285089]"
+        },
+        {
+          "note": "285089 (Library qPCR): []"
+        },
+        {
+          "note": "285081 (qPCR Library Purification): [285087]"
+        },
+        {
+          "note": "285087 (Transfer From Stripwell to Tubes): [285089]"
+        },
+        {
+          "note": "285089 (Library qPCR): []"
+        },
+        {
+          "note": "285079 (qPCR Library Purification): [285088]"
+        },
+        {
+          "note": "285088 (Transfer From Stripwell to Tubes): [285090]"
+        },
+        {
+          "note": "285090 (Library qPCR): []"
+        },
+        {
+          "note": "285080 (qPCR Library Purification): [285088]"
+        },
+        {
+          "note": "285088 (Transfer From Stripwell to Tubes): [285090]"
+        },
+        {
+          "note": "285090 (Library qPCR): []"
+        },
+        {
+          "note": "285082 (qPCR Library Purification): [285087]"
+        },
+        {
+          "note": "285087 (Transfer From Stripwell to Tubes): [285089]"
+        },
+        {
+          "note": "285089 (Library qPCR): []"
+        },
+        {
+          "note": "285085 (qPCR Library Purification): [285087]"
+        },
+        {
+          "note": "285087 (Transfer From Stripwell to Tubes): [285089]"
+        },
+        {
+          "note": "285089 (Library qPCR): []"
+        },
+        {
+          "note": "285083 (qPCR Library Purification): [285088]"
+        },
+        {
+          "note": "285088 (Transfer From Stripwell to Tubes): [285090]"
+        },
+        {
+          "note": "285090 (Library qPCR): []"
+        },
+        {
+          "note": "285084 (qPCR Library Purification): [285088]"
+        },
+        {
+          "note": "285088 (Transfer From Stripwell to Tubes): [285090]"
+        },
+        {
+          "note": "285090 (Library qPCR): []"
+        }
+      ]
+    },
+    {
+      "operation": "next",
+      "time": "2021-03-04T10:52:22.551-05:00",
+      "inputs": {
+        "timestamp": 1614873142000
+      }
+    },
+    {
+      "operation": "complete",
+      "rval": {
+        "assertions": {
+          "assert": [],
+          "refute": [],
+          "assert_equal": [
+            [
+              [
+                "Dilute to 4nM",
+                "Qubit concentration",
+                "Purify Gel Slice (NGS)",
+                "Extract Gel Slice (NGS)",
+                "Run Pre-poured Gel",
+                "Make qPCR Fragment WITH PLATES",
+                "Purify Gel Slice (NGS)",
+                "Extract Gel Slice (NGS)",
+                "Run Pre-poured Gel",
+                "Make qPCR Fragment",
+                "Digest Genomic DNA",
+                "Yeast Plasmid Extraction",
+                "Treat With Zymolyase",
+                "Store Yeast Library Sample",
+                "Innoculate Yeast Library",
+                "Sort Yeast Display Library",
+                "Challenge and Label",
+                "Dilute Yeast Library",
+                "Innoculate Yeast Library",
+                "Sort Yeast Display Library",
+                "Challenge and Label",
+                "Dilute Yeast Library",
+                "Innoculate Yeast Library",
+                "Sort Yeast Display Library",
+                "Challenge and Label",
+                "Dilute Yeast Library",
+                "Innoculate Yeast Library",
+                "Sort Yeast Display Library",
+                "Challenge and Label",
+                "Dilute Yeast Library",
+                "Innoculate Yeast Library",
+                "Make Library Glycerol Stocks",
+                "High-Efficiency Transformation NEW",
+                "Combine and Dry DNA",
+                "Ethanol Precipitation Cleanup",
+                "DNA ethanol precipitation",
+                "Combine Purified Samples",
+                "qPCR Library Purification",
+                "Transfer From Stripwell to Tubes",
+                "Library qPCR",
+                "qPCR Library Purification",
+                "Transfer From Stripwell to Tubes",
+                "Library qPCR",
+                "qPCR Library Purification",
+                "Transfer From Stripwell to Tubes",
+                "Library qPCR",
+                "qPCR Library Purification",
+                "Transfer From Stripwell to Tubes",
+                "Library qPCR",
+                "qPCR Library Purification",
+                "Transfer From Stripwell to Tubes",
+                "Library qPCR",
+                "qPCR Library Purification",
+                "Transfer From Stripwell to Tubes",
+                "Library qPCR",
+                "qPCR Library Purification",
+                "Transfer From Stripwell to Tubes",
+                "Library qPCR",
+                "qPCR Library Purification",
+                "Transfer From Stripwell to Tubes",
+                "Library qPCR"
+              ],
+              [
+                "Dilute to 4nM",
+                "Qubit concentration",
+                "Purify Gel Slice (NGS)",
+                "Extract Gel Slice (NGS)",
+                "Run Pre-poured Gel",
+                "Make qPCR Fragment WITH PLATES",
+                "Purify Gel Slice (NGS)",
+                "Extract Gel Slice (NGS)",
+                "Run Pre-poured Gel",
+                "Make qPCR Fragment",
+                "Digest Genomic DNA",
+                "Yeast Plasmid Extraction",
+                "Treat With Zymolyase",
+                "Store Yeast Library Sample",
+                "Innoculate Yeast Library",
+                "Sort Yeast Display Library",
+                "Challenge and Label",
+                "Dilute Yeast Library",
+                "Innoculate Yeast Library",
+                "Sort Yeast Display Library",
+                "Challenge and Label",
+                "Dilute Yeast Library",
+                "Innoculate Yeast Library",
+                "Sort Yeast Display Library",
+                "Challenge and Label",
+                "Dilute Yeast Library",
+                "Innoculate Yeast Library",
+                "Sort Yeast Display Library",
+                "Challenge and Label",
+                "Dilute Yeast Library",
+                "Innoculate Yeast Library",
+                "Make Library Glycerol Stocks",
+                "High-Efficiency Transformation NEW",
+                "Combine and Dry DNA",
+                "Ethanol Precipitation Cleanup",
+                "DNA ethanol precipitation",
+                "Combine Purified Samples",
+                "qPCR Library Purification",
+                "Transfer From Stripwell to Tubes",
+                "Library qPCR",
+                "qPCR Library Purification",
+                "Transfer From Stripwell to Tubes",
+                "Library qPCR",
+                "qPCR Library Purification",
+                "Transfer From Stripwell to Tubes",
+                "Library qPCR",
+                "qPCR Library Purification",
+                "Transfer From Stripwell to Tubes",
+                "Library qPCR",
+                "qPCR Library Purification",
+                "Transfer From Stripwell to Tubes",
+                "Library qPCR",
+                "qPCR Library Purification",
+                "Transfer From Stripwell to Tubes",
+                "Library qPCR",
+                "qPCR Library Purification",
+                "Transfer From Stripwell to Tubes",
+                "Library qPCR",
+                "qPCR Library Purification",
+                "Transfer From Stripwell to Tubes",
+                "Library qPCR"
+              ]
+            ]
+          ],
+          "refute_equal": [],
+          "assert_nil": [],
+          "refute_nil": []
+        }
+      }
+    }
+  ]
+}
