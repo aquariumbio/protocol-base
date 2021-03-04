@@ -16,7 +16,7 @@ class Protocol
     rval = assertions_framework
     @assertions = rval[:assertions]
 
-    found_ops = walk_back(nil, 463_144)
+    found_ops = OperationHistoryFactory.new.from_item(item_id: 463_144)
     test_found_ops(found_ops.flatten.map(&:name))
 
     show do

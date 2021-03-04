@@ -54,40 +54,40 @@ module ProvenanceFinder
   # @param item_id [int] id of an Item
   # @param row [string] the row location if the Item is a collection
   # @param col [string] the column location if the Item is a collection
-  # @param operation_history [Array] the list of operations to be returned
+  # @param operation_maps [Array] the list of operations to be returned
   # @return [Array] the Operation backchain
-  def walk_back(stop_at, item_id, row: nil, col: nil, successor: nil, operation_history: nil)
-    operation_history ||= OperationHistory.new
+  def walk_back(stop_at, item_id, row: nil, col: nil, successor: nil, operation_maps: nil)
+    operation_maps ||= []
 
-    successor_ids = operation_history.flatten.map(&:id)
+    successor_ids = operation_maps.flatten.map(&:id)
     pred_ops = predecessor_ops(item_id, row, col, successor_ids)
-    return operation_history unless pred_ops.present?
+    return operation_maps unless pred_ops.present?
 
     pred_op = pred_ops.max_by { |op| op.jobs.max_by(&:id) }
     operation_map = OperationMap.new(operation: pred_op)
-    last = successor || operation_history.last
+    last = successor || operation_maps.last
     last.add_predecessors(operation_map) if last.respond_to?(:add_predecessors)
-    operation_history.append(operation_map)
-    return operation_history if operation_map.name == stop_at
+    operation_maps.append(operation_map)
+    return operation_maps if operation_map.name == stop_at
 
     begin
       input_fv = get_input_fv(pred_op, item_id)
     rescue InputNotFoundError => e
       puts e.message
-      return operation_history
+      return operation_maps
     end
 
     if input_fv.field_type.array
-      branches = OperationHistory.new
       pred_op.input_array(input_fv.name).each do |fv|
-        branches.append(walk_back(stop_at, fv.child_item_id,
-                                  row: fv.row, col: fv.column, successor: operation_map))
+        operation_maps.concat(walk_back(stop_at, fv.child_item_id,
+                                        row: fv.row, col: fv.column,
+                                        successor: operation_map))
       end
-      operation_history.append(branches)
     end
 
     walk_back(stop_at, input_fv.child_item_id,
-              row: input_fv.row, col: input_fv.column, operation_history: operation_history)
+              row: input_fv.row, col: input_fv.column,
+              operation_maps: operation_maps)
   end
 
   # Gets the completion date for the most recent Job for a given Operation.
@@ -149,17 +149,31 @@ module ProvenanceFinder
   end
 end
 
+class OperationHistoryFactory
+  include ProvenanceFinder
+
+  def from_item(item_id:, stop_at: nil, row: nil, col: nil)
+    operation_maps = walk_back(stop_at, item_id, row: row, col: col)
+    OperationHistory.new(operation_maps: operation_maps)
+  end
+end
+
 class OperationHistory < Array
-  # def append(operation_map)
-  #   unless operation_map.is_a?(OperationMap)
-  #     raise ArgumentError, 'Argument is not an OperationMap'
+  def initialize(operation_maps:)
+    raise ArgumentError, 'Argument is not an OperationMap' unless operation_maps.all?(OperationMap)
 
-  #   super.append(operation_map)
-  # end
+    super(operation_maps)
+  end
 
-  # def concat(operation_maps)
-  #   operation_maps.map { |om| append(om) }
-  # end
+  def append(operation_map)
+    raise ArgumentError, 'Argument is not an OperationMap' unless operation_map.is_a?(OperationMap)
+
+    super.append(operation_map)
+  end
+
+  def concat(operation_maps)
+    operation_maps.each { |om| append(om) }
+  end
 end
 
 class OperationMap
