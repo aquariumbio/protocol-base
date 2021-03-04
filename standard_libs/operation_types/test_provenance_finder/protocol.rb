@@ -18,11 +18,43 @@ class Protocol
 
     found_ops = OperationHistoryFactory.new.from_item(item_id: 463_144)
     test_found_ops(found_ops.flatten.map(&:name))
-
-    show do
-      found_ops.flatten.each do |op|
-        note "#{op.id} (#{op.name}): #{op.predecessor_ids}"
+    found_ops.each do |op|
+      show do
+        title "Input Samples for #{op.name}"
+        op.input_samples.each do |k, v|
+          note "#{k}: #{v}"
+        end
       end
+      show do
+        title "Parameters for #{op.name}"
+        op.input_parameters.each do |k, v|
+          note "#{k}: #{v}"
+        end
+      end
+      show do
+        title "Input Data for #{op.name}"
+        op.input_data.each do |k, v|
+          note "#{k}: #{v}"
+        end
+      end
+      show do
+        title "Operation Data for #{op.name}"
+        op.operation_data.each do |k, v|
+          note "#{k}: #{v}"
+        end
+      end
+      # show do
+      #   title "Output Samples for #{op.name}"
+      #   op.output_samples.each do |k, v|
+      #     note "#{k}: #{v}"
+      #   end
+      # end
+      # show do
+      #   title "Output Data for #{op.name}"
+      #   op.output_data.each do |k, v|
+      #     note "#{k}: #{v}"
+      #   end
+      # end
     end
 
     rval
