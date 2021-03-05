@@ -182,7 +182,7 @@ class OperationHistory < Array
 end
 
 class OperationMap
-  attr_reader :predecessor_ids
+  attr_reader :operation, :predecessor_ids
 
   def initialize(operation:, predecessors: nil)
     if operation.is_a?(Operation)
@@ -193,6 +193,13 @@ class OperationMap
 
     @predecessor_ids = []
     add_predecessors(predecessors) if predecessors.present?
+
+    @input_samples = nil
+    @input_parameters = nil
+    @input_data = nil
+    @output_samples = nil
+    @output_data = nil
+    @operation_data = nil
   end
 
   def name
@@ -221,13 +228,49 @@ class OperationMap
     @operation.operation_type
   end
 
+  def make_key(string)
+    string.to_s.strip.downcase.gsub(/[^a-z0-9?]+/, '_')
+  end
+
   def input_samples
-    samples_for(@operation.inputs)
+    return @input_samples if @input_samples
+
+    @input_samples = samples_for(@operation.inputs)
   end
 
   def output_samples
-    samples_for(@operation.outputs)
+    return @output_samples if @output_samples
+
+    @output_samples = samples_for(@operation.outputs)
   end
+
+  def input_parameters
+    return @input_parameters if @input_parameters
+
+    @input_parameters = parameters_for(@operation.inputs)
+  end
+
+  def input_data
+    return @input_data if @input_data
+
+    @input_data = data_for(@operation.inputs)
+  end
+
+  def output_data
+    return @output_data if @output_data
+
+    @output_data = data_for(@operation.outputs)
+  end
+
+  def operation_data
+    return @operation_data if @operation_data
+
+    data = HashWithIndifferentAccess.new
+    add_associations(data, @operation)
+    @operation_data = data
+  end
+
+  private
 
   def samples_for(field_values)
     samples = HashWithIndifferentAccess.new
@@ -239,39 +282,24 @@ class OperationMap
     samples
   end
 
-  def input_parameters
-    input_parameters = HashWithIndifferentAccess.new
-    @operation.inputs.each do |input|
-      next unless input.value
+  def parameters_for(field_values)
+    parameters = HashWithIndifferentAccess.new
+    field_values.each do |fv|
+      next unless fv.value
 
-      name = make_key(input.name)
-      params = input.value.is_a?(Hash) ? input.value : { name => input.value }
+      params = fv.value.is_a?(Hash) ? fv.value : { fv.name => fv.value }
 
       params.each do |key, value|
-        add_data(input_parameters, key, value)
+        add_data(parameters, key, value)
       end
     end
-    input_parameters
-  end
-
-  def input_data
-    data_for(@operation.inputs)
-  end
-
-  def output_data
-    data_for(@operation.outputs)
-  end
-
-  def operation_data
-    data = HashWithIndifferentAccess.new
-    add_associations(data, @operation)
-    data
+    parameters
   end
 
   def data_for(field_values)
     data = HashWithIndifferentAccess.new
     field_values.each do |fv|
-      next unless fv.item
+      next unless fv.child_item_id
 
       add_associations(data, fv.item)
     end
@@ -290,10 +318,6 @@ class OperationMap
     hsh[key] = [] unless hsh[key]
     hsh[key].append(value)
     hsh
-  end
-
-  def make_key(string)
-    string.to_s.strip.downcase.gsub(/[^a-z0-9]+/, '_')
   end
 end
 
