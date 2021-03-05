@@ -15,49 +15,41 @@ class Protocol
   def main
     rval = assertions_framework
     @assertions = rval[:assertions]
+    @metrics = {}
 
-    found_ops = OperationHistoryFactory.new.from_item(item_id: 463_144)
-    test_found_ops(found_ops.flatten.map(&:name))
-    found_ops.each do |op|
-      show do
-        title "Input Samples for #{op.name}"
-        op.input_samples.each do |k, v|
-          note "#{k}: #{v}"
-        end
-      end
-      show do
-        title "Parameters for #{op.name}"
-        op.input_parameters.each do |k, v|
-          note "#{k}: #{v}"
-        end
-      end
-      show do
-        title "Input Data for #{op.name}"
-        op.input_data.each do |k, v|
-          note "#{k}: #{v}"
-        end
-      end
-      show do
-        title "Operation Data for #{op.name}"
-        op.operation_data.each do |k, v|
-          note "#{k}: #{v}"
-        end
-      end
-      # show do
-      #   title "Output Samples for #{op.name}"
-      #   op.output_samples.each do |k, v|
-      #     note "#{k}: #{v}"
-      #   end
-      # end
-      # show do
-      #   title "Output Data for #{op.name}"
-      #   op.output_data.each do |k, v|
-      #     note "#{k}: #{v}"
-      #   end
-      # end
-    end
+    start = Time.now
+    operation_history = OperationHistoryFactory.new.from_item(item_id: 463_144)
+    add_metric(:operation_history, Time.now - start)
+    report_metrics
+
+    enumerate_data(operation_history)
+    report_metrics
+
+    enumerate_data(operation_history)
+    report_metrics
+
+    test_found_ops(operation_history.map(&:name))
 
     rval
+  end
+
+  def add_metric(key, value)
+    @metrics[key] = [] unless @metrics[key]
+    @metrics[key].append(value)
+  end
+
+  def report_metrics(clear: true)
+    metrics = @metrics
+    show do
+      metrics.each do |k, v|
+        note "#{k}: #{average_in_milliseconds(v)} ms"
+      end
+    end
+    @metrics = {} if clear
+  end
+
+  def average_in_milliseconds(values)
+    ((values.sum(0.0) / values.length) * 1000).round(2)
   end
 
   def test_found_ops(actual)
@@ -90,5 +82,25 @@ class Protocol
       'qPCR Library Purification', 'Transfer From Stripwell to Tubes', 'Library qPCR'
     ]
     @assertions[:assert_equal].append([expected, actual])
+  end
+
+  def enumerate_data(operation_history)
+    methods = [
+      :input_samples,
+      :input_parameters,
+      :input_data,
+      :operation_data,
+      :output_samples,
+      :output_data
+    ]
+    start = Time.now
+    operation_history.each do |om|
+      methods.each do |method|
+        s = Time.now
+        om.send(method)
+        add_metric(method, Time.now - s)
+      end
+    end
+    add_metric(:enumeration, Time.now - start)
   end
 end
