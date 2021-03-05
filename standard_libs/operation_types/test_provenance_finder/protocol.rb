@@ -22,13 +22,15 @@ class Protocol
     add_metric(:operation_history, Time.now - start)
     report_metrics
 
-    enumerate_data(operation_history)
-    report_metrics
+    # enumerate_data(operation_history)
+    # report_metrics
 
-    enumerate_data(operation_history)
-    report_metrics
+    # enumerate_data(operation_history)
+    # report_metrics
 
     test_found_ops(operation_history.map(&:name))
+
+    test_root(operation_history)
 
     rval
   end
@@ -82,6 +84,13 @@ class Protocol
       'qPCR Library Purification', 'Transfer From Stripwell to Tubes', 'Library qPCR'
     ]
     @assertions[:assert_equal].append([expected, actual])
+  end
+
+  def test_root(operation_history)
+    show do
+      note operation_history.terminal_operations.to_s
+    end
+    @assertions[:assert].append(operation_history.terminal_operations.length == 1)
   end
 
   def enumerate_data(operation_history)

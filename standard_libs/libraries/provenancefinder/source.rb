@@ -179,6 +179,25 @@ class OperationHistory < Array
   def concat(operation_maps)
     operation_maps.each { |om| append(om) }
   end
+
+  def predecessor_ids
+    map(&:predecessor_ids).flatten
+  end
+
+  def operation_ids
+    map(&:id)
+  end
+
+  def terminal_operations
+    select { |om| (operation_ids - predecessor_ids).include?(om.id) }
+  end
+
+  def terminal_operation
+    tops = terminal_operations
+    raise MultipleRootsError if tops.length > 1
+
+    tops.first
+  end
 end
 
 class OperationMap
@@ -330,5 +349,11 @@ end
 class NoPredecessorsError < StandardError
   def message
     'No predecessor was found where one was expected'
+  end
+end
+
+class MultipleRootsError < StandardError
+  def message
+    'Moltiple roots were found for this OperationHistory'
   end
 end
