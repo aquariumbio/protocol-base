@@ -17,9 +17,7 @@ class Protocol
     @assertions = rval[:assertions]
     @metrics = {}
 
-    start = Time.now
-    operation_history = OperationHistoryFactory.new.from_item(item_id: 463_144)
-    add_metric(:operation_history, Time.now - start)
+    operation_history = get_history(item_id: 463_144)
     report_metrics
 
     # enumerate_data(operation_history)
@@ -28,11 +26,28 @@ class Protocol
     # enumerate_data(operation_history)
     # report_metrics
 
+    report_predecessors(operation_history)
+
     test_found_ops(operation_history.map(&:name))
 
     test_root(operation_history)
 
     rval
+  end
+
+  def get_history(item_id:)
+    start = Time.now
+    operation_history = OperationHistoryFactory.new.from_item(item_id: item_id)
+    add_metric(:operation_history, Time.now - start)
+    operation_history
+  end
+
+  def report_predecessors(operation_history)
+    show do
+      operation_history.each do |om|
+        note "#{om.id}: #{om.predecessor_ids}"
+      end
+    end
   end
 
   def add_metric(key, value)

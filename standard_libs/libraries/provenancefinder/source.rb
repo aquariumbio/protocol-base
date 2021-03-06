@@ -64,7 +64,7 @@ module ProvenanceFinder
   def walk_back(stop_at, item_id, row: nil, col: nil, successor: nil, operation_maps: nil)
     operation_maps ||= []
 
-    successor_ids = operation_maps.flatten.map(&:id)
+    successor_ids = operation_maps.map(&:id)
     pred_ops = predecessor_ops(item_id, row, col, successor_ids)
     return operation_maps unless pred_ops.present?
 
