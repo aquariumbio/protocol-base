@@ -1,3 +1,8 @@
+# frozen_string_literal: true
+
+# Methods for finding the chain of Operations that produced an Item.
+#
+# @author Devin Strickland <strcklnd@uw.edu>
 module ProvenanceFinder
   # Finds output FieldValues for a given Item id.
   #
@@ -30,12 +35,12 @@ module ProvenanceFinder
   # @param item_id [int] id of an Item
   # @param row [int] the row location if the Item is a collection
   # @param col [int] the column location if the Item is a collection
-  # @param successor_ids [Array] a list of IDs to ignore because they are not
-  #   predecessors
-  # @return [Array] Operations that produced this item
-  def predecessor_ops(item_id, row = nil, col = nil, successor_ids = [])
+  # @param ignore_ids [Array] a list of IDs to ignore
+  # @return [Array] Operations that produced this item (may be multiple because
+  #   Items can pass through Operations)
+  def predecessor_ops(item_id, row = nil, col = nil, ignore_ids = [])
     ops = output_fvs(item_id, row, col).map(&:operation)
-    ops.reject { |op| successor_ids.include?(op.id) }
+    ops.reject { |op| ignore_ids.include?(op.id) }
   end
 
   # Finds Operations for which a given Item is an input.
@@ -43,24 +48,26 @@ module ProvenanceFinder
   # @param item_id [int] id of an Item
   # @param row [int] the row location if the Item is a collection
   # @param col [int] the column location if the Item is a collection
-  # @param successor_ids [Array] a list of IDs to ignore because they are not
-  #   successors
+  # @param ignore_ids [Array] a list of IDs to ignore
   # @return [Array] Operations that used this item as input
-  def successor_ops(item_id, row = nil, col = nil, predecessor_ids = [])
+  def successor_ops(item_id, row = nil, col = nil, ignore_ids = [])
     ops = input_fvs(item_id, row, col).map(&:operation)
-    ops.reject { |op| predecessor_ids.include?(op.id) }
+    ops.reject { |op| ignore_ids.include?(op.id) }
   end
 
-  # Recursively finds the Operation backchain for a given item.
+  # Recursively finds the Operation backtrace for a given item.
   #   Goes back to a specified OperationType, or until it can't go any further.
   #
+  # @note This method does not return an OperationHistory object. It is preferable
+  #   to use the OperationHistoryFactory.from_item method.
   # @param stop_at [string] name of the OperationType of the Operation to stop at
-  # @param item_id [int] id of an Item
+  # @param item_id [int] id of an Item to start with
   # @param row [int] the row location if the Item is a collection
   # @param col [int] the column location if the Item is a collection
-  # @param successor [OperationMap] the successor to an OperationMap created by this method
+  # @param successor [OperationMap] the successor to an OperationMap created by this method (mostly
+  #   used for recursion at branches)
   # @param operation_maps [Array<OperationMap>] the list of OperationMaps to be returned
-  # @return [Array] the Operation backchain
+  # @return [Array<OperationMap>] the Operation backchain
   def walk_back(stop_at, item_id, row: nil, col: nil, successor: nil, operation_maps: nil)
     operation_maps ||= []
 
@@ -69,7 +76,7 @@ module ProvenanceFinder
     return operation_maps unless pred_ops.present?
 
     pred_op = pred_ops.max_by { |op| op.jobs.max_by(&:id) }
-    operation_map = OperationMap.new(operation: pred_op)
+    operation_map = OperationMapFactory.create(operation: pred_op)
     last = successor || operation_maps.last
     last.add_predecessors(operation_map) if last.respond_to?(:add_predecessors)
     operation_maps.append(operation_map)
@@ -154,6 +161,12 @@ module ProvenanceFinder
   end
 end
 
+# Factory class for OperationHistory. Takes an Item and finds the chain
+#   of Operations that produced it, then converts this list of Operations into
+#   an OperationHistory object. The Operations are encapsulated in
+#   OperationMap objects.
+#
+# @author Devin Strickland <strcklnd@uw.edu>
 class OperationHistoryFactory
   include ProvenanceFinder
 
@@ -163,6 +176,10 @@ class OperationHistoryFactory
   end
 end
 
+# An Array of Operations collectively produced an Item. Includes methods for
+#   collating and extracting specific metadata from the provenance.
+#
+# @author Devin Strickland <strcklnd@uw.edu>
 class OperationHistory < Array
   def initialize(operation_maps:)
     raise ArgumentError, 'Argument is not an OperationMap' unless operation_maps.all?(OperationMap)
@@ -200,10 +217,22 @@ class OperationHistory < Array
   end
 end
 
+# Factory class for OperationMap.
+#
+# @author Devin Strickland <strcklnd@uw.edu>
+class OperationMapFactory
+  def self.create(operation:)
+    OperationMap.new(operation: operation)
+  end
+end
+
+# An wrapper for Operations that includes methods for collating and reporting metadata.
+#
+# @author Devin Strickland <strcklnd@uw.edu>
 class OperationMap
   attr_reader :operation, :predecessor_ids
 
-  def initialize(operation:, predecessors: nil)
+  def initialize(operation:)
     if operation.is_a?(Operation)
       @operation = operation
     elsif operation.is_a?(FixNum)
@@ -211,8 +240,6 @@ class OperationMap
     end
 
     @predecessor_ids = []
-    add_predecessors(predecessors) if predecessors.present?
-
     @input_samples = nil
     @input_parameters = nil
     @input_data = nil
