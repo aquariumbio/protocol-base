@@ -19,8 +19,11 @@ module CollectionActions
   #
   # @param plates [Array<Collection>]
   # @param amap [Hash<from_loc: [r,c]]
-  def remove_collection_supernatant(plates, amap: nil)
-    plates.each do |plate|
+  def remove_collection_supernatant(plates, amaps: [])
+    return unless plates.present?
+    plates.each_with_index do |plate, idx|
+      amap = amaps[idx]
+
       unless amap.present?
         amap = one_to_one_association_map(from_collection: plate)
       end
@@ -29,24 +32,17 @@ module CollectionActions
 
       show do
         title 'Remove Supernatant'
-        note 'Remove and discard supernatant from the following wells:'
+        note "Remove and discard supernatant from plate #{plate}:"
         table highlight_collection_rc(plate, rc_list)
       end
     end
   end
 
-  # Instructions to remove supernatant from an item
-  # Needed to be here to replace the Item Action version
-  #
-  # @param items [Array<item>]
-  def remove_item_supernatant(items)
-    show do
-      title 'Remove Supernatant'
-      note 'Remove and discard supernatant from:'
-      items.each do |item|
-        bullet item.to_s
-      end
-    end
+  def remove_supernatant(objects, amaps: nil)
+    items = objects.reject(&:collection?)
+    collections = objects.select(&:collection?)
+    remove_collection_supernatant(collections, amaps: amaps)
+    remove_item_supernatant(items)
   end
 
   # Creates new collection.  Instructions to tech optional
@@ -65,23 +61,6 @@ module CollectionActions
     working_plate
   end
 
-  # TODO This is the same as 'copy_wells' in CollectionTransfer
-  # Makes an exact copy of the from collection.
-  # Will make the to_collection if needed
-  #
-  # @param from_collection [Collection]
-  # @param to_collection [Collection]
-  # @param label_plates [Boolean]
-  # @return to_Collection [Collection]
-  def exact_copy(from_collection, to_collection: nil, label_plates: false)
-    collection_type = from_collection.object_type
-    if to_collection.nil?
-      to_collection = make_new_plate(collection_type, label_plate: label_plates)
-    end
-
-    to_collection
-  end
-
   # Makes the required number of collections and populates with samples
   # returns an array of of collections created
   #
@@ -96,11 +75,11 @@ module CollectionActions
                                    label_plates: false)
 
     if collection_type.nil? && first_collection.nil?
-      ProtocolError 'Either collection_type or first_collection must be given'
+      raise 'Either collection_type or first_collection must be given'
     end
 
     unless collection_type.nil? || first_collection.nil?
-      ProtocolError 'Both collection_type and first_collection cannot be given'
+      raise 'Both collection_type and first_collection cannot be given'
     end
 
     capacity = nil
@@ -109,11 +88,11 @@ module CollectionActions
       capacity = first_collection.capacity
       remaining_space = first_collection.get_empty.length
       add_samples_to_collection(samples[0...remaining_space - 1],
-                                first_collection,
-                                label_plates: label_plates)
+                                first_collection)
       samples = samples.drop(remaining_space)
     else
       obj_type = ObjectType.find_by_name(collection_type)
+      raise collection_type.to_s unless obj_type.present?
       capacity = obj_type.columns * obj_type.rows
     end
 
@@ -152,10 +131,10 @@ module CollectionActions
 
       if map.nil?
         to_collection.add(sample)
-        next
+      else
+        rc = map[:to_loc]
+        to_collection.set(rc[0], rc[1], sample)
       end
-
-      to_collection.set(rc[0], rc[1], sample)
     end
     to_collection
   end
@@ -166,27 +145,6 @@ module CollectionActions
   def get_and_label_new_plate(plate)
     "Get a <b>#{plate.object_type.name}</b> and
            label it ID: <b>#{plate}</b>"
-  end
-
-  # Associates field_values to corresponding samples in a collection
-  # TODO not sure multiples of samples is handled in the best way...
-  #
-  # @param field_values [Array<Field Values>] array of field values
-  # @param collection [Collection] the destination collection
-  # replaced make_output_plate
-  def associate_field_values_to_plate(field_values, collection)
-    already_associated_parts = []
-    field_values.each do |fv|
-      r_c = nil
-      collection.find(fv.sample).each do |loc|
-        r_c = loc
-        break unless already_associated_parts.include?(loc)
-      end
-      r_c = collection.find(fv.sample).first
-      unless r_c.nil?
-        fv.set(collection: collection, row: r_c[0], column: r_c[1])
-      end
-    end
   end
   
   # Provides instructions to cover plate

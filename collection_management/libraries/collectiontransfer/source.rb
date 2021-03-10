@@ -373,20 +373,12 @@ module CollectionTransfer
   #
   # @param to_collection [Collection] the to collection
   # @param from_collection [Collection] the from collection
-  def one_to_one_association_map(from_collection:, to_collection: nil)
-    from_rows, from_cols = from_collection.dimensions
-    if to_collection
-      to_rows, to_cols = to_collection.dimensions
-      rows = [to_rows, from_rows].min
-      cols = [to_cols, from_cols].min
-    else
-      rows = from_rows
-      cols = from_cols
-    end
+  def one_to_one_association_map(from_collection:, skip_nil: true)
+    rows, cols = from_collection.dimensions
     association_map = []
     rows.times do |row|
       cols.times do |col|
-        next if from_collection.part(row, col).nil?
+        next if from_collection.part(row, col).nil? && skip_nil
 
         loc = [row, col]
         association_map.push({ to_loc: loc, from_loc: loc })
