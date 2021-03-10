@@ -94,13 +94,6 @@ module ItemActions
   #
   # @param
   def show_incubate_items(items:, time:, temperature:)
-    show_block = []
-    show_block.append('Incubate the following items')
-    show_block.append("Temperature: <b>#{qty_display(temperature)}</b>")
-    show_block.append("Time: <b>#{qty_display(time)}</b>")
-    show_block.append('Items:')
-    items.each do |item|
-      show_block.append(item.to_s)
     dis = [{ display: 'Incubate the following items per instructions below', type: 'note' },
            { display: "Temperature: <b>#{qty_display(temperature)}</b>", type: 'note' },
            { display: "Time: <b>#{qty_display(time)}</b>", type: 'note' },
@@ -195,9 +188,9 @@ module ItemActions
   #
   # @materials [Array<items>]
   def retrieve_materials(materials)
-    return unless materials.present?
-    dis = [ { display: 'Please get the following items', type: 'note'  },
-            { display: table create_location_table(materials), type: 'table'} ]
+    return nil unless materials.present?
+    [ { display: 'Please get the following items', type: 'note'  },
+      { display: create_location_table(materials), type: 'table'} ]
   end
 
   # Creates table directing technician on where to store materials
@@ -238,7 +231,7 @@ module ItemActions
     set_locations(items, location: waste_container)
     tab = create_location_table(items)
     dis = [ { display: 'Properly Dispose of the following items:', type: 'note'  },
-            { display: table create_location_table(items), type: 'table'} ]
+            { display: create_location_table(items), type: 'table'} ]
     items.each { |item| item.mark_as_deleted }
     dis
   end
