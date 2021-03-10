@@ -94,7 +94,6 @@ module ItemActions
   #
   # @param
   def show_incubate_items(items:, time:, temperature:)
-<<<<<<< HEAD
     show_block = []
     show_block.append('Incubate the following items')
     show_block.append("Temperature: <b>#{qty_display(temperature)}</b>")
@@ -102,14 +101,12 @@ module ItemActions
     show_block.append('Items:')
     items.each do |item|
       show_block.append(item.to_s)
-=======
     dis = [{ display: 'Incubate the following items per instructions below', type: 'note' },
            { display: "Temperature: <b>#{qty_display(temperature)}</b>", type: 'note' },
            { display: "Time: <b>#{qty_display(time)}</b>", type: 'note' },
            { display: 'Items:', type: 'note' },]
     items.each do |item|
       dis.append({ display: item.to_s, type: 'bullet' })
->>>>>>> Composition_updates
     end
     show_block
   end
@@ -252,21 +249,11 @@ module ItemActions
   # @param volume [Volume]
   def show_fill_reservoir(media, unit_volume, number_items)
     total_vol = { units: unit_volume[:units], qty: calculate_volume_extra(unit_volume, number_items) }
-<<<<<<< HEAD
-    show do
-      title 'Fill Media Reservoir'
-      check 'Get a media reservoir'
-      check pipet(volume: total_vol,
-                  source: "<b>#{media.id}</b>",
-                  destination: '</b>a <b>Media Reservoir</b>')
-    end
-=======
     [ { display:  'Fill Media Reservoir', type: 'note'},
       { display: 'Get a media reservoir', type: 'check' },
       { display: pipet(volume: total_vol,
                        source: "<b>#{media.id}</b>",
                        destination: '<b>Media Reservoir</b>'), type: 'check' } ]
->>>>>>> Composition_updates
   end
 
   # Extra_ratio 0.15 = 15% 
@@ -338,21 +325,6 @@ module ItemActions
     item
   end
 
-<<<<<<< HEAD
-  # Directions to label objects with labels
-  # Will display exactly labels and exactly objects
-  #
-  # @param objects [String able object]
-  def label_items(objects:, labels:)
-    show_block = []
-    objects.zip(labels).each do |obj, label|
-      show_block.append("Label <b>#{obj}</b> with: <b> #{label}</b>")
-    end
-    show_block
-  end
-
-=======
->>>>>>> Composition_updates
   def flick_to_remove_bubbles(objs)
     unless objs.is_a? Array
       objs = [objs]
