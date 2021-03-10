@@ -14,7 +14,7 @@ module Centrifuges
   # @param type [String] the type of pipettor if a specific one is desired
   # @return [String] directions
   def spin_down(items:, speed:, time: nil, type: nil)
-    is_plate = items.any?(&:collection?)
+    is_plate = items.any? { |item| item.respond_to?('collection') }
     centrifuge = get_centrifuge(speed: speed,
                                 is_plate: is_plate,
                                 type: type)
@@ -47,7 +47,7 @@ module Centrifuges
       show_array.append("Go to <b>#{centrifuge.class::NAME}</b>")
     end
     show_array.append("Set time to #{qty_display(time)}") if time.present?
-    show_array.append("Load the following items into a\n <b>#{centrifuge.class::NAME}</b>")
+    show_array.append("Load the following item into a <b>#{centrifuge.class::NAME}</b>".pluralize(items.length))
     items.each do |item|
       show_array.append("- #{item}")
     end

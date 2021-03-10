@@ -45,7 +45,7 @@ module Shakers
       show_array.append("Go to <b>#{shaker.class::NAME}</b>")
     end
     show_array.append("Set time to #{qty_display(time)}") if time.present?
-    show_array.append("Load the following items into a\n <b>#{shaker.class::NAME}</b>")
+    show_array.append("Load the following item into a <b>#{shaker.class::NAME}</b>".pluralize(items.length))
     items.each do |item|
       show_array.append("- #{item}")
     end
