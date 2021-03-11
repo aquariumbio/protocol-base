@@ -1,0 +1,13 @@
+{
+  "result": "error",
+  "message": "undefined method `parts' for {:timestamp=>1615485680000}:Krill::ShowResponse",
+  "error": "",
+  "error_type": "protocol_error",
+  "exception_backtrace": [
+    "Standard Libs/Demo Show Blocks: line 45: in `block in demo_include_show'",
+    "Standard Libs/Demo Show Blocks: line 41: in `demo_include_show'",
+    "Standard Libs/Demo Show Blocks: line 18: in `main'"
+  ],
+  "backtrace": [],
+  "log": []
+}
