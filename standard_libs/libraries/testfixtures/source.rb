@@ -93,7 +93,31 @@ module TestFixtures
     }
   end
 
-  private
+  def empty_operation(name:)
+    operation_type = empty_operation_type(name: name)
+    operation_type.operations
+                  .create(status: 'done', user_id: 1)
+  end
+
+  # if params[:field_types]
+  #   params[:field_types].each do |ft|
+  #     ot.add_new_field_type(ft)
+  #   end
+  # end
+
+  def empty_operation_type(name:, category: 'Test Fixtures')
+    operation_type = OperationType.find_by_name(name)
+    return operation_type if operation_type
+
+    operation_type = OperationType.new(
+      name: name,
+      category: category,
+      deployed: true,
+      on_the_fly: false
+    )
+    operation_type.save
+    operation_type
+  end
 
   # Random string for giving fixture objects unique names.
   #
