@@ -7,32 +7,57 @@
 #
 needs 'Standard Libs/TestFixtures'
 needs 'Standard Libs/ProvenanceFinder'
+needs 'Standard Libs/Debug'
 
 class Protocol
   include TestFixtures
   include ProvenanceFinder
+  include Debug
 
   def main
     rval = assertions_framework
     @assertions = rval[:assertions]
     @metrics = {}
 
-    operation_history = get_history(item_id: 463_144)
-    report_metrics
+    setup(operations: operations)
 
-    # enumerate_data(operation_history)
+    # operation_history = get_history(item_id: 463_144)
     # report_metrics
 
-    # enumerate_data(operation_history)
-    # report_metrics
+    # # enumerate_data(operation_history)
+    # # report_metrics
 
-    report_predecessors(operation_history)
+    # # enumerate_data(operation_history)
+    # # report_metrics
 
-    test_found_ops(operation_history.map(&:name))
+    # report_predecessors(operation_history)
 
-    test_root(operation_history)
+    # test_found_ops(operation_history.map(&:name))
+
+    # test_root(operation_history)
 
     rval
+  end
+
+  def setup(operations:)
+    operations.each do |op|
+      primary_sample = generic_output(operation: op).sample
+      inspect primary_sample, 'Primary Sample'
+      pred_op = add_predecessor_op(successor_op: op, sample: primary_sample,
+                                   predecessor_name: 'Foo Bar')
+      @assertions[:assert_equal].append([
+        pred_op.output(GENERIC_CONTAINER).item.id,
+        op.input(GENERIC_CONTAINER).item.id
+      ])
+    end
+  end
+
+  def add_predecessor_op(successor_op:, sample:, predecessor_name:)
+    shared_item = generic_item(sample: sample)
+    in_fv = generic_input(operation: successor_op, item: shared_item)
+    pred_op = empty_operation(name: predecessor_name)
+    generic_output(operation: pred_op, item: in_fv.item)
+    pred_op
   end
 
   def get_history(item_id:)
