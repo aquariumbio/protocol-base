@@ -204,23 +204,21 @@ module TestFixtures
     object_type
   end
 
-  def generic_io(operation:, role:)
-    sample = generic_sample
-    item = generic_item(sample: sample)
+  def generic_io(operation:, role:, item: nil, name: GENERIC_CONTAINER)
+    if item
+      sample = item.sample
+    else
+      sample = generic_sample
+      item = generic_item(sample: sample)
+    end
 
-    field_type = generic_field_type(name: GENERIC_CONTAINER)
-
-    field_value = FieldValue.new(
-      name: GENERIC_CONTAINER,
-      child_item_id: item.id,
-      child_sample_id: sample.id,
+    generic_field_value(
+      name: name,
+      item: item,
+      sample: sample,
       role: role,
-      parent_class: 'Operation',
-      parent_id: operation.id,
-      field_type_id: field_type.id
+      operation: operation
     )
-    field_value.save
-    field_value
   end
 
   def generic_part_io(operation:, role:)
@@ -228,18 +226,30 @@ module TestFixtures
     collection = generic_collection
     collection.assign_sample_to_pairs(sample, [[0, 0]])
 
-    field_type = generic_field_type(name: GENERIC_COLLECTION)
+    generic_field_value(
+      name: GENERIC_COLLECTION,
+      item: collection,
+      sample: sample,
+      role: role,
+      operation: operation,
+      row: 0,
+      column: 0
+    )
+  end
+
+  def generic_field_value(name:, item:, sample:, role:, operation:, row: nil, column: nil)
+    field_type = generic_field_type(name: name)
 
     field_value = FieldValue.new(
-      name: GENERIC_COLLECTION,
-      child_item_id: collection.id,
+      name: name,
+      child_item_id: item.id,
       child_sample_id: sample.id,
       role: role,
       parent_class: 'Operation',
       parent_id: operation.id,
       field_type_id: field_type.id,
-      row: 0,
-      column: 0
+      row: row,
+      column: column
     )
     field_value.save
     field_value
