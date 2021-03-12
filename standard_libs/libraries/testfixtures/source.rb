@@ -52,12 +52,12 @@ module TestFixtures
     Collection.new_collection(generic_collection_type)
   end
 
-  def generic_input(operation:)
-    generic_io(operation: operation, role: 'input')
+  def generic_input(operation:, item: nil)
+    generic_io(operation: operation, role: 'input', item: item)
   end
 
-  def generic_output(operation:)
-    generic_io(operation: operation, role: 'output')
+  def generic_output(operation:, item: nil)
+    generic_io(operation: operation, role: 'output', item: item)
   end
 
   def generic_part_input(operation:)

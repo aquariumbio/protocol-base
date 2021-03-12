@@ -36,6 +36,8 @@ class Protocol
 
     test_empty_operation
 
+    test_shared_io
+
     rval
   end
 
@@ -231,6 +233,30 @@ class Protocol
     ])
     @assertions[:assert].append([
       operation.status == 'done'
+    ])
+  end
+
+  def test_shared_io
+    pred_op = empty_operation(name: 'Foo Bar')
+    succ_op = empty_operation(name: 'Foo Baz')
+    @assertions[:refute_equal].append([
+      pred_op.id,
+      succ_op.id
+    ])
+    @assertions[:refute_equal].append([
+      pred_op.operation_type.id,
+      succ_op.operation_type.id
+    ])
+
+    out_fv = generic_io(operation: pred_op, role: 'output')
+    generic_io(operation: succ_op, role: 'input', item: out_fv.item)
+    @assertions[:assert_equal].append([
+      pred_op.output(GENERIC_CONTAINER).item.id,
+      succ_op.input(GENERIC_CONTAINER).item.id
+    ])
+    @assertions[:assert_equal].append([
+      pred_op.output(GENERIC_CONTAINER).sample.id,
+      succ_op.input(GENERIC_CONTAINER).sample.id
     ])
   end
 end
