@@ -19,37 +19,40 @@ class Protocol
     @assertions = rval[:assertions]
     @metrics = {}
 
-    setup(operations: operations)
+    output_items = setup(operations: operations)
 
-    # operation_history = get_history(item_id: 463_144)
-    # report_metrics
+    operation_history = get_history(item_id: output_items.first.id)
+    report_metrics
 
-    # # enumerate_data(operation_history)
-    # # report_metrics
+    enumerate_data(operation_history)
+    report_metrics
 
-    # # enumerate_data(operation_history)
-    # # report_metrics
+    report_predecessors(operation_history)
 
-    # report_predecessors(operation_history)
+    test_found_ops(operation_history.map(&:name))
 
-    # test_found_ops(operation_history.map(&:name))
-
-    # test_root(operation_history)
+    test_root(operation_history)
 
     rval
   end
 
   def setup(operations:)
+    output_items = []
     operations.each do |op|
-      primary_sample = generic_output(operation: op).sample
-      inspect primary_sample, 'Primary Sample'
+      terminal_fv = generic_output(operation: op)
+      output_items.append(terminal_fv.item)
+
+      primary_sample = terminal_fv.sample
       pred_op = add_predecessor_op(successor_op: op, sample: primary_sample,
                                    predecessor_name: 'Foo Bar')
-      @assertions[:assert_equal].append([
-        pred_op.output(GENERIC_CONTAINER).item.id,
-        op.input(GENERIC_CONTAINER).item.id
-      ])
+      pred_op = add_predecessor_op(successor_op: pred_op, sample: primary_sample,
+                                   predecessor_name: 'Foo Baz')
+      Array.new(2) { generic_sample }.each do |sample|
+        add_predecessor_op(successor_op: pred_op, sample: sample,
+                           predecessor_name: 'Foo Bif')
+      end
     end
+    output_items
   end
 
   def add_predecessor_op(successor_op:, sample:, predecessor_name:)
@@ -96,32 +99,11 @@ class Protocol
 
   def test_found_ops(actual)
     expected = [
-      'Dilute to 4nM', 'Qubit concentration',
-      'Purify Gel Slice (NGS)', 'Extract Gel Slice (NGS)',
-      'Run Pre-poured Gel', 'Make qPCR Fragment WITH PLATES',
-      'Purify Gel Slice (NGS)', 'Extract Gel Slice (NGS)',
-      'Run Pre-poured Gel', 'Make qPCR Fragment',
-      'Digest Genomic DNA', 'Yeast Plasmid Extraction', 'Treat With Zymolyase',
-      'Store Yeast Library Sample', 'Innoculate Yeast Library',
-      'Sort Yeast Display Library', 'Challenge and Label',
-      'Dilute Yeast Library', 'Innoculate Yeast Library',
-      'Sort Yeast Display Library', 'Challenge and Label',
-      'Dilute Yeast Library', 'Innoculate Yeast Library',
-      'Sort Yeast Display Library', 'Challenge and Label',
-      'Dilute Yeast Library', 'Innoculate Yeast Library',
-      'Sort Yeast Display Library', 'Challenge and Label',
-      'Dilute Yeast Library', 'Innoculate Yeast Library',
-      'Make Library Glycerol Stocks', 'High-Efficiency Transformation NEW',
-      'Combine and Dry DNA', 'Ethanol Precipitation Cleanup',
-      'DNA ethanol precipitation', 'Combine Purified Samples',
-      'qPCR Library Purification', 'Transfer From Stripwell to Tubes', 'Library qPCR',
-      'qPCR Library Purification', 'Transfer From Stripwell to Tubes', 'Library qPCR',
-      'qPCR Library Purification', 'Transfer From Stripwell to Tubes', 'Library qPCR',
-      'qPCR Library Purification', 'Transfer From Stripwell to Tubes', 'Library qPCR',
-      'qPCR Library Purification', 'Transfer From Stripwell to Tubes', 'Library qPCR',
-      'qPCR Library Purification', 'Transfer From Stripwell to Tubes', 'Library qPCR',
-      'qPCR Library Purification', 'Transfer From Stripwell to Tubes', 'Library qPCR',
-      'qPCR Library Purification', 'Transfer From Stripwell to Tubes', 'Library qPCR'
+      'Test Provenance Finder',
+      'Foo Bar',
+      'Foo Baz',
+      'Foo Bif',
+      'Foo Bif'
     ]
     @assertions[:assert_equal].append([expected, actual])
   end

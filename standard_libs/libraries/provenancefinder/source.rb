@@ -55,6 +55,13 @@ module ProvenanceFinder
     ops.reject { |op| ignore_ids.include?(op.id) }
   end
 
+  def last_predecessor_op(item_id, row = nil, col = nil, ignore_ids = [])
+    ops = predecessor_ops(item_id, row, col, ignore_ids)
+    return unless ops.present?
+
+    ops.max_by { |op| op.jobs.max_by(&:id) }
+  end
+
   # Recursively finds the Operation backtrace for a given item.
   #   Goes back to a specified OperationType, or until it can't go any further.
   #
@@ -64,42 +71,29 @@ module ProvenanceFinder
   # @param item_id [int] id of an Item to start with
   # @param row [int] the row location if the Item is a collection
   # @param col [int] the column location if the Item is a collection
-  # @param successor [OperationMap] the successor to an OperationMap created by this method (mostly
-  #   used for recursion at branches)
-  # @param operation_maps [Array<OperationMap>] the list of OperationMaps to be returned
+  # @param successor [OperationMap] the successor to an OperationMap created by this method
   # @return [Array<OperationMap>] the Operation backchain
-  def walk_back(stop_at, item_id, row: nil, col: nil, successor: nil, operation_maps: nil)
+  def walk_back(stop_at, item_id, row: nil, col: nil, successor: nil)
     operation_maps ||= []
 
-    successor_ids = operation_maps.map(&:id)
-    pred_ops = predecessor_ops(item_id, row, col, successor_ids)
-    return operation_maps unless pred_ops.present?
+    pred_op = last_predecessor_op(item_id, row, col, operation_maps.map(&:id))
+    return operation_maps unless pred_op
 
-    pred_op = pred_ops.max_by { |op| op.jobs.max_by(&:id) }
     operation_map = OperationMapFactory.create(operation: pred_op)
-    last = successor || operation_maps.last
-    last.add_predecessors(operation_map) if last.respond_to?(:add_predecessors)
+    successor.try(:add_predecessors, operation_map)
     operation_maps.append(operation_map)
     return operation_maps if operation_map.name == stop_at
 
-    begin
-      input_fv = get_input_fv(pred_op, item_id)
-    rescue InputNotFoundError => e
-      puts e.message
-      return operation_maps
+    inputs = get_primary_inputs(operation_map, item_id)
+    return operation_maps unless inputs.present?
+
+    inputs.each do |fv|
+      operation_maps.concat(walk_back(stop_at, fv.child_item_id,
+                                      row: fv.row, col: fv.column,
+                                      successor: operation_map))
     end
 
-    if input_fv.field_type.array
-      pred_op.input_array(input_fv.name).each do |fv|
-        operation_maps.concat(walk_back(stop_at, fv.child_item_id,
-                                        row: fv.row, col: fv.column,
-                                        successor: operation_map))
-      end
-    end
-
-    walk_back(stop_at, input_fv.child_item_id,
-              row: input_fv.row, col: input_fv.column,
-              operation_maps: operation_maps)
+    operation_maps
   end
 
   # Gets the completion date for the most recent Job for a given Operation.
@@ -113,51 +107,43 @@ module ProvenanceFinder
 
   # Determines the most likely input FieldValue for a given Operation and output Item.
   #
-  # @param operation [Operation] the Operation to search within
+  # @param operation_map [OperationMap] the OperationMap to search within
   # @param output_item_id [int] the id of the output Item
   # @return [FieldValue] the most likely input
-  def get_input_fv(operation, output_item_id)
+  def get_primary_inputs(operation_map, output_item_id)
     # If only one input, then the answer is obvious
-    inputs = operation.inputs
-    return inputs[0] if inputs.length == 1
+    item_inputs = operation_map.item_inputs
+    return item_inputs if item_inputs.length == 1
 
     # If more than one input, then it attempts to use routing
-    routing_matches = get_routing_matches(operation, output_item_id)
-    return routing_matches[0] if routing_matches.present?
+    routing_matches = get_routing_matches(operation_map, output_item_id)
+    return routing_matches if routing_matches.present?
 
     # If no routing (bad developer!) then it attempts to match Sample name
-    sample_name_matches = get_sample_name_matches(operation, output_item_id)
-    return sample_name_matches[0] if sample_name_matches.present?
+    sample_name_matches = get_sample_name_matches(operation_map, output_item_id)
+    return sample_name_matches if sample_name_matches.present?
 
-    # Gives up
-    raise InputNotFoundError, "No input for output item #{output_item_id} in operation #{operation.id}."
+    item_inputs
   end
 
   # Returns input FieldValues for the given Operation with the same routing as the given output Item
   #
-  # @param operation [Operation]
+  # @param operation_map [OperationMap] the OperationMap to search within
   # @param output_item_id [int]
   # @return [Array] input FieldValues that have the same routing as the output
-  def get_routing_matches(operation, output_item_id)
-    fvs = FieldValue.where(
-      role: 'output',
-      parent_id: operation.id,
-      parent_class: 'Operation',
-      child_item_id: output_item_id
-    )
-
-    fv = fvs.last
-    operation.inputs.select { |i| i.field_type && i.field_type.routing == fv.field_type.routing }
+  def get_routing_matches(operation_map, output_item_id)
+    ofv = operation_map.output_for(output_item_id)
+    operation_map.item_inputs.select { |ifv| ifv.field_type&.routing == ofv.field_type&.routing }
   end
 
   # Returns input FieldValues for the given Operation with the same Sample name as the given output Item
   #
-  # @param operation [Operation]
+  # @param operation_map [OperationMap] the OperationMap to search within
   # @param output_item_id [int]
   # @return [Array] input FieldValues that have the same sample name as the output
-  def get_sample_name_matches(operation, output_item_id)
+  def get_sample_name_matches(operation_map, output_item_id)
     sn = Item.find(output_item_id).sample&.name
-    operation.inputs.select { |i| i.sample && i.sample&.name == sn }
+    operation_map.item_inputs.select { |i| i.sample&.name == sn }
   end
 end
 
@@ -182,7 +168,7 @@ end
 # @author Devin Strickland <strcklnd@uw.edu>
 class OperationHistory < Array
   def initialize(operation_maps:)
-    raise ArgumentError, 'Argument is not an OperationMap' unless operation_maps.all?(OperationMap)
+    raise ArgumentError, 'Argument is not an array of OperationMaps' unless operation_maps.all?(OperationMap)
 
     super(operation_maps)
   end
@@ -314,6 +300,14 @@ class OperationMap
     data = HashWithIndifferentAccess.new
     add_associations(data, @operation)
     @operation_data = data
+  end
+
+  def item_inputs
+    @operation.inputs.select(&:child_item_id)
+  end
+
+  def output_for(item_id)
+    @operation.outputs.find { |fv| fv.child_item_id == item_id }
   end
 
   private
