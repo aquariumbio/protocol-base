@@ -10,9 +10,13 @@ needs 'Standard Libs/ProvenanceFinder'
 needs 'Standard Libs/Debug'
 
 class Protocol
+  require 'csv'
+
   include TestFixtures
   include ProvenanceFinder
   include Debug
+
+  CSV_FILE_KEY = :csv_file
 
   def main
     rval = assertions_framework
@@ -27,11 +31,14 @@ class Protocol
     enumerate_data(operation_history)
     report_metrics
 
+    csv = get_csv(operation_history, 'Foo Baz').first
+    test_csv(csv)
+
     report_predecessors(operation_history)
 
     test_found_ops(operation_history.map(&:name))
 
-    test_root(operation_history, self.operation_type.id)
+    test_root(operation_history, operation_type.id)
 
     rval
   end
@@ -49,6 +56,8 @@ class Protocol
 
       pred_op = add_predecessor_op(successor_op: pred_op, sample: primary_sample,
                                    predecessor_name: 'Foo Baz')
+      pred_op.associate(CSV_FILE_KEY, generic_csv)
+
       Array.new(2) { generic_sample }.each do |sample|
         add_predecessor_op(successor_op: pred_op, sample: sample,
                            predecessor_name: 'Foo Bif')
@@ -114,19 +123,19 @@ class Protocol
     term_ops = operation_history.terminal_operations
     @assertions[:assert].append(term_ops.length == 1)
     @assertions[:assert_equal].append([
-      operation_type_id,
-      term_ops.first.operation_type.id
-    ])
+                                        operation_type_id,
+                                        term_ops.first.operation_type.id
+                                      ])
   end
 
   def enumerate_data(operation_history)
-    methods = [
-      :input_samples,
-      :input_parameters,
-      :input_data,
-      :operation_data,
-      :output_samples,
-      :output_data
+    methods = %i[
+      input_samples
+      input_parameters
+      input_data
+      operation_data
+      output_samples
+      output_data
     ]
     start = Time.now
     operation_history.each do |om|
@@ -137,5 +146,23 @@ class Protocol
       end
     end
     add_metric(:enumeration, Time.now - start)
+  end
+
+  def get_csv(operation_history, operation_name)
+    operation_map = operation_history.find { |om| om.name == operation_name }
+    operation_map.operation_data[CSV_FILE_KEY]
+  end
+
+  def generic_csv
+    CSV.generate do |csv|
+      csv << ['Test', 'CSV', 'File']
+      csv << [0, 1, 2]
+      csv << [4, 5, 6]
+      csv << [7, 8, 9]
+    end
+  end
+
+  def test_csv(actual)
+    @assertions[:assert_equal].append([generic_csv, actual])
   end
 end
