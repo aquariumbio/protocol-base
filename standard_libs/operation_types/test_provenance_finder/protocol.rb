@@ -31,7 +31,7 @@ class Protocol
 
     test_found_ops(operation_history.map(&:name))
 
-    test_root(operation_history)
+    test_root(operation_history, self.operation_type.id)
 
     rval
   end
@@ -45,6 +45,8 @@ class Protocol
       primary_sample = terminal_fv.sample
       pred_op = add_predecessor_op(successor_op: op, sample: primary_sample,
                                    predecessor_name: 'Foo Bar')
+      generic_input(operation: pred_op, item: generic_item, name: 'Secondary Input')
+
       pred_op = add_predecessor_op(successor_op: pred_op, sample: primary_sample,
                                    predecessor_name: 'Foo Baz')
       Array.new(2) { generic_sample }.each do |sample|
@@ -108,11 +110,13 @@ class Protocol
     @assertions[:assert_equal].append([expected, actual])
   end
 
-  def test_root(operation_history)
-    show do
-      note operation_history.terminal_operations.to_s
-    end
-    @assertions[:assert].append(operation_history.terminal_operations.length == 1)
+  def test_root(operation_history, operation_type_id)
+    term_ops = operation_history.terminal_operations
+    @assertions[:assert].append(term_ops.length == 1)
+    @assertions[:assert_equal].append([
+      operation_type_id,
+      term_ops.first.operation_type.id
+    ])
   end
 
   def enumerate_data(operation_history)
