@@ -73,7 +73,7 @@ module ProvenanceFinder
   # @param col [int] the column location if the Item is a collection
   # @param successor [OperationMap] the successor to an OperationMap created by this method
   # @return [Array<OperationMap>] the Operation backchain
-  def walk_back(stop_at, item_id, row: nil, col: nil, successor: nil)
+  def walk_back(stop_at, item_id, row: nil, col: nil, successor: nil, operation_maps: nil)
     operation_maps ||= []
 
     pred_op = last_predecessor_op(item_id, row, col, operation_maps.map(&:id))
@@ -90,7 +90,8 @@ module ProvenanceFinder
     inputs.each do |fv|
       operation_maps.concat(walk_back(stop_at, fv.child_item_id,
                                       row: fv.row, col: fv.column,
-                                      successor: operation_map))
+                                      successor: operation_map,
+                                      operation_maps: operation_maps))
     end
 
     operation_maps
