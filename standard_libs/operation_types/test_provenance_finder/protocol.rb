@@ -38,6 +38,8 @@ class Protocol
 
     test_found_ops(operation_history.map(&:name))
 
+    return rval
+
     test_root(operation_history, operation_type.id)
 
     rval
@@ -55,7 +57,12 @@ class Protocol
       generic_input(operation: pred_op, item: generic_item, name: 'Secondary Input')
 
       pred_op = add_predecessor_op(successor_op: pred_op, sample: primary_sample,
-                                   predecessor_name: 'Foo Baz')
+                                   predecessor_name: 'Foo Pass')
+      out_fv = pred_op.output(GENERIC_CONTAINER)
+      in_fv = generic_input(operation: pred_op, item: out_fv.item)
+
+      pred_op = empty_operation(name: 'Foo Baz')
+      generic_output(operation: pred_op, item: in_fv.item)
       pred_op.associate(CSV_FILE_KEY, generic_csv)
 
       Array.new(2) { generic_sample }.each do |sample|
@@ -112,6 +119,7 @@ class Protocol
     expected = [
       'Test Provenance Finder',
       'Foo Bar',
+      'Foo Pass',
       'Foo Baz',
       'Foo Bif',
       'Foo Bif'
