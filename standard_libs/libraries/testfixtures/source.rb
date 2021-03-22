@@ -204,7 +204,7 @@ module TestFixtures
     object_type
   end
 
-  def generic_io(operation:, role:, item: nil, name: GENERIC_CONTAINER)
+  def generic_io(operation:, role:, item: nil, name: nil)
     if item
       sample = item.sample
     else
@@ -213,7 +213,7 @@ module TestFixtures
     end
 
     generic_field_value(
-      name: name,
+      name: name || GENERIC_CONTAINER,
       item: item,
       sample: sample,
       role: role,
