@@ -62,39 +62,67 @@ module ProvenanceFinder
     ops.max_by { |op| op.jobs.max_by(&:id) }
   end
 
-  # Recursively finds the Operation backtrace for a given item.
-  #   Goes back to a specified OperationType, or until it can't go any further.
+  # Recursively finds the Operation backchain for a given item. Travels each branch
+  #   until finding a specified OperationType, or until it can't go any further.
   #
-  # @note This method does not return an OperationHistory object. It is preferable
-  #   to use the OperationHistoryFactory.from_item method.
   # @param stop_at [string] name of the OperationType of the Operation to stop at
   # @param item_id [int] id of an Item to start with
   # @param row [int] the row location if the Item is a collection
   # @param col [int] the column location if the Item is a collection
-  # @param successor [OperationMap] the successor to an OperationMap created by this method
-  # @return [Array<OperationMap>] the Operation backchain
-  def walk_back(stop_at, item_id, row: nil, col: nil, successor: nil, operation_maps: nil)
-    operation_maps ||= []
+  # @return [OperationHistory] the Operation backchain
+  def walk_back(stop_at, item_id, row: nil, col: nil)
+    visited = []
+    to_visit = []
 
-    pred_op = last_predecessor_op(item_id, row, col, operation_maps.map(&:id))
-    return operation_maps unless pred_op
+    operation_map, new_to_visit = step_back(
+      item_id: item_id,
+      row: row, col: col
+    )
+    return visited unless operation_map
 
-    operation_map = OperationMapFactory.create(operation: pred_op)
-    successor.try(:add_predecessors, operation_map)
-    operation_maps.append(operation_map)
-    return operation_maps if operation_map.name == stop_at
+    visited.append(operation_map)
+    return visited if operation_map.name == stop_at
 
-    inputs = get_primary_inputs(operation_map, item_id)
-    return operation_maps unless inputs.present?
+    to_visit += new_to_visit
 
-    inputs.each do |fv|
-      operation_maps.concat(walk_back(stop_at, fv.child_item_id,
-                                      row: fv.row, col: fv.column,
-                                      successor: operation_map,
-                                      operation_maps: operation_maps))
+    while to_visit.present?
+      tv = to_visit.shift
+      operation_map, new_to_visit = step_back(
+        item_id: tv[:input].child_item_id,
+        row: tv[:input].row, col: tv[:input].column,
+        ignore_ids: visited.map(&:id)
+      )
+      next unless operation_map
+
+      tv[:operation_map].try(:add_predecessors, operation_map)
+      visited.append(operation_map)
+      next if operation_map.name == stop_at
+
+      to_visit += new_to_visit
     end
 
-    operation_maps
+    OperationHistory.new(operation_maps: visited)
+  end
+
+  # Finds the Operation that produced a given item. If multiple Operations have the
+  #   Item as output, then returns the last one except for ones to ignore.
+  #
+  # @param item_id [int] id of an Item to start with
+  # @param row [int] the row location if the Item is a collection
+  # @param col [int] the column location if the Item is a collection
+  # @param ignore_ids [Array<FixNum>] IDs of operations to ignore
+  # @return [OperationMap] a new OperationMap object for the found Operation
+  # @return [Array<Hash>] a mapping of primary inputs for the found Operation
+  def step_back(item_id:, row: nil, col: nil, ignore_ids: [])
+    pred_op = last_predecessor_op(item_id, row, col, ignore_ids)
+    return unless pred_op
+
+    operation_map = OperationMapFactory.create(operation: pred_op)
+    inputs = get_primary_inputs(operation_map, item_id)
+    [
+      operation_map,
+      inputs.map { |input| { operation_map: operation_map, input: input } }
+    ]
   end
 
   # Gets the completion date for the most recent Job for a given Operation.
@@ -157,9 +185,8 @@ end
 class OperationHistoryFactory
   include ProvenanceFinder
 
-  def from_item(item_id:, stop_at: nil, row: nil, col: nil)
-    operation_maps = walk_back(stop_at, item_id, row: row, col: col)
-    OperationHistory.new(operation_maps: operation_maps)
+  def from_item(item_id:, stop_at: '', row: nil, col: nil)
+    walk_back(stop_at, item_id, row: row, col: col)
   end
 end
 

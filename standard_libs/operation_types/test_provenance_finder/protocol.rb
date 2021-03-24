@@ -18,12 +18,20 @@ class Protocol
 
   CSV_FILE_KEY = :csv_file
 
+  VERBOSE = false
+
   def main
     rval = assertions_framework
     @assertions = rval[:assertions]
     @metrics = {}
 
     output_items = setup(operations: operations)
+
+    # operation_maps = walk_back('', output_items.first.id)
+    # operation_maps.each { |om| inspect "#{om.id} #{om.name}" }
+    # operation_history = operation_maps
+
+    # return rval
 
     operation_history = get_history(item_id: output_items.first.id)
     report_metrics
@@ -38,8 +46,6 @@ class Protocol
 
     test_found_ops(operation_history.map(&:name))
 
-    return rval
-
     test_root(operation_history, operation_type.id)
 
     rval
@@ -47,38 +53,97 @@ class Protocol
 
   def setup(operations:)
     output_items = []
-    operations.each do |op|
-      terminal_fv = generic_output(operation: op)
-      output_items.append(terminal_fv.item)
+    operations.each do |predecessor_op|
 
-      primary_sample = terminal_fv.sample
-      pred_op = add_predecessor_op(successor_op: op, sample: primary_sample,
-                                   predecessor_name: 'Foo Bar')
-      generic_input(operation: pred_op, item: generic_item, name: 'Secondary Input')
+      # Build the terminal (T) operation provided by the ProtocolTest.setup block
+      terminal_output = generic_output(operation: predecessor_op)
+      output_items.append(terminal_output.item)
+      primary_sample = terminal_output.sample
+      predecessor_input = generic_input(
+        operation: predecessor_op,
+        item: generic_item(sample: primary_sample)
+      )
+      inspect_operation(predecessor_op) if VERBOSE
 
-      pred_op = add_predecessor_op(successor_op: pred_op, sample: primary_sample,
-                                   predecessor_name: 'Foo Pass')
-      out_fv = pred_op.output(GENERIC_CONTAINER)
-      in_fv = generic_input(operation: pred_op, item: out_fv.item)
+      # Build T-1 operation having a second input
+      successor_input = predecessor_input
+      predecessor_op = add_predecessor_op(
+        successor_input: successor_input,
+        predecessor_name: 'Foo Bar'
+      )
+      predecessor_input = generic_input(
+        operation: predecessor_op,
+        item: generic_item(sample: primary_sample)
+      )
+      secondary_input = generic_input(
+        operation: predecessor_op,
+        item: generic_item,
+        name: 'Secondary Input'
+      )
+      inspect_operation(predecessor_op) if VERBOSE
 
-      pred_op = empty_operation(name: 'Foo Baz')
-      generic_output(operation: pred_op, item: in_fv.item)
-      pred_op.associate(CSV_FILE_KEY, generic_csv)
+      # Build T-2 operation having a pass-through item
+      successor_input = predecessor_input
+      predecessor_op = add_predecessor_op(
+        successor_input: successor_input,
+        predecessor_name: 'Foo Pas'
+      )
+      predecessor_output = predecessor_op.output(GENERIC_CONTAINER)
+      predecessor_input = generic_input(operation: predecessor_op, item: predecessor_output.item)
+      inspect_operation(predecessor_op) if VERBOSE
 
-      Array.new(2) { generic_sample }.each do |sample|
-        add_predecessor_op(successor_op: pred_op, sample: sample,
-                           predecessor_name: 'Foo Bif')
+      # Build a T-3 operation having a CSV file attachment
+      successor_input = predecessor_input
+      predecessor_op = add_predecessor_op(
+        successor_input: successor_input,
+        predecessor_name: 'Foo Baz'
+      )
+      predecessor_op.associate(CSV_FILE_KEY, generic_csv)
+      predecessor_output = predecessor_op.output(GENERIC_CONTAINER)
+      routing = 'R'
+      set_routing(field_value: predecessor_output, routing: routing)
+
+      # Build two T-4 operations, each with a new sample
+      2.times do
+        predecessor_input = generic_input(
+          operation: predecessor_op,
+          item: generic_item
+        )
+        set_routing(field_value: predecessor_input, routing: routing)
+        inspect_operation(predecessor_op) if VERBOSE
+
+        successor_input = predecessor_input
+        branch_op = add_predecessor_op(
+          successor_input: successor_input,
+          predecessor_name: 'Foo Bif'
+        )
+        inspect_operation(branch_op) if VERBOSE
       end
     end
     output_items
   end
 
-  def add_predecessor_op(successor_op:, sample:, predecessor_name:)
-    shared_item = generic_item(sample: sample)
-    in_fv = generic_input(operation: successor_op, item: shared_item)
-    pred_op = empty_operation(name: predecessor_name)
-    generic_output(operation: pred_op, item: in_fv.item)
-    pred_op
+  def add_predecessor_op(successor_input:, predecessor_name:)
+    predecessor_op = empty_operation(name: predecessor_name)
+    generic_output(operation: predecessor_op, item: successor_input.item)
+    predecessor_op
+  end
+
+  def set_routing(field_value:, routing:)
+    field_value.field_type.routing = routing
+    field_value.field_type.save
+  end
+
+  def inspect_operation(operation)
+    show do
+      title "Operation #{operation.id}: #{operation.name}"
+
+      note 'Outputs'
+      operation.outputs.each { |fv| note "#{fv.name}: #{fv.sample&.name} #{fv.item&.id} (#{fv.routing})" }
+
+      note 'Inputs'
+      operation.inputs.each { |fv| note "#{fv.name}: #{fv.sample&.name} #{fv.item&.id}  (#{fv.routing})" }
+    end
   end
 
   def get_history(item_id:)
@@ -119,7 +184,7 @@ class Protocol
     expected = [
       'Test Provenance Finder',
       'Foo Bar',
-      'Foo Pass',
+      'Foo Pas',
       'Foo Baz',
       'Foo Bif',
       'Foo Bif'
