@@ -86,7 +86,7 @@ module ProvenanceFinder
     to_visit += new_to_visit
 
     while to_visit.present?
-      tv = to_visit.shift
+      tv = to_visit.pop
       operation_map, new_to_visit = step_back(
         item_id: tv[:input].child_item_id,
         row: tv[:input].row, col: tv[:input].column,

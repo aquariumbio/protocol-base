@@ -27,24 +27,25 @@ class Protocol
 
     output_items = setup(operations: operations)
 
-    # operation_maps = walk_back('', output_items.first.id)
-    # operation_maps.each { |om| inspect "#{om.id} #{om.name}" }
-    # operation_history = operation_maps
-
-    # return rval
-
-    operation_history = get_history(item_id: output_items.first.id)
+    operation_histories = {}
+    output_items.each do |output_item|
+      operation_histories[output_item.id] = get_history(item_id: output_item.id)
+    end
     report_metrics
 
-    enumerate_data(operation_history)
+    operation_histories.each_value do |operation_history|
+      enumerate_data(operation_history)
+    end
     report_metrics
 
-    csv = get_csv(operation_history, 'Foo Baz').first
+    operation_history = operation_histories.values.first
+
+    csv = get_csv(operation_history, 'Foo Bif').first
     test_csv(csv)
 
     report_predecessors(operation_history)
 
-    test_found_ops(operation_history.map(&:name))
+    # test_found_ops(operation_history.map(&:name))
 
     test_root(operation_history, operation_type.id)
 
@@ -54,7 +55,6 @@ class Protocol
   def setup(operations:)
     output_items = []
     operations.each do |predecessor_op|
-
       # Build the terminal (T) operation provided by the ProtocolTest.setup block
       terminal_output = generic_output(operation: predecessor_op)
       output_items.append(terminal_output.item)
@@ -86,7 +86,7 @@ class Protocol
       successor_input = predecessor_input
       predecessor_op = add_predecessor_op(
         successor_input: successor_input,
-        predecessor_name: 'Foo Pas'
+        predecessor_name: 'Foo Baz'
       )
       predecessor_output = predecessor_op.output(GENERIC_CONTAINER)
       predecessor_input = generic_input(operation: predecessor_op, item: predecessor_output.item)
@@ -96,7 +96,7 @@ class Protocol
       successor_input = predecessor_input
       predecessor_op = add_predecessor_op(
         successor_input: successor_input,
-        predecessor_name: 'Foo Baz'
+        predecessor_name: 'Foo Bif'
       )
       predecessor_op.associate(CSV_FILE_KEY, generic_csv)
       predecessor_output = predecessor_op.output(GENERIC_CONTAINER)
@@ -115,12 +115,31 @@ class Protocol
         successor_input = predecessor_input
         branch_op = add_predecessor_op(
           successor_input: successor_input,
-          predecessor_name: 'Foo Bif'
+          predecessor_name: 'Foo 0'
         )
         inspect_operation(branch_op) if VERBOSE
+
+        # Build T-5 and T-6 operations for each branch
+        extend_branch(branch_op: branch_op, n_ops: 15)
       end
     end
     output_items
+  end
+
+  def extend_branch(branch_op:, n_ops: 1)
+    n_ops.times do |i|
+      predecessor_input = generic_input(
+        operation: branch_op,
+        item: generic_item
+      )
+
+      successor_input = predecessor_input
+      branch_op = add_predecessor_op(
+        successor_input: successor_input,
+        predecessor_name: "Foo #{i + 1}"
+      )
+      inspect_operation(branch_op) if VERBOSE
+    end
   end
 
   def add_predecessor_op(successor_input:, predecessor_name:)
@@ -184,10 +203,14 @@ class Protocol
     expected = [
       'Test Provenance Finder',
       'Foo Bar',
-      'Foo Pas',
       'Foo Baz',
       'Foo Bif',
-      'Foo Bif'
+      'Foo 0',
+      'Foo 1',
+      'Foo 2',
+      'Foo 0',
+      'Foo 1',
+      'Foo 2'
     ]
     @assertions[:assert_equal].append([expected, actual])
   end
@@ -228,7 +251,7 @@ class Protocol
 
   def generic_csv
     CSV.generate do |csv|
-      csv << ['Test', 'CSV', 'File']
+      csv << %w[Test CSV File]
       csv << [0, 1, 2]
       csv << [4, 5, 6]
       csv << [7, 8, 9]
