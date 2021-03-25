@@ -45,7 +45,7 @@ class Protocol
 
     report_predecessors(operation_history)
 
-    # test_found_ops(operation_history.map(&:name))
+    test_found_ops(operation_history.map(&:name))
 
     test_root(operation_history, operation_type.id)
 
@@ -120,7 +120,7 @@ class Protocol
         inspect_operation(branch_op) if VERBOSE
 
         # Build T-5 and T-6 operations for each branch
-        extend_branch(branch_op: branch_op, n_ops: 15)
+        extend_branch(branch_op: branch_op, n_ops: 2)
       end
     end
     output_items
