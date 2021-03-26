@@ -44,8 +44,6 @@ class Protocol
 
     report_predecessors(operation_history)
 
-    return rval
-
     csv = get_csv(operation_history, 'T-4A (csv)').first
     test_csv(csv)
 
@@ -212,15 +210,13 @@ class Protocol
   def test_found_ops(actual)
     expected = [
       'Test Provenance Finder',
-      'Foo Bar',
-      'Foo Baz',
-      'Foo Bif',
-      'Foo 0',
-      'Foo 1',
-      'Foo 2',
-      'Foo 0',
-      'Foo 1',
-      'Foo 2'
+      'T-1',
+      'T-2 (pass-through)',
+      'T-3 (routing)',
+      'T-4B (csv)', 'T-5B', 'T-6B',
+      'T-7 (one output branch)', 'T-7 (two output branch)',
+      'T-4A (csv)', 'T-5A', 'T-6A',
+      'T-7 (one output branch)', 'T-7 (two output branch)'
     ]
     @assertions[:assert_equal].append([expected, actual])
   end
