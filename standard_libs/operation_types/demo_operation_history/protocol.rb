@@ -101,10 +101,14 @@ class Protocol
     #   503_702
     # ]
 
+    # item_ids = [
+    #   503_688,
+    #   503_689,
+    #   503_690
+    # ]
+
     item_ids = [
-      503_688,
-      503_689,
-      503_690
+      503_688
     ]
     items = Item.find(item_ids)
     @assertions[:assert_equal].append([item_ids.length, items.length])
@@ -115,7 +119,7 @@ class Protocol
   def report_predecessors(operation_history)
     show do
       operation_history.each do |om|
-        note "#{om.id}: #{om.predecessor_ids}"
+        note "#{om.id} #{om.name}: #{om.predecessor_ids}"
       end
     end
   end
