@@ -73,6 +73,7 @@ module ProvenanceFinder
   def walk_back(stop_at, item_id, row: nil, col: nil)
     visited = []
     to_visit = []
+    ignore_map = Hash.new { |h,k| h[k] = [] }
 
     operation_map, new_to_visit = step_back(
       item_id: item_id,
@@ -87,15 +88,18 @@ module ProvenanceFinder
 
     while to_visit.present?
       tv = to_visit.pop
+      item_id = tv[:input].child_item_id
+      input_id = tv[:input].id
       operation_map, new_to_visit = step_back(
-        item_id: tv[:input].child_item_id,
+        item_id: item_id,
         row: tv[:input].row, col: tv[:input].column,
-        ignore_ids: visited.map(&:id)
+        ignore_ids: ignore_map[input_id] || []
       )
       next unless operation_map
 
       tv[:operation_map].try(:add_predecessors, operation_map)
       visited.append(operation_map)
+      ignore_map[input_id].append(operation_map.id)
       next if operation_map.name == stop_at
 
       to_visit += new_to_visit

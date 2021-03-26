@@ -6,6 +6,7 @@
 # To use it, import the library you want to test.
 #
 needs 'Standard Libs/TestFixtures'
+needs 'Standard Libs/TestMetrics'
 needs 'Standard Libs/ProvenanceFinder'
 needs 'Standard Libs/Debug'
 
@@ -13,6 +14,7 @@ class Protocol
   require 'csv'
 
   include TestFixtures
+  include TestMetrics
   include ProvenanceFinder
   include Debug
 
@@ -40,10 +42,12 @@ class Protocol
 
     operation_history = operation_histories.values.first
 
-    csv = get_csv(operation_history, 'Foo Bif').first
-    test_csv(csv)
-
     report_predecessors(operation_history)
+
+    return rval
+
+    csv = get_csv(operation_history, 'T-4A (csv)').first
+    test_csv(csv)
 
     test_found_ops(operation_history.map(&:name))
 
@@ -55,7 +59,7 @@ class Protocol
   def setup(operations:)
     output_items = []
     operations.each do |predecessor_op|
-      # Build the terminal (T) operation provided by the ProtocolTest.setup block
+      # Build the terminal (T-0) operation provided by the ProtocolTest.setup block
       terminal_output = generic_output(operation: predecessor_op)
       output_items.append(terminal_output.item)
       primary_sample = terminal_output.sample
@@ -69,7 +73,7 @@ class Protocol
       successor_input = predecessor_input
       predecessor_op = add_predecessor_op(
         successor_input: successor_input,
-        predecessor_name: 'Foo Bar'
+        predecessor_name: 'T-1'
       )
       predecessor_input = generic_input(
         operation: predecessor_op,
@@ -86,7 +90,7 @@ class Protocol
       successor_input = predecessor_input
       predecessor_op = add_predecessor_op(
         successor_input: successor_input,
-        predecessor_name: 'Foo Baz'
+        predecessor_name: 'T-2 (pass-through)'
       )
       predecessor_output = predecessor_op.output(GENERIC_CONTAINER)
       predecessor_input = generic_input(operation: predecessor_op, item: predecessor_output.item)
@@ -96,15 +100,17 @@ class Protocol
       successor_input = predecessor_input
       predecessor_op = add_predecessor_op(
         successor_input: successor_input,
-        predecessor_name: 'Foo Bif'
+        predecessor_name: 'T-3 (routing)'
       )
-      predecessor_op.associate(CSV_FILE_KEY, generic_csv)
       predecessor_output = predecessor_op.output(GENERIC_CONTAINER)
       routing = 'R'
       set_routing(field_value: predecessor_output, routing: routing)
 
       # Build two T-4 operations, each with a new sample
-      2.times do
+      alphabet = ('A'..'Z').to_a
+      branch_ends = []
+      2.times do |i|
+        letter = alphabet[i]
         predecessor_input = generic_input(
           operation: predecessor_op,
           item: generic_item
@@ -115,18 +121,40 @@ class Protocol
         successor_input = predecessor_input
         branch_op = add_predecessor_op(
           successor_input: successor_input,
-          predecessor_name: 'Foo 0'
+          predecessor_name: "T-4#{letter} (csv)"
         )
+        branch_op.associate(CSV_FILE_KEY, generic_csv)
         inspect_operation(branch_op) if VERBOSE
 
         # Build T-5 and T-6 operations for each branch
-        extend_branch(branch_op: branch_op, n_ops: 2)
+        branch_ends.append(extend_branch(branch_op: branch_op, n_ops: 2, letter: letter, number: 4))
       end
+
+      # Build a T-7 operation that feeds both branches from separate outputs
+      branch_inputs = branch_ends.map { |op| generic_input(operation: op) }
+      successor_input = branch_inputs.shift
+      predecessor_op = add_predecessor_op(
+        successor_input: successor_input,
+        predecessor_name: 'T-7 (two output branch)'
+      )
+      branch_inputs.each { |bi| generic_output(operation: predecessor_op, item: bi.item) }
+
+      # Build a second T-7 operation that feeds both branches from the same output
+      shared_item = generic_item
+      branch_inputs = []
+      branch_ends.each { |op| branch_inputs.append(generic_input(operation: op, item: shared_item)) }
+      predecessor_op = add_predecessor_op(
+        successor_input: branch_inputs.first,
+        predecessor_name: 'T-7 (one output branch)'
+      )
+      branch_ends.each { |op| inspect_operation(op) } if VERBOSE
+      inspect_operation(predecessor_op) if VERBOSE
     end
+
     output_items
   end
 
-  def extend_branch(branch_op:, n_ops: 1)
+  def extend_branch(branch_op:, n_ops: 1, letter: nil, number: 0)
     n_ops.times do |i|
       predecessor_input = generic_input(
         operation: branch_op,
@@ -136,10 +164,11 @@ class Protocol
       successor_input = predecessor_input
       branch_op = add_predecessor_op(
         successor_input: successor_input,
-        predecessor_name: "Foo #{i + 1}"
+        predecessor_name: "T-#{number + i + 1}#{letter}"
       )
       inspect_operation(branch_op) if VERBOSE
     end
+    branch_op
   end
 
   def add_predecessor_op(successor_input:, predecessor_name:)
@@ -175,28 +204,9 @@ class Protocol
   def report_predecessors(operation_history)
     show do
       operation_history.each do |om|
-        note "#{om.id}: #{om.predecessor_ids}"
+        note "#{om.id} #{om.name}: #{om.predecessor_ids}"
       end
     end
-  end
-
-  def add_metric(key, value)
-    @metrics[key] = [] unless @metrics[key]
-    @metrics[key].append(value)
-  end
-
-  def report_metrics(clear: true)
-    metrics = @metrics
-    show do
-      metrics.each do |k, v|
-        note "#{k}: #{average_in_milliseconds(v)} ms"
-      end
-    end
-    @metrics = {} if clear
-  end
-
-  def average_in_milliseconds(values)
-    ((values.sum(0.0) / values.length) * 1000).round(2)
   end
 
   def test_found_ops(actual)
