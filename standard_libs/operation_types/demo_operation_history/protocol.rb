@@ -17,7 +17,7 @@ class Protocol
   include Debug
 
   INPUT_NAME = 'DNA Library'
-  STOP_AT = nil # 'Purify Gel Slice (NGS)'
+  STOP_AT = 'High-Efficiency Transformation NEW'
 
   def main
     rval = assertions_framework
@@ -26,23 +26,72 @@ class Protocol
 
     setup!
 
-    operation_histories = {}
-    operations.each do |op|
-      item_id = op.input(INPUT_NAME).item.id
-      operation_histories[op.id] = get_history(item_id: item_id)
-    end
-    report_metrics
+    items = operations.map { |op| op.input(INPUT_NAME).item }
 
-    operation_histories.each_value { |oh| report_predecessors(oh) }
+    search_again = true
+
+    while search_again
+      responses = show do
+        title 'Demo Protocol for Data Retrieval from Operation History'
+
+        note "This protocol demonstrates the retrieval of data for items #{items.to_sentence}"
+        note "The search will not retrieve data for operations preceeding \"#{STOP_AT}\". " \
+          'If you would like to specify a different stopping point, do so below.'
+        label = 'Enter the name of the operation type you would like to stop at:'
+        get 'text', var: :stop_at, label: label, default: STOP_AT
+      end
+
+      stop_at = responses.get_response(:stop_at)
+      stop_at = STOP_AT if debug
+
+      operation_histories = {}
+      operations.each do |op|
+        item_id = op.input(INPUT_NAME).item.id
+        operation_histories[op.id] = get_history(item_id: item_id, stop_at: stop_at)
+      end
+
+      all_keys = operation_histories.values.map(&:all_keys).flatten.uniq.sort
+      tbl = all_keys.in_groups_of(5, '')
+      responses = show do
+        title 'Select Data Keys'
+
+        note 'The following data keys have been detected:'
+        table tbl
+        label = 'Enter the keys that you would like to retrieve:'
+        get 'text', var: :data_keys, label: label
+      end
+
+      keys = responses.get_response(:data_keys)
+      keys = 'protease protease_concentration frac_positive' if debug
+      keys = keys.scan(OperationMap.key_pattern)
+
+      data_table = [['Item'] + keys]
+      operation_histories.each do |op_id, operation_history|
+        operation = operations.find { |op| op.id == op_id }
+        row = [operation.input(INPUT_NAME).item.to_s]
+        keys.each { |key| row.append(operation_history.display_data(key)) }
+        data_table.append(row)
+      end
+
+      responses = show do
+        title 'Found Data'
+
+        table data_table
+        select %w[no yes], var: :search_again, label: 'Would you like to search again?'
+      end
+
+      search_again = responses.get_response(:search_again) == 'yes'
+      search_again = false if debug
+    end
 
     rval
   end
 
-  def get_history(item_id:)
+  def get_history(item_id:, stop_at:)
     start = Time.now
     operation_history = OperationHistoryFactory.new.from_item(
       item_id: item_id,
-      stop_at: STOP_AT
+      stop_at: stop_at
     )
     add_metric(:operation_history, Time.now - start)
     operation_history
@@ -101,15 +150,15 @@ class Protocol
     #   503_702
     # ]
 
-    # item_ids = [
-    #   503_688,
-    #   503_689,
-    #   503_690
-    # ]
-
     item_ids = [
-      503_688
+      503_688,
+      503_689,
+      503_690
     ]
+
+    # item_ids = [
+    #   503_688
+    # ]
     items = Item.find(item_ids)
     @assertions[:assert_equal].append([item_ids.length, items.length])
     @assertions[:assert].append(items.all? { |i| i.object_type.name == 'Illuminated Fragment Library' })

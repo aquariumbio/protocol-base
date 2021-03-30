@@ -199,6 +199,8 @@ end
 #
 # @author Devin Strickland <strcklnd@uw.edu>
 class OperationHistory < Array
+  include ActionView::Helpers::NumberHelper
+
   def initialize(operation_maps:)
     raise ArgumentError, 'Argument is not an array of OperationMaps' unless operation_maps.all?(OperationMap)
 
@@ -232,6 +234,27 @@ class OperationHistory < Array
     raise MultipleRootsError if tops.length > 1
 
     tops.first
+  end
+
+  def all_keys
+    map(&:all_keys)
+  end
+
+  def display_data(key)
+    data = fetch_data(key)
+    data.map { |d| display_datum(d) }.join(' | ')
+  end
+
+  def display_datum(datum)
+    if datum.is_a?(Numeric)
+      number_with_precision(datum, precision: 4, strip_insignificant_zeros: true)
+    else
+      datum
+    end
+  end
+
+  def fetch_data(key)
+    map { |om| om.fetch_data(key) }.flatten.compact
   end
 end
 
@@ -293,7 +316,37 @@ class OperationMap
   end
 
   def make_key(string)
-    string.to_s.strip.downcase.gsub(/[^a-z0-9?]+/, '_')
+    string.to_s.strip.downcase.gsub(OperationMap.key_replace, '_')
+  end
+
+  def self.key_replace
+    /[^a-z0-9?]+/
+  end
+
+  def self.key_pattern
+    /[a-z0-9?_]+/
+  end
+
+  def all_keys
+    [
+      input_samples.keys,
+      input_parameters.keys,
+      input_data.keys,
+      output_samples.keys,
+      output_data.keys,
+      operation_data.keys
+    ].flatten.uniq.sort
+  end
+
+  def fetch_data(key)
+    [
+      input_samples[key],
+      input_parameters[key],
+      input_data[key],
+      output_samples[key],
+      output_data[key],
+      operation_data[key]
+    ].flatten.compact
   end
 
   def input_samples
