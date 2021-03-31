@@ -8,7 +8,7 @@ class Component
   include Units
 
   attr_reader :input_name, :qty, :sample,
-              :item, :suggested_ot, :notes
+              :item, :suggested_ot, :notes, :description
   attr_accessor :added, :adj_qty, :units
 
   # Instantiates the class
@@ -21,7 +21,7 @@ class Component
   #   used for this component
   # @param object_name [String] the ObjectType (Container) that this
   #   component should be found in
-  def initialize(input_name:, qty:, units:, sample_name: nil, suggested_ot: nil, notes: nil)
+  def initialize(input_name:, qty:, units:, sample_name: nil, suggested_ot: nil, notes: nil, description: nil)
     @input_name = input_name
     @qty = qty
     @units = units
@@ -30,6 +30,7 @@ class Component
     @added = false
     @suggested_ot = suggested_ot
     @notes = notes
+    @description = description
   end
 
   # Sets `item`
@@ -42,6 +43,13 @@ class Component
       @sample = item.sample
     end
     @item = item
+  end
+
+  def location
+    if @item.nil?
+      raise "#{input_name} has nil item"
+    end
+    @item.location
   end
 
   # The input name, formatted for display in protocols
@@ -84,15 +92,14 @@ class Component
   # @param round [FixNum] the number of places to round the result to
   # @param checkable [Boolean] whether to make the result checkable
   #   in a table
+  # @param extra [Double] the fraction extra of total needed (55% = 0.55)
   # @return [Numeric, Hash]
-  def adjusted_qty(mult = 1.0, round = 1, checkable = false)
+  def adjusted_qty(mult = 1.0, round = 1, extra: 0)
     return if qty.nil?
-    
-    @adj_qty = (qty * mult).round(round)
 
     raise "Multiplier is nil for composition #{input_name}" if mult.nil?
-
-    { content: adj_qty, check: true } if checkable
+    tol_qty = qty * mult
+    @adj_qty = (tol_qty + extra * tol_qty).round(round)
   end
 
   # provides the `qty` for display in a table, and markes it as `added`
@@ -108,5 +115,12 @@ class Component
   # @return [Boolean]
   def added?
     added
+  end
+
+  # To string method required since the composition names are super important in
+  # protocols.   Debate if including a 'to_s' method is needed or not.
+  # Uses the display_name method.
+  def to_s
+    display_name
   end
 end

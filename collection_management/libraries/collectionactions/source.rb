@@ -55,7 +55,7 @@ module CollectionActions
     if label_plate
       show do
         title 'Get and Label new Plate'
-        note get_and_label_new_plate(working_plate) if label_plate
+        note get_and_label_new_item(working_plate) if label_plate
       end
     end
     working_plate
@@ -137,14 +137,6 @@ module CollectionActions
       end
     end
     to_collection
-  end
-
-  # Instructions on getting and labeling new plate
-  #
-  # @param plate [Collection] the plate to be retrieved and labeled
-  def get_and_label_new_plate(plate)
-    "Get a <b>#{plate.object_type.name}</b> and
-           label it ID: <b>#{plate}</b>"
   end
   
   # Provides instructions to cover plate

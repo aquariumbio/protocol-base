@@ -52,12 +52,12 @@ module TestFixtures
     Collection.new_collection(generic_collection_type)
   end
 
-  def generic_input(operation:)
-    generic_io(operation: operation, role: 'input')
+  def generic_input(operation:, item: nil, name: nil)
+    generic_io(operation: operation, role: 'input', item: item, name: name)
   end
 
-  def generic_output(operation:)
-    generic_io(operation: operation, role: 'output')
+  def generic_output(operation:, item: nil, name: nil)
+    generic_io(operation: operation, role: 'output', item: item, name: name)
   end
 
   def generic_part_input(operation:)
@@ -93,7 +93,31 @@ module TestFixtures
     }
   end
 
-  private
+  def empty_operation(name:)
+    operation_type = empty_operation_type(name: name)
+    operation_type.operations
+                  .create(status: 'done', user_id: 1)
+  end
+
+  # if params[:field_types]
+  #   params[:field_types].each do |ft|
+  #     ot.add_new_field_type(ft)
+  #   end
+  # end
+
+  def empty_operation_type(name:, category: 'Test Fixtures')
+    operation_type = OperationType.find_by_name(name)
+    return operation_type if operation_type
+
+    operation_type = OperationType.new(
+      name: name,
+      category: category,
+      deployed: true,
+      on_the_fly: false
+    )
+    operation_type.save
+    operation_type
+  end
 
   # Random string for giving fixture objects unique names.
   #
@@ -180,23 +204,21 @@ module TestFixtures
     object_type
   end
 
-  def generic_io(operation:, role:)
-    sample = generic_sample
-    item = generic_item(sample: sample)
+  def generic_io(operation:, role:, item: nil, name: nil)
+    if item
+      sample = item.sample
+    else
+      sample = generic_sample
+      item = generic_item(sample: sample)
+    end
 
-    field_type = generic_field_type(name: GENERIC_CONTAINER)
-
-    field_value = FieldValue.new(
-      name: GENERIC_CONTAINER,
-      child_item_id: item.id,
-      child_sample_id: sample.id,
+    generic_field_value(
+      name: name || GENERIC_CONTAINER,
+      item: item,
+      sample: sample,
       role: role,
-      parent_class: 'Operation',
-      parent_id: operation.id,
-      field_type_id: field_type.id
+      operation: operation
     )
-    field_value.save
-    field_value
   end
 
   def generic_part_io(operation:, role:)
@@ -204,18 +226,30 @@ module TestFixtures
     collection = generic_collection
     collection.assign_sample_to_pairs(sample, [[0, 0]])
 
-    field_type = generic_field_type(name: GENERIC_COLLECTION)
+    generic_field_value(
+      name: GENERIC_COLLECTION,
+      item: collection,
+      sample: sample,
+      role: role,
+      operation: operation,
+      row: 0,
+      column: 0
+    )
+  end
+
+  def generic_field_value(name:, item:, sample:, role:, operation:, row: nil, column: nil)
+    field_type = generic_field_type(name: name)
 
     field_value = FieldValue.new(
-      name: GENERIC_COLLECTION,
-      child_item_id: collection.id,
+      name: name,
+      child_item_id: item.id,
       child_sample_id: sample.id,
       role: role,
       parent_class: 'Operation',
       parent_id: operation.id,
       field_type_id: field_type.id,
-      row: 0,
-      column: 0
+      row: row,
+      column: column
     )
     field_value.save
     field_value

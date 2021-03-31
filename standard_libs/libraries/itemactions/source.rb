@@ -21,6 +21,20 @@ module ItemActions
     show_block
   end
 
+  # Instructions on getting and labeling new plate
+  #
+  # @param plate [Collection] the plate to be retrieved and labeled
+  def get_and_label_new_item(item)
+    if item.is_a? Component
+      ot = item.item.object_type.name
+      label = item.display_name
+    else
+      ot = item.object_type.name
+      label = item
+    end
+    "Get a <b>#{ot}</b> and label it ID: <b>#{label}</b>"
+  end
+
   # Tell the experimenter to discard all items that have been marked as deleted.
   #
   # @param operations [Array<Operations>] operations from which to collect
@@ -55,7 +69,7 @@ module ItemActions
     items.each do |item|
       dis.append({ display: item.to_s, type: 'bullet' })
     end
-    show_block
+    dis
   end
 
   # Instructs tech to check items for bubbles
@@ -101,7 +115,7 @@ module ItemActions
     items.each do |item|
       dis.append({ display: item.to_s, type: 'bullet' })
     end
-    show_block
+    dis
   end
 
   # Store all items used in input operations
@@ -179,6 +193,8 @@ module ItemActions
   # (String or Wizard if Wizard exists)
   def set_locations(items, location)
     items.each do |item|
+      item = item.containing_collection if item.is_a? Part
+      next unless item.is_a?(Item) || item.is_a?(Collection)
       item.move_to(location)
       item.save
     end
@@ -187,38 +203,55 @@ module ItemActions
   # Directions to retrieve materials
   #
   # @materials [Array<items>]
-  def retrieve_materials(materials)
+  def retrieve_materials(materials, volume_table: false, adj_qty: false)
     return nil unless materials.present?
-    [ { display: 'Please get the following items', type: 'note'  },
-      { display: create_location_table(materials), type: 'table'} ]
+    dis = [ { display: 'Please get the following items', type: 'note'  }]
+    if adj_qty.present? || volume_table.present?
+      dis.append({ display: volume_location_table(materials, adj_qty: adj_qty),
+                   type: 'table'})
+    else
+      dis.append({ display: create_location_table(materials), type: 'table'})
+    end
   end
 
   # Creates table directing technician on where to store materials
   #
-  # @param collection [Collection] the materials that are to be put away
+  # @param item [Items, Consumables, Compositions] the materials that are to be put away
   # @return location_table [Array<Array>] of Collections and their locations
   def create_location_table(items)
     location_table = [%w(Name Description Location)]
+
     items.each do |obj|
-      description = nil
-      location = nil
-      if obj.is_a? Component
-        name = obj.display_name
-
-        break unless obj.item.present?
-
-        description = obj.item.object_type.name.to_s
-        location = obj.item.location
-      elsif obj.is_a? Consumable
-        name = obj.input_name
-        description = obj.description
-        location = obj.location
-      elsif obj.is_a? Item
-        name = obj.to_s
-        description = obj.object_type.name.to_s
-        location = obj.object_type.name.to_s
+      if obj.is_a? Item
+        row = [Item.to_s, obj.object_type.name.to_s, obj.location]
+        location_table.push(row)
+      elsif obj.is_a?(Component) || obj.is_a?(Consumable)
+        name = obj.input_name.to_s
+        name += "-#{obj.item}" if obj.respond_to? :item
+        description = obj.description || '-'
+        location_table.push([name, description, obj.location])
+      else
+        location_table.push([obj.to_s, nil, nil])
       end
-      location_table.push([name, description, location])
+    end
+    location_table
+  end
+
+  # Creates a location table including volumes
+  # Uses the create_location_table to create initial table
+  #
+  # @param item [Items, Consumables, Compositions] the materials that are to be put away
+  # @return location_table [Array<Array>] of Collections and their locations
+  def volume_location_table(objects, adj_qty: false)
+    location_table = create_location_table(objects)
+
+    location_table.first.concat(['Quantity', 'Notes'])
+
+    objects.each_with_index do |obj, idx|
+      row = location_table[idx + 1]
+      qty = obj.qty_display(adj_quantities: adj_qty)
+
+      row.concat([qty, obj.notes || '-'])
     end
     location_table
   end
@@ -291,9 +324,12 @@ module ItemActions
   def make_item(sample:, object_type:, lot_number: nil, association_map: nil)
     raise ItemActionError, 'Sample ID is nil' if sample.nil?
 
-    object_type = ObjectType.find_by_name(object_type) if object_type.is_a? String
+    ot = ObjectType.find_by_name(object_type) if object_type.is_a? String
+    if ot.nil?
+      raise "Object Type for #{object_type}"
+    end
     item = nil
-    if object_type.handler == 'collection'  # TODO find out why some ObjectTypes dont have .collection_type?
+    if ot.handler == 'collection'
       item = Collection.new_collection(object_type)
       length = association_map.present? ? association_map.length : item.get_empty.length
       samples = Array.new(length, sample)
@@ -312,7 +348,7 @@ module ItemActions
         item.set(map[:to_loc][0], map[:to_loc][1], samp)
       end
     else
-      item = sample.make_item(object_type.name.to_s)
+      item = sample.make_item(ot.name.to_s)
     end
     item.associate(LOT_NUM, lot_number) if lot_number.present?
     item

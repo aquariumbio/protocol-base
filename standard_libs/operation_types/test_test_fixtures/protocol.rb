@@ -32,6 +32,12 @@ class Protocol
 
     test_generic_part_output(operation: op)
 
+    test_empty_operation_type
+
+    test_empty_operation
+
+    test_shared_io
+
     rval
   end
 
@@ -194,6 +200,63 @@ class Protocol
     @assertions[:assert_equal].append([
       fv.column,
       0
+    ])
+  end
+
+  def test_empty_operation_type
+    name = 'Foo Bar'
+    operation_type1 = empty_operation_type(name: name)
+    operation_type2 = empty_operation_type(name: name)
+    @assertions[:assert_equal].append([
+      operation_type1.id,
+      operation_type2.id
+    ])
+
+    operation_type3 = empty_operation_type(name: 'Foo Baz')
+    @assertions[:refute_equal].append([
+      operation_type1.id,
+      operation_type3.id
+    ])
+  end
+
+  def test_empty_operation
+    name = 'Foo Bar'
+    operation = empty_operation(name: name)
+    @assertions[:assert].append([
+      operation.class == Operation
+    ])
+    @assertions[:assert].append([
+      operation.name == name
+    ])
+    @assertions[:assert].append([
+      operation.operation_type.category == 'Test Fixtures'
+    ])
+    @assertions[:assert].append([
+      operation.status == 'done'
+    ])
+  end
+
+  def test_shared_io
+    pred_op = empty_operation(name: 'Foo Bar')
+    succ_op = empty_operation(name: 'Foo Baz')
+    @assertions[:refute_equal].append([
+      pred_op.id,
+      succ_op.id
+    ])
+    @assertions[:refute_equal].append([
+      pred_op.operation_type.id,
+      succ_op.operation_type.id
+    ])
+
+    out_fv = generic_io(operation: pred_op, role: 'output')
+    generic_io(operation: succ_op, role: 'input', item: out_fv.item)
+    @assertions[:assert_equal].append([
+      pred_op.output(GENERIC_CONTAINER).item.id,
+      succ_op.input(GENERIC_CONTAINER).item.id
+    ])
+    @assertions[:assert_equal].append([
+      pred_op.output(GENERIC_CONTAINER).sample.id,
+      succ_op.input(GENERIC_CONTAINER).sample.id
     ])
   end
 end

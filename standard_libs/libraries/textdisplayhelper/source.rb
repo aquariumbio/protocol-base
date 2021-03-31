@@ -55,7 +55,9 @@ module TextDisplayHelper
             end
           end
         elsif block.is_a? Hash
-          if block[:display].is_a? Array
+          if block[:type] == 'table'
+            send(block[:type], block[:display])
+          elsif block[:display].is_a? Array
             block[:display].each do |line|
               send(block[:type], line)
             end
