@@ -237,7 +237,7 @@ class OperationHistory < Array
   end
 
   def all_keys
-    map(&:all_keys)
+    map(&:all_keys).flatten.uniq.sort
   end
 
   def display_data(key)
