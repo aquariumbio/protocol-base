@@ -37,7 +37,7 @@ module CompositionHelper
       end
 
       show_block.append(pipet(volume: comp.volume_hash(adj_qty: adj_qty),
-                   source: comp.item,
+                   source: comp,
                    destination: master_mix)
       )
     end

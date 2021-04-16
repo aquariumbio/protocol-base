@@ -433,7 +433,7 @@ class OperationMap
 
   def add_associations(hsh, object)
     object.associations.each do |key, value|
-      value = value[:upload_file_name] if value.is_a?(Hash) && value[:upload_file_name]
+      value = Upload.find(value[:id]) if value.is_a?(Hash) && value[:upload_file_name]
       add_data(hsh, key, value)
     end
   end

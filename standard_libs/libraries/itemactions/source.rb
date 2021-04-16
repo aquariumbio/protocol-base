@@ -326,7 +326,7 @@ module ItemActions
 
     ot = ObjectType.find_by_name(object_type) if object_type.is_a? String
     if ot.nil?
-      raise "Object Type for #{object_type}"
+      raise "Object Type for #{object_type} is nil"
     end
     item = nil
     if ot.handler == 'collection'

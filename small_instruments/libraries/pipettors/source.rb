@@ -61,6 +61,8 @@ module Pipettors
       P1000.instance
     elsif type == PipetController::NAME || qty > 2000
       PipetController.instance
+    else
+      P20.instance
     end
   end
 
