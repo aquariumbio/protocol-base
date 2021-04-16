@@ -3,7 +3,7 @@
 # Methods for finding the chain of Operations that produced an Item.
 #
 # @author Devin Strickland <strcklnd@uw.edu>
-module ProvenanceFinder
+module OperationHistoryFinder
   # Finds output FieldValues for a given Item id.
   #
   # @param item_id [int] id of an Item
@@ -187,7 +187,7 @@ end
 #
 # @author Devin Strickland <strcklnd@uw.edu>
 class OperationHistoryFactory
-  include ProvenanceFinder
+  include OperationHistoryFinder
 
   def from_item(item_id:, stop_at: '', row: nil, col: nil)
     walk_back(stop_at, item_id, row: row, col: col)

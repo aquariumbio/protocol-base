@@ -7,13 +7,12 @@
 #
 needs 'Standard Libs/TestFixtures'
 needs 'Standard Libs/TestMetrics'
-needs 'Standard Libs/ProvenanceFinder'
+needs 'Standard Libs/OperationHistory'
 needs 'Standard Libs/Debug'
 
 class Protocol
   include TestFixtures
   include TestMetrics
-  include ProvenanceFinder
   include Debug
 
   INPUT_NAME = 'DNA Library'

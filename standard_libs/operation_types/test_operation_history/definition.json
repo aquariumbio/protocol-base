@@ -1,5 +1,5 @@
 {
-  "name": "Test Provenance Finder",
+  "name": "Test Operation History",
   "parent_class": "OperationType",
   "category": "Standard Libs",
   "inputs": [],
