@@ -189,6 +189,14 @@ end
 class OperationHistoryFactory
   include OperationHistoryFinder
 
+  # Recursively finds the Operation backchain for a given item. Travels each branch
+  #   until finding a specified OperationType, or until it can't go any further.
+  #
+  # @param item_id [int] id of an Item to start with
+  # @param stop_at [string] name of the OperationType of the Operation to stop at
+  # @param row [int] the row location if the Item is a collection
+  # @param col [int] the column location if the Item is a collection
+  # @return [OperationHistory] the Operation backchain
   def from_item(item_id:, stop_at: '', row: nil, col: nil)
     walk_back(stop_at, item_id, row: row, col: col)
   end
