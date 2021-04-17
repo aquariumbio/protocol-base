@@ -18,7 +18,7 @@ operation_history.fetch_data("frac_positive")
 Note that all keys, including input and output names are converted to `camel_case`. Thus, `"forward_primer"`
 returns DataAssociations with the key `"forward_primer"` as well as inputs with the name "Forward Primer".
 
-For more examples, see [Test Operation History](test_operation_history/protocol.rb) and [Demo Operation History](demo_operation_history/protocol.rb).
+For more examples, see [Test Operation History](/standard_libs/operation_types/test_operation_history/protocol.rb) and [Demo Operation History](/standard_libs/operation_types/demo_operation_history/protocol.rb).
 
 ## Tests
 The Test Operation History protocol contains automated integration tests for this module and
