@@ -62,7 +62,7 @@ class Protocol
 
       keys = responses.get_response(:data_keys)
       keys = 'protease protease_concentration frac_positive' if debug
-      keys = keys.scan(OperationMap.key_pattern)
+      keys = OperationMap.keys_to_a(keys)
 
       data_table = [['Item'] + keys]
       operation_histories.each do |op_id, operation_history|

@@ -221,11 +221,10 @@ class Protocol
   end
 
   def test_root(operation_history, operation_type_id)
-    term_ops = operation_history.terminal_operations
-    @assertions[:assert].append(term_ops.length == 1)
+    term_op = operation_history.terminal_operation
     @assertions[:assert_equal].append([
                                         operation_type_id,
-                                        term_ops.first.operation_type.id
+                                        term_op.operation_type.id
                                       ])
   end
 

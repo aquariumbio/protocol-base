@@ -194,10 +194,14 @@ class OperationHistoryFactory
   end
 end
 
-# An Array of Operations collectively produced an Item. Includes methods for
-#   collating and extracting specific metadata from the provenance.
+# An Array of Operations that collectively produced an Item. Includes methods for
+#   collating and extracting specific metadata from the provenance. Operations are
+#   stored as OperationMap objects.
 #
 # @author Devin Strickland <strcklnd@uw.edu>
+# @note When initialized, the order of elements will be the same as the order in which
+#   Operations were found: roughly reverse chronological. If the order is changed, then
+#   iterator methods such as `display_data` may return unexpected results.
 class OperationHistory < Array
   include ActionView::Helpers::NumberHelper
 
@@ -207,14 +211,47 @@ class OperationHistory < Array
     super(operation_maps)
   end
 
-  def append(operation_map)
-    raise ArgumentError, 'Argument is not an OperationMap' unless operation_map.is_a?(OperationMap)
+  # Returns the operation in the history that is a predecessor for no other
+  #   operationsm, which should be the last one chronologically
+  #
+  # @return [OperationMap]
+  # @raise [MultipleRootsError] if more than one terminal operation is detected
+  def terminal_operation
+    tops = terminal_operations
+    raise MultipleRootsError if tops.length > 1
 
-    super.append(operation_map)
+    tops.first
   end
 
-  def concat(operation_maps)
-    operation_maps.each { |om| append(om) }
+  # Returns all data keys found in self
+  #
+  # @return [Array<String>]
+  def all_keys
+    map(&:all_keys).flatten.uniq.sort
+  end
+
+  # Returns a formatted string containing all the data for a given key
+  #
+  # @param key [String] the key for the requested data
+  # @param sep [String] a separator for the individual data
+  # @return [String]
+  def display_data(key, sep = ' | ')
+    fetch_data(key).map { |d| display_datum(d) }.join(sep)
+  end
+
+  # Returns aone-dimensional array of all the data for a given key with
+  #   nil values removed
+  #
+  # @param key [String] the key for the requested data
+  # @return [Array]
+  def fetch_data(key)
+    map { |om| om.fetch_data(key) }.flatten.compact
+  end
+
+  private
+
+  def terminal_operations
+    select { |om| (operation_ids - predecessor_ids).include?(om.id) }
   end
 
   def predecessor_ids
@@ -225,36 +262,12 @@ class OperationHistory < Array
     map(&:id)
   end
 
-  def terminal_operations
-    select { |om| (operation_ids - predecessor_ids).include?(om.id) }
-  end
-
-  def terminal_operation
-    tops = terminal_operations
-    raise MultipleRootsError if tops.length > 1
-
-    tops.first
-  end
-
-  def all_keys
-    map(&:all_keys).flatten.uniq.sort
-  end
-
-  def display_data(key)
-    data = fetch_data(key)
-    data.map { |d| display_datum(d) }.join(' | ')
-  end
-
   def display_datum(datum)
     if datum.is_a?(Numeric)
       number_with_precision(datum, precision: 4, strip_insignificant_zeros: true)
     else
       datum
     end
-  end
-
-  def fetch_data(key)
-    map { |om| om.fetch_data(key) }.flatten.compact
   end
 end
 
@@ -274,10 +287,13 @@ class OperationMap
   attr_reader :operation, :predecessor_ids
 
   def initialize(operation:)
-    if operation.is_a?(Operation)
+    case operation
+    when Operation
       @operation = operation
-    elsif operation.is_a?(FixNum)
+    when FixNum
       @operation = Operation.find(operation)
+    else
+      raise ArgumentError, 'Argument operation must be an Operation or Operation ID'
     end
 
     @predecessor_ids = []
@@ -289,44 +305,47 @@ class OperationMap
     @operation_data = nil
   end
 
+  # Returns the name of the encapsulated operation
+  #
+  # @return [String]
   def name
     @operation.name
   end
 
+  # Returns the ID of the encapsulated operation
+  #
+  # @return [FixNum]
   def id
     @operation.id
   end
 
+  # Add one or more values to predecessor_ids
+  #
+  # @param predecessors [OperationMap, FixNum, Array<OperationMap, FixNum>]
+  # @return [nil]
   def add_predecessors(predecessors)
     predecessors = [predecessors] unless predecessors.is_a?(Array)
     predecessors.each { |p| add_predecessor(p) }
   end
 
-  def add_predecessor(predecessor)
-    unless predecessor.is_a?(OperationMap) || predecessor.is_a?(FixNum)
-      raise ArgumentError, 'Argument must be an OperationMap or an ID'
-    end
-
-    predecessor = predecessor.id if predecessor.respond_to?(:id)
-    @predecessor_ids.append(predecessor)
-  end
-
+  # Returns the OperationType
+  #
+  # @return [OperationType]
   def operation_type
     @operation.operation_type
   end
 
-  def make_key(string)
-    string.to_s.strip.downcase.gsub(OperationMap.key_replace, '_')
+  # Scans a string and returns valid keys as an array
+  #
+  # @param keys [String]
+  # @return [Array<String>]
+  def self.keys_to_a(keys)
+    keys.scan(key_pattern)
   end
 
-  def self.key_replace
-    /[^a-z0-9?]+/
-  end
-
-  def self.key_pattern
-    /[a-z0-9?_]+/
-  end
-
+  # Returns all data keys found in self
+  #
+  # @return [Array<String>]
   def all_keys
     [
       input_samples.keys,
@@ -338,6 +357,11 @@ class OperationMap
     ].flatten.uniq.sort
   end
 
+  # Returns aone-dimensional array of all the data for a given key with
+  #   nil values removed
+  #
+  # @param key [String] the key for the requested data
+  # @return [Array]
   def fetch_data(key)
     [
       input_samples[key],
@@ -349,36 +373,60 @@ class OperationMap
     ].flatten.compact
   end
 
+  # Returns all input samples as a HashWithIndifferentAccess of
+  #   the form `{ 'input_name' => 'Sample Name' }`
+  #
+  # @return [HashWithIndifferentAccess]
   def input_samples
     return @input_samples if @input_samples
 
     @input_samples = samples_for(@operation.inputs)
   end
 
+  # Returns all output samples as a HashWithIndifferentAccess
+  #   of the form `{ 'output_name' => 'Sample Name' }`
+  #
+  # @return [HashWithIndifferentAccess]
   def output_samples
     return @output_samples if @output_samples
 
     @output_samples = samples_for(@operation.outputs)
   end
 
+  # Returns all input parameters as a HashWithIndifferentAccess
+  #   of the form `{ 'input_name' => <value> }`
+  #
+  # @return [HashWithIndifferentAccess]
   def input_parameters
     return @input_parameters if @input_parameters
 
     @input_parameters = parameters_for(@operation.inputs)
   end
 
+  # Returns all data associations for input items as a HashWithIndifferentAccess
+  #   of the form `{ 'key' => <value> }`
+  #
+  # @return [HashWithIndifferentAccess]
   def input_data
     return @input_data if @input_data
 
     @input_data = data_for(@operation.inputs)
   end
 
+  # Returns all data associations for output items as a HashWithIndifferentAccess
+  #   of the form `{ 'key' => <value> }`
+  #
+  # @return [HashWithIndifferentAccess]
   def output_data
     return @output_data if @output_data
 
     @output_data = data_for(@operation.outputs)
   end
 
+  # Returns all data associations for operations as a HashWithIndifferentAccess
+  #   of the form `{ 'key' => <value> }`
+  #
+  # @return [HashWithIndifferentAccess]
   def operation_data
     return @operation_data if @operation_data
 
@@ -387,10 +435,17 @@ class OperationMap
     @operation_data = data
   end
 
+  # Returns all inputs that have associated items
+  #
+  # @return [Array<FieldValue>]
   def item_inputs
     @operation.inputs.select(&:child_item_id)
   end
 
+  # Returns the output associated with the given item id
+  #
+  # @param item_id [FixNum]
+  # @return [FieldValue]
   def output_for(item_id)
     @operation.outputs.find { |fv| fv.child_item_id == item_id }
   end
@@ -444,22 +499,40 @@ class OperationMap
     hsh[key].append(value)
     hsh
   end
-end
 
-class InputNotFoundError < StandardError
-  def message
-    'Could not find an input for this operation'
+  def add_predecessor(predecessor)
+    unless predecessor.is_a?(OperationMap) || predecessor.is_a?(FixNum)
+      raise ArgumentError, 'Argument predecessor must be an OperationMap or an Operation ID'
+    end
+
+    predecessor = predecessor.id if predecessor.respond_to?(:id)
+    @predecessor_ids.append(predecessor)
+  end
+
+  # Converts a string into a consistently formatted key
+  #
+  # @param key [String]
+  # @return [String]
+  def make_key(string)
+    string.to_s.strip.downcase.gsub(key_replace, '_')
+  end
+
+  # Pattern for what to replace in constructing a key
+  def key_replace
+    /[^a-z0-9?]+/
+  end
+
+  # Pattern to search for when extracting valid keys
+  private_class_method def self.key_pattern
+    /[a-z0-9?_]+/
   end
 end
 
-class NoPredecessorsError < StandardError
-  def message
-    'No predecessor was found where one was expected'
-  end
-end
-
+# Raised when an OperationHistory has more than one Operation that is not
+#   a predecessor for any other Operations in self.
+#
 class MultipleRootsError < StandardError
   def message
-    'Moltiple roots were found for this OperationHistory'
+    'Multiple roots were found for this OperationHistory'
   end
 end
