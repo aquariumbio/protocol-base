@@ -25,10 +25,14 @@ class Protocol
   end
 
   def test_barcode
-    test_sequences.each do |sequence, barcode|
+    test_sequences.each do |sequence, barcode, rc_barcode|
       ias = IlluminaAdapterSequence.new(sequence: sequence)
       @assertions[:assert_equal].append([
         barcode,
+        ias.barcode(reverse_complement: false)
+      ])
+      @assertions[:assert_equal].append([
+        rc_barcode,
         ias.barcode
       ])
     end
@@ -36,9 +40,9 @@ class Protocol
 
   def test_sequences
     [
-      %w[CAAGCAGAAGACGGCATACGAGATGTCGGTAAGTGACTGGAGTTCAGACGTGTGCTCTTCCG GTCGGTAA],
-      %w[CAAGCAGAAGACGGCATACGAGATAGGTCACTGTGACTGGAGTTCAGACGTGTGCTCTTCCG AGGTCACT],
-      %w[CAAGCAGAAGACGGCATACGAGATGAATCCGAGTGACTGGAGTTCAGACGTGTGCTCTTCCG GAATCCGA]
+      %w[CAAGCAGAAGACGGCATACGAGATGTCGGTAAGTGACTGGAGTTCAGACGTGTGCTCTTCCG GTCGGTAA TTACCGAC],
+      %w[CAAGCAGAAGACGGCATACGAGATAGGTCACTGTGACTGGAGTTCAGACGTGTGCTCTTCCG AGGTCACT AGTGACCT],
+      %w[CAAGCAGAAGACGGCATACGAGATGAATCCGAGTGACTGGAGTTCAGACGTGTGCTCTTCCG GAATCCGA TCGGATTC]
     ]
   end
 end

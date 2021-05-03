@@ -17,9 +17,15 @@ class IlluminaAdapterSequence
   end
 
   # Identify the barcode from the DNA sequence.
-  def barcode
+  def barcode(reverse_complement: true)
     sequence =~ /#{index1_5prime}(.+)#{ipd_primer_3prime}/i
-    Regexp.last_match(1)
+    bc = Regexp.last_match(1)
+    bc = IlluminaAdapterSequence.complement(bc).reverse if bc.present? && reverse_complement
+    bc
+  end
+
+  def self.complement(str)
+    str.gsub(/./, complements)
   end
 
   private
@@ -34,5 +40,18 @@ class IlluminaAdapterSequence
 
   def ipd_primer_3prime
     'GTGACTGGAGTTCAGACGTGTGCTCTTCCG'
+  end
+
+  private_class_method def self.complements
+    {
+      'a' => 't',
+      'A' => 'T',
+      't' => 'a',
+      'T' => 'A',
+      'c' => 'g',
+      'C' => 'G',
+      'g' => 'c',
+      'G' => 'C'
+    }
   end
 end
