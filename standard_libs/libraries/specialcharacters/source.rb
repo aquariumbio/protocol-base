@@ -1,0 +1,30 @@
+# frozen_string_literal: true
+
+module SpecialCharacters
+  ALPHA	    = '&alpha;'
+  BETA	    = '&beta;'
+  GAMMA	    = '&gamma;'
+  DELTA	    = '&delta;'
+  EPSILON	  = '&epsilon;'
+  ZETA	    = '&zeta;'
+  ETA	      = '&eta;'
+  THETA	    = '&theta;'
+  IOTA	    = '&iota;'
+  KAPPA	    = '&kappa;'
+  LAMBDA	  = '&lambda;'
+  MU	      = '&mu;'
+  NU	      = '&nu;'
+  XI	      = '&xi;'
+  OMICRON	  = '&omicron;'
+  PI	      = '&pi;'
+  RHO	      = '&rho;'
+  SIGMA	    = '&sigma;'
+  TAU	      = '&tau;'
+  UPSILON	  = '&upsilon;'
+  PHI	      = '&phi;'
+  CHI	      = '&chi;'
+  PSI	      = '&psi;'
+  OMEGA	    = '&omega;'
+
+  DEGREES   = '&deg;'
+end
