@@ -15,7 +15,7 @@ class Protocol
 
     demo_array_argument
 
-    demo_include_show
+    # demo_include_show
 
     rval
   end
@@ -37,6 +37,7 @@ class Protocol
     end
   end
 
+  # TODO: This feature does not work as intended.
   def demo_include_show
     show do
       title 'Inserting Show Blocks Into Other Show Blocks'
@@ -47,7 +48,7 @@ class Protocol
   end
 
   def included_show
-    partial_show do
+    show do
       note 'Bar'
       note 'Baz'
     end
