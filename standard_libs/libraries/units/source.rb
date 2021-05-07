@@ -25,6 +25,7 @@ module Units
   GRAMS = 'g'
   NANOGRAMS = NANO + GRAMS
   MICROGRAMS = MICRO + GRAMS
+  MILLIGRAMS = MILLI + GRAMS
 
   # Concentration
   MOLAR = 'M'
