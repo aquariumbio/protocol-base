@@ -13,7 +13,7 @@ class AssociationMap
   #
   # @param object [DataAssociator]  the object to which to associated data
   def initialize(object)
-    @map = {}
+    @map = ActiveSupport::HashWithIndifferentAccess.new
     @object = object
     @object.associations.each do |datum|
       @map[datum[0]] =
