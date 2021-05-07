@@ -52,12 +52,14 @@ module TestFixtures
     Collection.new_collection(generic_collection_type)
   end
 
-  def generic_input(operation:, item: nil, name: nil)
-    generic_io(operation: operation, role: 'input', item: item, name: name)
+  def generic_input(operation:, item: nil, sample: nil, name: nil, make_item: true)
+    generic_io(operation: operation, role: 'input',
+               item: item, sample: sample, name: name, make_item: make_item)
   end
 
-  def generic_output(operation:, item: nil, name: nil)
-    generic_io(operation: operation, role: 'output', item: item, name: name)
+  def generic_output(operation:, item: nil, sample: nil, name: nil, make_item: true)
+    generic_io(operation: operation, role: 'output',
+               item: item, sample: sample, name: name, make_item: make_item)
   end
 
   def generic_part_input(operation:)
@@ -204,12 +206,15 @@ module TestFixtures
     object_type
   end
 
-  def generic_io(operation:, role:, item: nil, name: nil)
-    if item
+  def generic_io(operation:, role:, item: nil, name: nil, sample: nil, make_item: true)
+    if item && sample
+      msg = 'If item and sample are provided the item must be of the sample.'
+      raise msg unless item.sample == sample
+    elsif item
       sample = item.sample
     else
-      sample = generic_sample
-      item = generic_item(sample: sample)
+      sample ||= generic_sample
+      item = make_item ? generic_item(sample: sample) : nil
     end
 
     generic_field_value(
@@ -237,13 +242,22 @@ module TestFixtures
     )
   end
 
-  def generic_field_value(name:, item:, sample:, role:, operation:, row: nil, column: nil)
-    field_type = generic_field_type(name: name)
+  # Currently only supports JSON inputs
+  def generic_parameter_input(name:, operation:, value: '{}')
+    fv = generic_field_value(name: name, operation: operation, role: 'input')
+    fv.value = value
+    fv.save
+  end
+
+  # Currently only supports sample and JSON field_types
+  def generic_field_value(name:, operation:, role:, item: nil, sample: nil, row: nil, column: nil)
+    type = sample ? 'sample' : 'json'
+    field_type = generic_field_type(name: name, type: type)
 
     field_value = FieldValue.new(
       name: name,
-      child_item_id: item.id,
-      child_sample_id: sample.id,
+      child_item_id: item&.id,
+      child_sample_id: sample&.id,
       role: role,
       parent_class: 'Operation',
       parent_id: operation.id,
@@ -255,10 +269,10 @@ module TestFixtures
     field_value
   end
 
-  def generic_field_type(name:)
+  def generic_field_type(name:, type: 'sample')
     field_type = FieldType.new(
       name: name,
-      ftype: 'sample',
+      ftype: type,
       parent_class: 'OperationType',
       parent_id: nil
     )
