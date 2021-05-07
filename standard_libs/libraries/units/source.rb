@@ -35,6 +35,10 @@ module Units
   MILLIMOLAR = MILLI + MOLAR
   PERCENT = '%'
   PH = 'pH'
+  GRAMS_PER_LITER = "#{GRAMS}/#{LITERS}"
+  MILLIGRAMS_PER_MILLILITER = "#{MILLIGRAMS}/#{MILLILITERS}"
+  MICROGRAMS_PER_MILLILITER = "#{MICROGRAMS}/#{MILLILITERS}"
+  MICROGRAMS_PER_MICROLITER = "#{MICROGRAMS}/#{MICROLITERS}"
 
   # Temperature
   CELSIUS = 'C'
@@ -67,12 +71,13 @@ module Units
           else
             ' '
           end
-    "#{qty[:qty]}#{sep}#{qty[:units]}"
+    rndqty = qty[:round].is_a?(Integer) ? qty[:qty].round(qty[:round]) : qty[:qty]
+    "#{rndqty}#{sep}#{qty[:units]}"
   end
 
- def create_qty(qty:, units:)
-   {qty: qty, units: units}
- end
+  def create_qty(qty:, units:)
+    { qty: qty, units: units }
+  end
 
   def qty_display(qty)
     Units.qty_display(qty)
@@ -140,9 +145,7 @@ module Units
   # @raises MissingObjectTypeMeasure if the object type has no measure data_object
   def self.get_measure_key(object_type:)
     data_object = object_type.data_object
-    unless data_object.key?(:measure)
-      raise MissingObjectTypeMeasureError.new(name: object_type.name)
-      end
+    raise MissingObjectTypeMeasureError.new(name: object_type.name) unless data_object.key?(:measure)
 
     measure = object_type.data_object[:measure]
     type_name = measure[:type]
