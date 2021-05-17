@@ -6,7 +6,7 @@
 #
 class ProtocolTest < ProtocolTestBase
   def setup
-    add_random_operations(5)
+    add_random_operations(1)
   end
 
   def analyze

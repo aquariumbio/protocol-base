@@ -7,13 +7,12 @@
 #
 needs 'Standard Libs/TestFixtures'
 needs 'Standard Libs/TestMetrics'
-needs 'Standard Libs/ProvenanceFinder'
+needs 'Standard Libs/OperationHistory'
 needs 'Standard Libs/Debug'
 
 class Protocol
   include TestFixtures
   include TestMetrics
-  include ProvenanceFinder
   include Debug
 
   INPUT_NAME = 'DNA Library'
@@ -63,7 +62,7 @@ class Protocol
 
       keys = responses.get_response(:data_keys)
       keys = 'protease protease_concentration frac_positive' if debug
-      keys = keys.scan(OperationMap.key_pattern)
+      keys = OperationMap.keys_to_a(keys)
 
       data_table = [['Item'] + keys]
       operation_histories.each do |op_id, operation_history|

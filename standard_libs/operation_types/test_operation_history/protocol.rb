@@ -7,7 +7,7 @@
 #
 needs 'Standard Libs/TestFixtures'
 needs 'Standard Libs/TestMetrics'
-needs 'Standard Libs/ProvenanceFinder'
+needs 'Standard Libs/OperationHistory'
 needs 'Standard Libs/Debug'
 
 class Protocol
@@ -15,7 +15,6 @@ class Protocol
 
   include TestFixtures
   include TestMetrics
-  include ProvenanceFinder
   include Debug
 
   CSV_FILE_KEY = :csv_file
@@ -209,7 +208,7 @@ class Protocol
 
   def test_found_ops(actual)
     expected = [
-      'Test Provenance Finder',
+      'Test Operation History',
       'T-1',
       'T-2 (pass-through)',
       'T-3 (routing)',
@@ -222,11 +221,10 @@ class Protocol
   end
 
   def test_root(operation_history, operation_type_id)
-    term_ops = operation_history.terminal_operations
-    @assertions[:assert].append(term_ops.length == 1)
+    term_op = operation_history.terminal_operation
     @assertions[:assert_equal].append([
                                         operation_type_id,
-                                        term_ops.first.operation_type.id
+                                        term_op.operation_type.id
                                       ])
   end
 

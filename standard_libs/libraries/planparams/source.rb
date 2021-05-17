@@ -157,16 +157,12 @@ module PlanParams
     Operation.find(operations.map(&:id))
   end
 
-  # Get an option value for a given key from the given operation
-  #
   def get_options(operations:, key:)
     operations.map { |op| get_option(operation: op, key: key) }
   end
 
-  # Get an option value for a given key from the given operation
-  #
   def get_option(operation:, key:)
-    operation.input('Options').val.fetch(key, :no_key)
+    operation.temporary[:options][key]
   end
 
   private
@@ -181,11 +177,23 @@ module PlanParams
     job_params
   end
 
+  # Get an option value for a given key from the given operation
+  #
+  def options_as_planned(operations:, key:)
+    operations.map { |op| option_as_planned(operation: op, key: key) }
+  end
+
+  # Get an option value for a given key from the given operation
+  #
+  def option_as_planned(operation:, key:)
+    operation.input('Options').val.fetch(key, :no_key)
+  end
+
   # Get a list of option values for a given key from the given operations list,
   #   or raise exception if there is more than one unique value
   #
   def strict_operations_option(operations:, key:)
-    val = get_options(operations: operations, key: key)
+    val = options_as_planned(operations: operations, key: key)
     unless val.uniq.length == 1
       msg = "More than one value given in Operation Options for #{key}:" \
             " #{val}"

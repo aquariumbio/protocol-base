@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-module Units
-  EMPTY = -1
+needs 'Standard Libs/SpecialCharacters'
 
-  # Special Characters
-  MU = '&mu;'
-  DEGREES = '&deg;'
+module Units
+  include SpecialCharacters
+
+  EMPTY = -1
 
   # Prefixes
   PICO = 'p'
@@ -25,6 +25,7 @@ module Units
   GRAMS = 'g'
   NANOGRAMS = NANO + GRAMS
   MICROGRAMS = MICRO + GRAMS
+  MILLIGRAMS = MILLI + GRAMS
 
   # Concentration
   MOLAR = 'M'
@@ -33,6 +34,7 @@ module Units
   MICROMOLAR = MICRO + MOLAR
   MILLIMOLAR = MILLI + MOLAR
   PERCENT = '%'
+  PH = 'pH'
 
   # Temperature
   CELSIUS = 'C'
