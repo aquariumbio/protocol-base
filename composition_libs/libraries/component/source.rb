@@ -98,7 +98,7 @@ class Component
 
     raise "Multiplier is nil for composition #{input_name}" if mult.nil?
     tol_qty = qty * mult
-    @adj_qty = (tol_qty + extra * tol_qty).round(round)
+    adj_qty = (tol_qty + extra * tol_qty).round(round)
   end
 
   # provides the `qty` for display in a table, and markes it as `added`

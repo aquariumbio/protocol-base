@@ -75,7 +75,7 @@ module CollectionActions
                                    label_plates: false)
 
     if collection_type.nil? && first_collection.nil?
-      raise 'Either collection_type or first_collection must be given'
+      ProtocolError 'Either collection_type or first_collection must be given'
     end
 
     unless collection_type.nil? || first_collection.nil?

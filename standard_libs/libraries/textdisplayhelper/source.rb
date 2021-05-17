@@ -32,6 +32,8 @@ module TextDisplayHelper
   end
 
   # Creates show block following instructions for show block
+  # TODO this could be simplified using a back-end method created by Ben
+  #    (to be identified and implemented)
   #
   # @param title 'String' the string of things to show
   # @param show_block: 'Array<Hash>' hash to represent each line

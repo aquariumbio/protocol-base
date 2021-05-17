@@ -14,7 +14,7 @@ module Centrifuges
   # @param type [String] the type of pipettor if a specific one is desired
   # @return [String] directions
   def spin_down(items:, speed: nil, time: nil, type: nil)
-    is_plate = items.any? { |item| item.respond_to?('collection') }
+    is_plate = items.any? { |item| item.collection? }
     centrifuge = get_centrifuge(speed: speed,
                                 is_plate: is_plate,
                                 type: type)
@@ -42,7 +42,7 @@ module Centrifuges
   end
 
 
-  # Returns a centrafuge
+  # Returns a centrifuge
   # 
   # @param speed [{qty: int, unit: string}] the volume per Standard Libs Units
   # @param type [String] the type of pipettor if a specific one is desired
