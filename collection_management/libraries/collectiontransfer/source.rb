@@ -22,7 +22,7 @@ module CollectionTransfer
 
   VOL_TRANSFER = 'Volume Transferred'.to_sym
 
-   # Assigns samples to specific well locations
+  # Assigns samples to specific well locations
   # The order of the samples and the order of the association map should be
   # the same
   #
@@ -287,7 +287,9 @@ module CollectionTransfer
     end
   end
 
+  # DEPRECATED
   # Instructions to tech to relabel plate
+  # TODO this should be deleted since this exists in Collection Actions
   #
   # @param from_collection [Collection]
   # @param to_collection [Collection]

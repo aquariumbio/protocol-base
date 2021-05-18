@@ -8,7 +8,7 @@ class Component
   include Units
 
   attr_reader :input_name, :qty, :sample,
-              :item, :notes, :description
+              :item, :notes, :description, :suggested_ot
   attr_accessor :added, :adj_qty, :units
 
   # Instantiates the class
@@ -21,7 +21,7 @@ class Component
   #   used for this component
   # @param object_name [String] the ObjectType (Container) that this
   #   component should be found in
-  def initialize(input_name:, qty:, units:, sample_name: nil, notes: nil, description: nil)
+  def initialize(input_name:, qty:, units:, sample_name: nil, notes: nil, description: nil, suggested_ot: nil)
     @input_name = input_name
     @qty = qty
     @units = units
@@ -30,6 +30,7 @@ class Component
     @added = false
     @notes = notes
     @description = description
+    @suggested_ot = suggested_ot
   end
 
   # Sets `item`
