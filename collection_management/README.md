@@ -80,7 +80,7 @@ The following parameters are common within these libraries:
 
 - `to_collection`: the collection that samples are being transferred to.
 - `from_collection`: the collection that samples are being transferred from.
-- `association_map`: a map displaying **from_location** and the **to_location**.  Both parts are not always required however all `association_maps` follow this format: `[{to_loc: [1,1], from_loc: [1,1]}, {to_loc: [1,2], from_loc: [2,3]}]`. Where `to_loc` is the location in the `to_collection` and `from_loc` is the location in the `from_location`.   `to_loc` and `from_loc` can be any valid coordinate location in a collection.
+- `association_map`: a map displaying **from_location** and the **to_location**.  Both parts are not always required however all `association_maps` follow this format: `[{to_loc: [1,1], from_loc: [1,1]}, {to_loc: [1,2], from_loc: [2,3]}]`. Where `to_loc` is the location in the `to_collection` and `from_collection` is the location in the `from_location`.   `to_loc` and `from_loc` can be any valid coordinate location in a collection.
 - `source`: most commonly an item but can be any string e.g. 'reservoir trough'.  This is only ever used for display methods.
 - `transfer_vol` must be in the units format from [Standard Libs/Units](https://github.com/aquariumbio/protocol-base/tree/main/standard_libs/libraries/units)
 
