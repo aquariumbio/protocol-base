@@ -63,6 +63,7 @@ module CollectionActions
 
   # Makes the required number of collections and populates with samples
   # returns an array of of collections created
+  # TODO this may should move (not sure if this method should exist frankly)
   #
   # @param samples [Array<FieldValue>] or [Array<Samples>]
   # @param collection_type [String] the type of collection that is to be made
@@ -105,38 +106,6 @@ module CollectionActions
       collections.push(collection)
     end
     collections
-  end
-
-  # Assigns samples to specific well locations
-  # The order of the samples and the order of the association map should be
-  # the same
-  #
-  # @param samples [Array<FieldValue>] or [Array<Samples>]
-  # @param to_collection [Collection]
-  # @param association_map map of where samples should go
-  # @raise if not enough space in collection
-  def add_samples_to_collection(samples, to_collection, association_map: nil)
-    slots_left = to_collection.get_empty.length
-    if samples.length > slots_left
-      raise "Not enough space in in collection #{to_collection}"
-    end
-
-    unless association_map.present?
-      to_collection.add_samples(samples)
-      return to_collection
-    end
-
-    samples.zip(association_map).each do |sample, map|
-      next if sample.nil?
-
-      if map.nil?
-        to_collection.add(sample)
-      else
-        rc = map[:to_loc]
-        to_collection.set(rc[0], rc[1], sample)
-      end
-    end
-    to_collection
   end
   
   # Provides instructions to cover plate

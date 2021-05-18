@@ -22,6 +22,43 @@ module CollectionTransfer
 
   VOL_TRANSFER = 'Volume Transferred'.to_sym
 
+   # Assigns samples to specific well locations
+  # The order of the samples and the order of the association map should be
+  # the same
+  #
+  # @param samples [Array<FieldValue>] or [Array<Samples>]
+  # @param to_collection [Collection]
+  # @param association_map map of where samples should go
+  # @raise if not enough space in collection
+  def add_samples_to_collection(samples, to_collection, association_map: nil)
+    slots_left = to_collection.get_empty.length
+    if samples.length > slots_left
+      raise "Not enough space in in collection #{to_collection}"
+    end
+
+    unless association_map.present?
+      to_collection.add_samples(samples)
+      return to_collection
+    end
+
+    samples.zip(association_map).each do |sample, map|
+      next if sample.nil?
+
+      if map.nil?
+        to_collection.add(sample)
+      else
+        rc = map[:to_loc]
+        to_collection.set(rc[0], rc[1], sample)
+      end
+    end
+    to_collection
+  end
+
+
+  # Creates a 'to_assocation_map' for all parts that share the same item or sample
+  #
+  # @param collection [Collection] the collection
+  # @param item [Item or Sample] that is to be found
   def to_association_map(collection:, item:)
     association_map = []
     locations = collection.find(item)
@@ -31,6 +68,10 @@ module CollectionTransfer
     association_map
   end
 
+  # Creates a 'from_assocation_map' for all parts that share the same item or sample
+  #
+  # @param collection [Collection] the collection
+  # @param item [Item or Sample] that is to be found
   def from_association_map(collection:, item:)
     association_map = []
     locations = collection.find(item)

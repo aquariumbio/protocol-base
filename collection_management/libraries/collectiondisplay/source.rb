@@ -9,6 +9,7 @@
 
 # Methods for displaying information about collections
 module CollectionDisplay
+
   # Highlights all non-empty slots in collection
   #
   # @param collection [Collection] the collection
@@ -145,9 +146,9 @@ module CollectionDisplay
   # Creates a table with the same dimensions as the input collection
   #
   # @param collection [Collection] the collection to be represented by the table
-  # @param add_headers [Boolean] optional True
+  # @param display_id [Boolean] default: false (true if display ID is true)
   # @return tab [Table] a table to be displayed
-  def create_collection_table(rows:, columns:, col_id:, plate_on_end: nil)
+  def create_collection_table(rows:, columns:, col_id:, plate_on_end: nil, display_id: false)
     plate_on_end ||= rows == 12 && columns == 8 ? true : false
     text_color = 'black'
     border_color = "&#E9E9E9"
@@ -158,21 +159,21 @@ module CollectionDisplay
     slots = (1..size + rows + columns + 1).to_a
     tab = slots.each_slice(columns + 1).each_with_index.map do |row, row_idx|
       row.each_with_index.map do |col, col_idx|
-        #if row_idx == 0
-        #  if col_idx == 0
-        #    { class: 'td-empty-slot',
-        #      content: '<b>ID:</b>',
-        #      style: {color: text_color, 'background-color' => border_color } }
-        #  elsif col_idx == 1
-        #    { class: 'td-empty-slot',
-        #      content: "<b>#{col_id}</b>",
-        #      style: {color: text_color, 'background-color' => border_color, border: '0px' } }
-        #  else
-        #    { class: 'td-empty-slot',
-        #      content: '',
-        #      style: {color: text_color, 'background-color' => border_color, border: '0px' } }
-        #  end
-        if row_idx == 0
+        if row_idx == 0 && display_id
+          if col_idx == 0
+            { class: 'td-empty-slot',
+              content: '<b>ID:</b>',
+              style: {color: text_color, 'background-color' => border_color } }
+          elsif col_idx == 1
+            { class: 'td-empty-slot',
+              content: "<b>#{col_id}</b>",
+              style: {color: text_color, 'background-color' => border_color, border: '0px' } }
+          else
+            { class: 'td-empty-slot',
+              content: '',
+              style: {color: text_color, 'background-color' => border_color, border: '0px' } }
+          end
+        elsif row_idx == 0
           { class: 'td-empty-slot',
             content: "<b>#{plate_on_end ? get_alpha(col_idx) : col_idx}</b>",
             style: {color: text_color, 'background-color' => border_color } }
