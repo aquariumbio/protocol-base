@@ -147,18 +147,16 @@ module CollectionDisplay
   # @param collection [Collection] the collection to be represented by the table
   # @param add_headers [Boolean] optional True
   # @return tab [Table] a table to be displayed
-  def create_collection_table(rows:, columns:, col_id:, plate_on_end: nil)
+  def create_collection_table(rows:, columns:, col_id: nil, plate_on_end: nil)
     plate_on_end ||= rows == 12 && columns == 8 ? true : false
     text_color = 'black'
-    border_color = "&#E9E9E9"
-    bg_color = "&#b8b8b8"
-    col_id = col_id.to_s
-    rows = rows
+    border_color = '&#E9E9E9'
+    bg_color = '&#b8b8b8'
     size = rows * columns
     slots = (1..size + rows + columns + 1).to_a
-    tab = slots.each_slice(columns + 1).each_with_index.map do |row, row_idx|
-      row.each_with_index.map do |col, col_idx|
-        #if row_idx == 0
+    slots.each_slice(columns + 1).each_with_index.map do |row, row_idx|
+      row.each_index.map do |col_idx|
+        # if row_idx == 0
         #  if col_idx == 0
         #    { class: 'td-empty-slot',
         #      content: '<b>ID:</b>',
@@ -172,24 +170,25 @@ module CollectionDisplay
         #      content: '',
         #      style: {color: text_color, 'background-color' => border_color, border: '0px' } }
         #  end
-        if row_idx == 0
+        if row_idx.zero? && col_idx.zero?
+          { class: 'td-empty-slot',
+            content: '',
+            style: { 'background-color' => border_color } }
+        elsif row_idx.zero?
           { class: 'td-empty-slot',
             content: "<b>#{plate_on_end ? get_alpha(col_idx) : col_idx}</b>",
-            style: {color: text_color, 'background-color' => border_color } }
+            style: { color: text_color, 'background-color' => border_color } }
         elsif col_idx.zero?
           { class: 'td-empty-slot',
             content: "<b>#{plate_on_end ? row_idx : get_alpha(row_idx)}</b>",
-            style: {color: text_color, 'background-color' => border_color } }
+            style: { color: text_color, 'background-color' => border_color } }
         else
-          # Normal cells
           { class: 'td-empty-slot',
             content: '',
-            style: {'background-color' => bg_color } }
+            style: { 'background-color' => bg_color } }
         end
       end
     end
-    tab[0].first[:content] = ""
-    tab
   end
 
   # converts numbers to alphabetical values (eg 1->A 27-AA etc)
