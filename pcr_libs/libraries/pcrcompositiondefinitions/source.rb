@@ -243,6 +243,88 @@ module PCRCompositionDefinitions
           qty: 18, units: MICROLITERS,
           sample_name: 'Rehydration Buffer'
       }
+    },
+    'Modified_CDC_Exp_1' => {
+      program_template_name: 'Modified_CDC',
+      layout_template_name: 'Modified_CDC',
+      volume: 20,
+      steps: {
+        step1: {
+          temperature: { qty: 55, units: DEGREES_C },
+          duration: { qty: 10, units: MINUTES }
+        },
+        step2: {
+          temperature: { qty: 94, units: DEGREES_C },
+          duration: { qty: 1, units: MINUTES }
+        },
+        step3: {
+          temperature: { qty: 95, units: DEGREES_C },
+          duration: { qty: 5, units: SECONDS }
+        },
+        step4: {
+          temperature: { qty: 57, units: DEGREES_C },
+          duration: { qty: 30, units: SECONDS }
+        },
+        step5: { 
+          goto: 3, times: 50 
+        }
+      }
+    },
+    'Modified_CDC_Exp_3' => {
+      program_template_name: 'Modified_CDC',
+      layout_template_name: 'Modified_CDC',
+      volume: 20,
+      steps: {
+        step1: {
+          temperature: { qty: 55, units: DEGREES_C },
+          duration: { qty: 10, units: MINUTES }
+        },
+        step2: {
+          temperature: { qty: 94, units: DEGREES_C },
+          duration: { qty: 1, units: MINUTES }
+        },
+        step3: {
+          temperature: { qty: 95, units: DEGREES_C },
+          duration: { qty: 5, units: SECONDS }
+        },
+        step4: {
+          temperature: { qty: 57, units: DEGREES_C },
+          duration: { qty: 30, units: SECONDS }
+        },
+        step5: { 
+          goto: 3, times: 50 
+        }
+      }
+    },
+    'duke_anneal_rna' => {
+      program_template_name: 'Anneal',
+      layout_template_name: 'Anneal',
+      volume: 20,
+      steps: {}
+    },
+    'duke_synthesize_fs' => {
+      program_template_name: 'FSS',
+      layout_template_name: 'FSS',
+      volume: 20,
+      steps: {}
+    },
+    'duke_amplify_cdna' => {
+      program_template_name: 'PCR',
+      layout_template_name: 'PCR',
+      volume: 20,
+      steps: {}
+    },
+    'duke_tagment_pcr_amplicons' => {
+      program_template_name: 'TAG',
+      layout_template_name: 'TAG',
+      volume: 20,
+      steps: {}
+    },
+    'duke_amplify_tagmenteed_amplicons' => {
+      program_template_name: 'TAG PCR',
+      layout_template_name: 'TAG PCR',
+      volume: 20,
+      steps: {}
     }
   }.freeze
 
