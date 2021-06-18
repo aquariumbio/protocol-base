@@ -1,22 +1,22 @@
 # Collection Management
 
-modulesA series of libraries for managing samples in of collections
+Libraries for managing samples in of collections
 
 ## Dependencies
-- [**Standard Libs**](https://github.com/aquariumbio/protocol-base/tree/main/standard_libs)
+- **Standard Libs**
 
-    - [ItemActions](https://github.com/aquariumbio/protocol-base/tree/main/standard_libs/libraries/itemactions)
-    - [AssociationManagement](https://github.com/aquariumbio/protocol-base/tree/main/standard_libs/libraries/associationmanagement)
-    - [PartProvenance](https://github.com/aquariumbio/protocol-base/tree/main/standard_libs/libraries/associationmanagement)
-    - [Units](https://github.com/aquariumbio/protocol-base/tree/main/standard_libs/libraries/units)
+    - ItemActions
+    - AssociationManagement
+    - PartProvenance
+    - Units
 
-- [**Small Instruments**](https://github.com/aquariumbio/protocol-base/tree/main/small_instruments)
-    - [Pipettors](https://github.com/aquariumbio/protocol-base/tree/main/small_instruments/libraries/pipettors)
+- **Small Instruments**
+    - Pipettors
 
 
 ## Modules
 
-### [Collection Actions](https://github.com/aquariumbio/protocol-base/tree/main/collection_management/libraries/collectionactions)
+### Collection Actions
 
 Basic actions with Collections, such as:
 
@@ -58,7 +58,7 @@ end
 store_items(collection, location: 'Short Term Storage')
 trash_objects(collection)
 ```
-### [Collection Location](https://github.com/aquariumbio/protocol-base/tree/main/collection_management/libraries/collectionlocation)
+### Collection Location
 CollectionLocation is primarily for giving and managing locations of items inside of collections. It does not manage the physical location of the Collection its self (thats what CollectionActions is for). Most methods are primarily for internal use.
 
 First if we want to find the location of a sample in the collection we can call `collection.find(sample)` this will return an array [row, column]
@@ -76,8 +76,8 @@ Alternativly we can call `get_alpha_num_location`.  This works exactly the same 
 alpha_location = get_alpha_num_location(collection, array_of_samples)
 ```
 
-### [Collection Display](https://github.com/aquariumbio/protocol-base/tree/main/collection_management/libraries/collectiondisplay)
-The [Collection Display](https://github.com/aquariumbio/protocol-base/tree/main/collection_management/libraries/collectiondisplay) library works with the built in Show Blocks to display useful visual representations of collections.
+### Collection Display
+The Collection Display
 
 Where ID is the ID of the collection (inclusion of the ID function is optional).
 ![Example Image](/images/CollectionDisplay/plate.png)
@@ -135,7 +135,7 @@ end
 ```
 
 
-### [Collection Transfer](https://github.com/aquariumbio/protocol-base/tree/main/collection_management/libraries/collectiontransfer)
+### Collection Transfer
 CollectionTransfer gets down to the nitty gritty of the CollectionManagement libraries. Its sole pourpose is to assist in managing the transfer of stuff into and out of a collection. These methods can be very powerful but that also comes with complexity. The methods described here are the most basic uses of CollectionTransfer and to truly use these well time will be needed to further explore and learn about the library.
 
 
@@ -145,7 +145,7 @@ The following parameters are common within these libraries:
 - `from_collection`: the collection that samples are being transferred from.
 - `association_map`: a map displaying **from_location** and the **to_location**.  Both parts are not always required however all `association_maps` follow this format: `[{to_loc: [1,1], from_loc: [1,1]}, {to_loc: [1,2], from_loc: [2,3]}]`. Where `to_loc` is the location in the `to_collection` and `from_collection` is the location in the `from_location`.   `to_loc` and `from_loc` can be any valid coordinate location in a collection.
 - `source`: most commonly an item but can be any string e.g. 'reservoir trough'.  This is only ever used for display methods.
-- `transfer_vol` must be in the units format from [Standard Libs/Units](https://github.com/aquariumbio/protocol-base/tree/main/standard_libs/libraries/units)
+- `transfer_vol` must be in the units format from [Standard Libs/Units
 
 
 The following methods are the most useful methods:
