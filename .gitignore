@@ -56,13 +56,8 @@ build-iPhoneSimulator/
 # .rubocop-https?--*
 
 *.DS_Store
-<<<<<<< HEAD
-*test_results.json
-*test_results.md
-=======
 
 test_results.json
 test_results.md
 format_test_results.py
 .vscode/
->>>>>>> 1d05c4dd5571cad0761d9ff7a8a74feeb2b98960

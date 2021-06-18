@@ -2,8 +2,34 @@
   "name": "Test Association Management",
   "parent_class": "OperationType",
   "category": "Standard Libs",
-  "inputs": [],
-  "outputs": [],
+  "inputs": [
+    {
+      "name": "Test Container Input",
+      "part": null,
+      "array": null,
+      "routing": "C"
+    },
+    {
+      "name": "Test Part Input",
+      "part": true,
+      "array": null,
+      "routing": "P"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "Test Container Output",
+      "part": null,
+      "array": null,
+      "routing": "D"
+    },
+    {
+      "name": "Test Part Output",
+      "part": true,
+      "array": null,
+      "routing": "Q"
+    }
+  ],
   "on_the_fly": null,
   "user_id": 1
 }

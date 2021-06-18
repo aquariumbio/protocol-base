@@ -1,0 +1,8 @@
+pfish pull -c 'Collection Management'
+pfish pull -c 'Composition Libs'
+pfish pull -c 'Microtiter Plates'
+pfish pull -c 'PCR Libs'
+pfish pull -c 'Sample Models'
+pfish pull -c 'Small Instruments'
+pfish pull -c 'Standard Libs'
+pfish pull -c 'Thermocyclers'
