@@ -48,7 +48,7 @@ module Pipettors
   # @return [Pipet] A class of pipettor
   def get_single_channel_pipettor(volume:, type: nil)
     qty = type.present? ? Float::INFINITY : volume[:qty]
-  
+
     if type == P2::NAME || qty <= 2
       P2.instance
     elsif type == P20::NAME || qty <= 20
@@ -61,6 +61,8 @@ module Pipettors
       P1000.instance
     elsif type == PipetController::NAME || qty > 2000
       PipetController.instance
+    else
+      P20.instance
     end
   end
 

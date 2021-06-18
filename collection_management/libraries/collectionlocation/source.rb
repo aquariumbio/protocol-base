@@ -90,6 +90,7 @@ module CollectionLocation
     collection.part(row, column)
   end
   
+  # DEPRECIATED
   # Returns the exact location of an Part in a collection.
   #  Will return the location of only that part
   #
@@ -97,9 +98,7 @@ module CollectionLocation
   # @param item [Item] item that exists in the collection
   # @return [row, column] the location in the collection
   def find_item_in_collection(collection:, item:)
-    collection.get_non_empty.each do |row, column|
-      return [row, column] if collection.part(row, column).id == item.id 
-    end
+    collection.find(item)
   end
 
   # DEPRECIATED

@@ -27,11 +27,10 @@ module InstrumentHelper
 
   # wait time should be typical units format
   def wait_for_instrument(instrument_name:, wait_time: nil)
-    show do 
-      title 'Wait for Instrument'
-      note "Please wait for the <b>#{instrument_name}</b> to finish"
-      note "Wait is approximately #{qty_display(wait_time)}" if wait_time
+    unless wait_time.nil?
+      return "Please wait #{qty_display(wait_time)} for the <b>#{instrument_name}</b> to finish"
     end
+    "Please wait for the <b>#{instrument_name}</b> to finish"
   end
 
   def remove_unpaired_operations(ops)

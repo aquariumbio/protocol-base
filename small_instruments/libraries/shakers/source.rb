@@ -20,6 +20,8 @@ module Shakers
 
     if shaker.class::NAME == Vortex::NAME
       vortex(items)
+    elsif shaker.class::NAME == Inversion::NAME
+      invert_to_mix(items)
     else
       show_shake(shaker, items: items, speed: speed, time: time)
     end
@@ -45,7 +47,7 @@ module Shakers
       show_array.append("Go to <b>#{shaker.class::NAME}</b>")
     end
     show_array.append("Set time to #{qty_display(time)}") if time.present?
-    show_array.append("Load the following items into a\n <b>#{shaker.class::NAME}</b>")
+    show_array.append("Load the following item into a <b>#{shaker.class::NAME}</b>".pluralize(items.length))
     items.each do |item|
       show_array.append("- #{item}")
     end
@@ -53,11 +55,25 @@ module Shakers
   end
 
   # Gives directions to use vortexer
+  # 
+  # @param items [Array<>] array of things that have a to_s (typically items)
   def vortex(items)
     show_arry = []
     show_arry.append('Please vortex the following Items')
     items.each do |obj|
-      show_arry.append("- #{obj}")
+      show_arry.append("  - #{obj}")
+    end
+    show_arry
+  end
+
+  # Gives directions to mix by inversion
+  # 
+  # @param items [Array<>] array of things that have a to_s (typically items)
+  def invert_to_mix(items)
+    show_arry = []
+    show_arry.append('Please mix by inversion')
+    items.each do |obj|
+      show_arry.append("  - #{obj}")
     end
     show_arry
   end
@@ -68,7 +84,9 @@ module Shakers
   # @param type [String] the type of pipettor if a specific one is desired
   # @return [Pipet] A class of pipettor
   def get_shaker(speed: nil, type: nil)
-    if type == Vortex::NAME || !speed.present?
+    if type == Inversion::NAME
+      return Inversion.instance
+    elsif type == Vortex::NAME || !speed.present?
       return Vortex.instance
     end
 
@@ -92,6 +110,12 @@ module Shakers
     NAME = 'Vortex Mixer'.freeze
     MAX_SPEED = nil
     ADJUSTABLE = true
+  end
+
+  class Inversion < Shaker
+    NAME = 'Mix by inversion'.freeze
+    MAX_SPEED = nil
+    ADJUSTABLE = false
   end
 
   class BasicShaker < Shaker

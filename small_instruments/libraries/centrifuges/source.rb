@@ -13,8 +13,8 @@ module Centrifuges
   # @param destination: [String]the destination to pipet
   # @param type [String] the type of pipettor if a specific one is desired
   # @return [String] directions
-  def spin_down(items:, speed:, time: nil, type: nil)
-    is_plate = items.any?(&:collection?)
+  def spin_down(items:, speed: nil, time: nil, type: nil)
+    is_plate = items.any? { |item| item.collection? }
     centrifuge = get_centrifuge(speed: speed,
                                 is_plate: is_plate,
                                 type: type)
@@ -22,32 +22,19 @@ module Centrifuges
     show_spin_down(centrifuge, items: items, speed: speed, time: time)
   end
 
-  # show_array = []
-  # if shaker.class::ADJUSTABLE
-  #   show_array.append("Set <b>#{shaker.class::NAME}</b> speed to #{qty_display(speed)}")
-  # else
-  #   show_array.append("Go to <b>#{shaker.class::NAME}</b>")
-  # end
-  # show_array.append("Set time to #{qty_display(time)}") if time.present?
-  # show_array.append("Load the following items into a\n <b>#{shaker.class::NAME}</b>")
-  # items.each do |item|
-  #   show_array.append("- #{item}")
-  # end
-  # show_array
-
   # Gives directions to use centrifuge
-  def show_spin_down(centrifuge, items:, speed:, time: nil)
-    if speed[:qty] > centrifuge.class::MAX_X_G[:qty]
+  def show_spin_down(centrifuge, items:, speed: nil, time: nil)
+    if speed.present? && speed[:qty] > centrifuge.class::MAX_X_G[:qty]
       raise OverSpeedError, "Speed (#{speed}) is too fast for #{centrifuge.class::NAME}"
     end
     show_array = []
-    if centrifuge.class::ADJUSTABLE
+    if centrifuge.class::ADJUSTABLE && speed.present?
       show_array.append("Set <b>#{centrifuge.class::NAME}</b> speed to #{qty_display(speed)}")
     else
       show_array.append("Go to <b>#{centrifuge.class::NAME}</b>")
     end
     show_array.append("Set time to #{qty_display(time)}") if time.present?
-    show_array.append("Load the following items into a\n <b>#{centrifuge.class::NAME}</b>")
+    show_array.append("Load the following item into a <b>#{centrifuge.class::NAME}</b>".pluralize(items.length))
     items.each do |item|
       show_array.append("- #{item}")
     end
@@ -55,12 +42,13 @@ module Centrifuges
   end
 
 
-  # Returns a centrafuge
+  # Returns a centrifuge
   # 
   # @param speed [{qty: int, unit: string}] the volume per Standard Libs Units
   # @param type [String] the type of pipettor if a specific one is desired
   # @return [Pipet] A class of pipettor
-  def get_centrifuge(speed:, type: nil, is_plate: false)
+  def get_centrifuge(speed: nil, type: nil, is_plate: false)
+    speed = { qty: 1000.0, units: TIMES_G }
     qty = type.present? ? Float::INFINITY : speed[:qty]
 
     return Large.instance if is_plate && type.nil?

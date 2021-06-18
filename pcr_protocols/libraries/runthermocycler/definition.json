@@ -1,0 +1,6 @@
+{
+  "name": "RunThermocycler",
+  "parent_class": "Library",
+  "category": "PCR Protocols",
+  "user_id": 1
+}

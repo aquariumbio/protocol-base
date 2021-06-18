@@ -37,7 +37,7 @@ module CompositionHelper
       end
 
       show_block.append(pipet(volume: comp.volume_hash(adj_qty: adj_qty),
-                   source: comp.item,
+                   source: comp,
                    destination: master_mix)
       )
     end
@@ -63,26 +63,21 @@ module CompositionHelper
   end
 
   # =========== Universal Method ========= #
+  # Deprecated method
   def location_table(objects, adj_qty: false)
-    location_table = [%w(Name Description Location Quantity Note)]
-    objects.each do |obj|
-      name = obj.input_name.to_s
-      name += "-#{obj.item}" if obj.respond_to? :item
-      qty = obj.qty_display(adj_quantities: adj_qty)
-      location_table.push([name, obj.description, obj.location, qty, obj.notes])
-    end
-    location_table
+    create_location_table(items, volume_table: true, adj_qty: adj_qty)
   end
 
-  private
-
+  #Deprecated Method
   def show_retrieve_parts(objects, adj_qty: false)
-    return unless objects.present?
-    show do
-      title 'Retrieve Materials'
-      note 'Please get the following materials'
-      table location_table(objects, adj_qty: adj_qty)
-    end
+    display(
+      title: 'Retrieve Materials',
+      show_block: retrieve_materials(
+        objects,
+        volume_table: true,
+        adj_qty: adj_qty
+      )
+    )
   end
 end
 

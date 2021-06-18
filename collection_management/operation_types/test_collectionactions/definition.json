@@ -1,0 +1,16 @@
+{
+  "name": "Test CollectionActions",
+  "parent_class": "OperationType",
+  "category": "Collection Management",
+  "inputs": [],
+  "outputs": [
+    {
+      "name": "Test output",
+      "part": true,
+      "array": null,
+      "routing": "OP"
+    }
+  ],
+  "on_the_fly": null,
+  "user_id": 1
+}

@@ -9,35 +9,30 @@ module ItemActions
   include Units
   include TextDisplayHelper
 
-  # Tell the experimenter to get clean containers and label them.
+  # Directions to label objects with labels
+  # Will display exactly labels and exactly objects
   #
-  # @note Parameters labels or items, but not both, must be passed
-  # @param container_name [String] the name of the container, will be
-  #   pluralized based on the number of labels or items passed
-  # @param labels [Array<String>] an array of labels for the containers
-  # @param items [Array<Item>] an array of Items; if passed then the labels
-  #   will be the item IDs
-  # @retun [void]
-  def label_containers(container_name:, labels: nil, items: nil)
-    if items && labels
-      raise 'Method label_containers can\'t take both items and labels'
-    elsif items
-      n_containers = items.length
-      labels = id_ranges_display(items: items)
-    elsif labels
-      n_containers = labels.length
+  # @param objects [String able object]
+  def label_items(objects:, labels:)
+    show_block = []
+    objects.zip(labels).each do |obj, label|
+      show_block.append("Label <b>#{obj}</b> with: <b> #{label}</b>")
+    end
+    show_block
+  end
+
+  # Instructions on getting and labeling new plate
+  #
+  # @param plate [Collection] the plate to be retrieved and labeled
+  def get_and_label_new_item(item)
+    if item.is_a? Component
+      ot = item.item.object_type.name
+      label = item.display_name
     else
-      raise 'Method label_containers requires either items or labels'
+      ot = item.object_type.name
+      label = item
     end
-
-    containers = container_name.pluralize(n_containers)
-
-    show do
-      title "Label #{containers}"
-
-      note "Get #{n_containers} #{containers}"
-      note "Label the #{containers} #{labels}"
-    end
+    "Get a <b>#{ot}</b> and label it ID: <b>#{label}</b>"
   end
 
   # Tell the experimenter to discard all items that have been marked as deleted.
@@ -58,28 +53,23 @@ module ItemActions
   def discard_items(items:)
     item_display = items.map { |i| [i.object_type.name, i.to_s] }.sort
 
-    show do
-      title 'Dispose of used items'
 
-      note 'Dispose of all the following items'
-      warning 'Please ask for help if you are unsure of proper disposal procedures'
-      item_display.each do |name, id|
-        check "#{name} #{id}"
-      end
+    dis = [{ display: 'Dispose of all the following items', type: 'note' }]
+    item_display.each do |name, id|
+      dis.append({ display: "#{name} #{id}", type: 'bullet' })
     end
   end
 
   # Instructs tech to remove supernatant and discard
   #
   # @param item [Item]
-  def remove_discard_supernatant(items)
-    show do
-      title 'Remove Supernatant'
-      note 'Remove and discard supernatant from:'
-      items.each do |item|
-        bullet item.to_s
-      end
+  def remove_item_supernatant(items)
+    return unless items.present?
+    dis = [{ display: 'Remove and discard supernatant from:', type: 'note' }]
+    items.each do |item|
+      dis.append({ display: item.to_s, type: 'bullet' })
     end
+    dis
   end
 
   # Instructs tech to check items for bubbles
@@ -104,17 +94,13 @@ module ItemActions
     end
   end
 
-
-  # instructions to thaw items
+    # instructions to thaw items
   #
   # @param items [Item, Collection, String]
   def show_thaw_items(items)
-    show do
-      title 'Thaw items'
-      note 'Thaw the following items'
-      items.each do |item|
-        bullet item.to_s
-      end
+    dis = [{ display: 'Thaw the following items', type: 'note' }]
+    items.each do |item|
+      dis.append({ display: item.to_s, type: 'bullet' })
     end
   end
 
@@ -122,16 +108,14 @@ module ItemActions
   #
   # @param
   def show_incubate_items(items:, time:, temperature:)
-    show do
-      title 'Incubate Items'
-      note 'Incubate the following items per instructions below'
-      note "Temperature: <b>#{qty_display(temperature)}</b>"
-      note "Time: <b>#{qty_display(time)}</b>"
-      note 'Items:'
-      items.each do |item|
-        bullet item.to_s
-      end
+    dis = [{ display: 'Incubate the following items per instructions below', type: 'note' },
+           { display: "Temperature: <b>#{qty_display(temperature)}</b>", type: 'note' },
+           { display: "Time: <b>#{qty_display(time)}</b>", type: 'note' },
+           { display: 'Items:', type: 'note' },]
+    items.each do |item|
+      dis.append({ display: item.to_s, type: 'bullet' })
     end
+    dis
   end
 
   # Store all items used in input operations
@@ -209,43 +193,65 @@ module ItemActions
   # (String or Wizard if Wizard exists)
   def set_locations(items, location)
     items.each do |item|
+      item = item.containing_collection if item.is_a? Part
+      next unless item.is_a?(Item) || item.is_a?(Collection)
       item.move_to(location)
       item.save
-    end
-  end
-
-  # Directions to layout materials for easy use
-  #
-  # @materials [Array<items>]
-  def layout_materials(materials)
-    show do
-      title 'Layout Materials'
-      note 'Please set out the following items for easy access'
-      table create_location_table(materials)
     end
   end
 
   # Directions to retrieve materials
   #
   # @materials [Array<items>]
-  def retrieve_materials(materials)
-    return unless materials.present?
-
-    show do
-      title 'Retrieve Materials'
-      note 'Please get the following items'
-      table create_location_table(materials)
+  def retrieve_materials(materials, volume_table: false, adj_qty: false)
+    return nil unless materials.present?
+    dis = [ { display: 'Please get the following items', type: 'note'  }]
+    if adj_qty.present? || volume_table.present?
+      dis.append({ display: volume_location_table(materials, adj_qty: adj_qty),
+                   type: 'table'})
+    else
+      dis.append({ display: create_location_table(materials), type: 'table'})
     end
   end
 
   # Creates table directing technician on where to store materials
   #
-  # @param collection [Collection] the materials that are to be put away
+  # @param item [Items, Consumables, Compositions] the materials that are to be put away
   # @return location_table [Array<Array>] of Collections and their locations
   def create_location_table(items)
-    location_table = [['ID', 'Object Type', 'Location']]
-    items.each do |item|
-      location_table.push([item.id, item.object_type.name, item.location])
+    location_table = [%w(Name Description Location)]
+
+    items.each do |obj|
+      if obj.is_a? Item
+        row = [Item.to_s, obj.object_type.name.to_s, obj.location]
+        location_table.push(row)
+      elsif obj.is_a?(Component) || obj.is_a?(Consumable)
+        name = obj.input_name.to_s
+        name += "-#{obj.item}" if obj.respond_to? :item
+        description = obj.description || '-'
+        location_table.push([name, description, obj.location])
+      else
+        location_table.push([obj.to_s, nil, nil])
+      end
+    end
+    location_table
+  end
+
+  # Creates a location table including volumes
+  # Uses the create_location_table to create initial table
+  #
+  # @param item [Items, Consumables, Compositions] the materials that are to be put away
+  # @return location_table [Array<Array>] of Collections and their locations
+  def volume_location_table(objects, adj_qty: false)
+    location_table = create_location_table(objects)
+
+    location_table.first.concat(['Quantity', 'Notes'])
+
+    objects.each_with_index do |obj, idx|
+      row = location_table[idx + 1]
+      qty = obj.qty_display(adj_quantities: adj_qty)
+
+      row.concat([qty, obj.notes || '-'])
     end
     location_table
   end
@@ -257,11 +263,10 @@ module ItemActions
   def trash_object(items, waste_container: 'Biohazard Waste')
     set_locations(items, location: waste_container)
     tab = create_location_table(items)
-    show do
-      title 'Properly Dispose of the following items:'
-      table tab
-    end
+    dis = [ { display: 'Properly Dispose of the following items:', type: 'note'  },
+            { display: create_location_table(items), type: 'table'} ]
     items.each { |item| item.mark_as_deleted }
+    dis
   end
 
   # Instructions to fill media reservoir
@@ -270,18 +275,17 @@ module ItemActions
   # @param volume [Volume]
   def show_fill_reservoir(media, unit_volume, number_items)
     total_vol = { units: unit_volume[:units], qty: calculate_volume_extra(unit_volume, number_items) }
-    show do
-      title 'Fill Media Reservoir'
-      check 'Get a media reservoir'
-      check pipet(volume: total_vol,
-                  source: "<b>#{media.id}</b>",
-                  destination: '<b>Media Reservoir</b>')
-    end
+    [ { display:  'Fill Media Reservoir', type: 'note'},
+      { display: 'Get a media reservoir', type: 'check' },
+      { display: pipet(volume: total_vol,
+                       source: "<b>#{media.id}</b>",
+                       destination: '<b>Media Reservoir</b>'), type: 'check' } ]
   end
 
-  def calculate_volume_extra(unit_volume, number_items)
+  # Extra_ratio 0.15 = 15% 
+  def calculate_volume_extra(unit_volume, number_items, extra_ratio: 0.15)
     raw_vol = (unit_volume[:qty] * number_items)
-    addition = raw_vol * 0.15 #15% more volume
+    addition = raw_vol * extra_ratio
     (raw_vol + addition).ceil
   end
 
@@ -303,7 +307,7 @@ module ItemActions
     end
 
     ite = Item.where(sample_id: sample.id,
-                     object_type: ot).last
+                     object_type: ot).sample
 
     return ite if ite.present?
 
@@ -320,9 +324,12 @@ module ItemActions
   def make_item(sample:, object_type:, lot_number: nil, association_map: nil)
     raise ItemActionError, 'Sample ID is nil' if sample.nil?
 
-    object_type = ObjectType.find_by_name(object_type) if object_type.is_a? String
+    ot = ObjectType.find_by_name(object_type) if object_type.is_a? String
+    if ot.nil?
+      raise "Object Type for #{object_type} is nil"
+    end
     item = nil
-    if object_type.handler == 'collection'  # TODO find out why some ObjectTypes dont have .collection_type?
+    if ot.handler == 'collection'
       item = Collection.new_collection(object_type)
       length = association_map.present? ? association_map.length : item.get_empty.length
       samples = Array.new(length, sample)
@@ -341,23 +348,10 @@ module ItemActions
         item.set(map[:to_loc][0], map[:to_loc][1], samp)
       end
     else
-      item = sample.make_item(object_type.name.to_s)
+      item = sample.make_item(ot.name.to_s)
     end
     item.associate(LOT_NUM, lot_number) if lot_number.present?
     item
-  end
-
-  # Directions to label objects with labels
-  # Will display exactly labels and exactly objects
-  #
-  # @param objects [String able object]
-  def label_items(objects:, labels:)
-    show do
-      title 'Label the Following'
-      objects.zip(labels).each do |obj, label|
-        bullet "#{obj}: <b> #{label}</b>"
-      end
-    end
   end
 
   def flick_to_remove_bubbles(objs)
@@ -365,13 +359,16 @@ module ItemActions
       objs = [objs]
     end
 
-    show do
-      title 'Flick to Remove Bubbles'
-      note 'Carefully flick to breakdown and remove bubbles'
-      objs.each do |obj|
-        note obj
-      end
+    dis = [ { display: 'Carefully flick to breakdown and remove bubbles', type: 'note' }]
+    
+    objs.each do |obj|
+      dis.append({ display: obj.to_s, type: 'bullet' })
     end
+  end
+
+  ###### Deprecated ########
+  def label_containers(container_name:, labels: nil, items: nil)
+    label_items(container_name: nil, labels: labels||items)
   end
 end
 

@@ -1,10 +1,10 @@
 {
-  "name": "PCR Plate Amplification",
+  "name": "Plate PCR",
   "parent_class": "OperationType",
   "category": "PCR Protocols",
   "inputs": [
     {
-      "name": "PCR Plate",
+      "name": "Sample Plate",
       "part": true,
       "array": false,
       "routing": "P"

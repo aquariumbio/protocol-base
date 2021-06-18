@@ -101,6 +101,12 @@ class Composition
     @components&.map(&:input_name)
   end
 
+  def set_adj_qty(mult = 1.0, round = 1, extra: 0)
+    components.each do |comp|
+      comp.adjusted_qty(mult, round, extra: extra)
+    end
+  end
+
   alias all_input_names component_input_names
 
   private

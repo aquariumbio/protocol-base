@@ -15,8 +15,12 @@ module ConsumableDefinitions
   SPARE_PLATE = '96 Well Plate'
   TEST_TUBE = '15 ml Reagent Tube'
   TUBE_500UL = '0.5 ml Tube'
+  TUBE_5ML = '5ml Reagent Tube'
+  TUBE_150UL = '1.5ml Reagent Tube'
   QBIT_TUBE = 'Qubit Assay Tube'
   TAPE_PAD = 'Tape Pad'
+  STRIP_TUBE8 = '<b>8 Strip Tube</b>'
+  AGILENT_SCREEN_TAPE = 'Agilent HS D1000 ScreenTape'
 
   TIP_BOX_100 = "100 #{MICROLITERS} Pipette Tip Box"
 
@@ -26,11 +30,13 @@ module ConsumableDefinitions
     bottle: 'Bottle', # A standard bottle
     reagent_bottle: 'Reagent Bottle', # A bottle that holds common reagents
     cover: 'Cover', # Aluminum Foil, Cling Wrap
-    pipette_tips: 'Pipette Tips' # obvious
+    pipette_tips: 'Pipette Tips', # obvious
+    strip_well: 'Strip Well' # any kinds of stripwells
   }.freeze
 
   LOCATIONS = {
-    location_1: 'That one spot over by the fridge'
+    location_1: 'Bench',
+    fridge: '2C - 8C'
   }
 
   # A 'consumable' is an item that is not part of a reaction but is required
@@ -40,6 +46,18 @@ module ConsumableDefinitions
   #    general like 'plates" or 'Pipette tips' or 'containers'
 
   CONSUMABLES = {
+    TUBE_5ML => {
+      name: TUBE_5ML,
+      type: TYPES[:bottle],
+      location: LOCATIONS[:location_1],
+      description: 'Description'
+    },
+    STRIP_TUBE8 => {
+      name: STRIP_TUBE8,
+      type: TYPES[:strip_well],
+      location: LOCATIONS[:location_1],
+      description: 'Description'
+    },
     PLATE_96_WELL => {
       name: PLATE_96_WELL,
       type: TYPES[:plate],
@@ -111,6 +129,18 @@ module ConsumableDefinitions
       type: TYPES[:pipette_tips],
       location: LOCATIONS[:location_1],
       description: TIP_BOX_100
+    },
+    AGILENT_SCREEN_TAPE => {
+      name: AGILENT_SCREEN_TAPE,
+      type: TYPES[:cover],
+      location: LOCATIONS[:fridge],
+      description: 'Use at room temp'
+    },
+    TUBE_150UL => {
+      name: TUBE_150UL,
+      type: TYPES[:bottle],
+      location: LOCATIONS[:location_1],
+      description: 'nil'
     }
   }.freeze
  

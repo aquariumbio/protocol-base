@@ -22,6 +22,43 @@ module CollectionTransfer
 
   VOL_TRANSFER = 'Volume Transferred'.to_sym
 
+  # Assigns samples to specific well locations
+  # The order of the samples and the order of the association map should be
+  # the same
+  #
+  # @param samples [Array<FieldValue>] or [Array<Samples>]
+  # @param to_collection [Collection]
+  # @param association_map map of where samples should go
+  # @raise if not enough space in collection
+  def add_samples_to_collection(samples, to_collection, association_map: nil)
+    slots_left = to_collection.get_empty.length
+    if samples.length > slots_left
+      raise "Not enough space in in collection #{to_collection}"
+    end
+
+    unless association_map.present?
+      to_collection.add_samples(samples)
+      return to_collection
+    end
+
+    samples.zip(association_map).each do |sample, map|
+      next if sample.nil?
+
+      if map.nil?
+        to_collection.add(sample)
+      else
+        rc = map[:to_loc]
+        to_collection.set(rc[0], rc[1], sample)
+      end
+    end
+    to_collection
+  end
+
+
+  # Creates a 'to_assocation_map' for all parts that share the same item or sample
+  #
+  # @param collection [Collection] the collection
+  # @param item [Item or Sample] that is to be found
   def to_association_map(collection:, item:)
     association_map = []
     locations = collection.find(item)
@@ -31,6 +68,10 @@ module CollectionTransfer
     association_map
   end
 
+  # Creates a 'from_assocation_map' for all parts that share the same item or sample
+  #
+  # @param collection [Collection] the collection
+  # @param item [Item or Sample] that is to be found
   def from_association_map(collection:, item:)
     association_map = []
     locations = collection.find(item)
@@ -246,7 +287,9 @@ module CollectionTransfer
     end
   end
 
+  # DEPRECATED
   # Instructions to tech to relabel plate
+  # TODO this should be deleted since this exists in Collection Actions
   #
   # @param from_collection [Collection]
   # @param to_collection [Collection]
@@ -373,20 +416,12 @@ module CollectionTransfer
   #
   # @param to_collection [Collection] the to collection
   # @param from_collection [Collection] the from collection
-  def one_to_one_association_map(from_collection:, to_collection: nil)
-    from_rows, from_cols = from_collection.dimensions
-    if to_collection
-      to_rows, to_cols = to_collection.dimensions
-      rows = [to_rows, from_rows].min
-      cols = [to_cols, from_cols].min
-    else
-      rows = from_rows
-      cols = from_cols
-    end
+  def one_to_one_association_map(from_collection:, skip_nil: true)
+    rows, cols = from_collection.dimensions
     association_map = []
     rows.times do |row|
       cols.times do |col|
-        next if from_collection.part(row, col).nil?
+        next if from_collection.part(row, col).nil? && skip_nil
 
         loc = [row, col]
         association_map.push({ to_loc: loc, from_loc: loc })
