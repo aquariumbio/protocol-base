@@ -1,9 +1,9 @@
 # Small Instruments
-These classes create easy, standard ways for technicians to interact with "small instruments".  Small instruments are any common instruments that requires some settings to use but generally do not have complex computer control.  Each Instrument Type class has multiple Instrument subclasses to accommodate multiple versions of an instrument (e.g. P10, P100, P1000 pipettors).  Current Instrument Type Classes include:
+Thes Small Instruments classes create interfaces for interacting with common lab instruments that have some settings, but generally lack complex programs and are not controlled by a freestanding computer. Each Instrument Type class has multiple Instrument subclasses to accommodate multiple versions of an instrument (e.g. P10, P100, P1000 pipettors). Current Instrument Type Classes include:
 
-- Pipettors
-- Centrifuges
-- Shakers
+- [Pipettors](./pipettors.md)
+- [Centrifuges](./centrifuges.md)
+- [Shakers](./shakers.md)
 
 More Instrument subclasses and Instrument Type Classes can be added, however any additional classes must follow the standard set in these existing libraries.  Many of these classes are used throughout other libraries and major changes to structure may affect multiple other sources.
 
