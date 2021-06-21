@@ -1,5 +1,5 @@
 {
-  "name": "Test Options",
+  "name": "Test PlanParams",
   "parent_class": "OperationType",
   "category": "Standard Libs",
   "inputs": [],

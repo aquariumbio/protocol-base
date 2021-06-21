@@ -115,48 +115,6 @@ module PlanParams
     job_params
   end
 
-  ########## TESTING METHODS ##########
-
-  TEST_PARAMS = {
-    who_is_on_first: false
-  }.freeze
-
-  # Set everything up for testing using options
-  #
-  # @param operations [OperationList] the operations
-  # @param options [Hash] the options
-  # @return [void]
-  def setup_test_options(operations:, opts: TEST_PARAMS)
-    associate_plan_options(operations: operations, opts: opts)
-    unify_plans(operations: operations)
-  end
-
-  # Add options to the `Plan` for testing purposes
-  #
-  # @param operations [OperationList] the operations
-  # @param options [Hash] the options
-  # @return [void]
-  def associate_plan_options(operations:, opts:)
-    plan = operations.first.plan
-    plan.associate(:options, opts.to_json)
-  end
-
-  # Make all operations have the same plan
-  #
-  # @param operations [OperationList] the operations
-  # @return [void]
-  def unify_plans(operations:)
-    plan_associations = operations.map { |op| op.plan_associations.first }
-    plan = operations.first.plan
-    plan_associations.each do |pa|
-      pa.plan = plan
-      pa.save
-    end
-
-    # Needed to refresh plan associations for weird Rails reasons
-    Operation.find(operations.map(&:id))
-  end
-
   def get_options(operations:, key:)
     operations.map { |op| get_option(operation: op, key: key) }
   end
