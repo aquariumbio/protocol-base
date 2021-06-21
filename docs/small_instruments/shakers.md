@@ -1,4 +1,4 @@
-## [Shakers](https://github.com/aquariumbio/protocol-base/tree/main/small_instruments/libraries/shakers)
+## Shakers
 This class includes use of full size adjustable shakers, vortexers, and inversion to mix (by hand).
 
 The easiest way to use this class is to simply call the `shake` method.
@@ -22,8 +22,8 @@ Load the following items into Generic Shaker
  - Item 3
 ```
 - `items` any list of Strings or objects that have to_string method.  Typically an item
-- `speed` optional, given in RPM in the [Standard Libs/Units](https://github.com/aquariumbio/protocol-base/tree/main/standard_libs/libraries/units) format `{qty: 2200, units: RPM}`
-- `time` optional, given in the [Standard Libs/Units](https://github.com/aquariumbio/protocol-base/tree/main/standard_libs/libraries/units) format
+- `speed` optional, given in RPM in the [Standard Libs/Units](/docs/standard_libraries/units.md) format `{qty: 2200, units: RPM}`
+- `time` optional, given in the [Standard Libs/Units](/docs/standard_libraries/units.md) format
 - `type` optional, specify what shaker, vortexer, or inversion by hand is desired.  Use the class variable name to specify type (e.g. `BasicShaker::NAME`)
 
 This method will find the best shaker available based on given speed.  If no speed is given then it will vortex.  If type is specified then will use given type as long as speed (if given) is less than max speed of shaker.

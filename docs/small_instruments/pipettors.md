@@ -1,7 +1,7 @@
-## [Pipettor](https://github.com/aquariumbio/protocol-base/blob/main/small_instruments/libraries/pipettors/source.rb)
+## Pipettors
 To use the pipettor class simply call `pipet` for single channel pipetting or `multichannel_pipet` for multi channel pipetting.  This will return a string with most required instructions.
 
-Since multi channel pipetting is only used with multi well plates or tube racks it is recommended to use [Collection Transfer](https://github.com/aquariumbio/protocol-base/tree/main/collection_management/libraries/collectiontransfer) library to provide instructions for transfers.  This library utilizes the small instrument libraries but adds more context for the technician.
+Since multi channel pipetting is only used with multi well plates or tube racks, it is recommended to use the Collection Transfer library to provide instructions for transfers. This library utilizes the small instrument libraries but adds more context for the technician.
 
 ``` Ruby
 pipet(volume: {qty: , units: },
@@ -10,7 +10,7 @@ pipet(volume: {qty: , units: },
                type: nil)
 ```
 
-`volume` can be any volume in microliter given in [Standard Libs/Units](https://github.com/aquariumbio/protocol-base/tree/main/standard_libs/libraries/units)
+`volume` can be any volume in microliter given in [Standard Libs/Units](/docs/standard_libraries/units.md)
 
 `source` Is any string that represents the sources that pipetting is from.  Often this is an Item however it maybe be other things such as reservoir troughs, reagent bottles, etc.
 
@@ -64,7 +64,7 @@ New classes can be added easily by creating a new class and adding the class to 
 - `NAME` should match the class name and **MUST** be unique
 - `MIN_VOLUME` the minimum accurate volume a pipettor can transfer
 - `MAX_VOLUME` the maximum volume a pipettor can transfer
-- `ROUND_TO` if measurements should be rounded lists the decimal that it 
+- `ROUND_TO` if measurements should be rounded lists the decimal that it
 should be rounded to.  0 = no rounding.
 - `CHANNELS` the number of channels a pipettor can use
 
@@ -72,7 +72,7 @@ The order of pipettors in this method is important.  Make sure to add new pipett
 ```Ruby
  def get_single_channel_pipettor(volume:, type: nil)
     qty = type.present? ? Float::INFINITY : volume[:qty]
-  
+
     if type == P2::NAME || qty <= 2
       P2.instance
     elsif type == P20::NAME || qty <= 20
@@ -89,7 +89,7 @@ The order of pipettors in this method is important.  Make sure to add new pipett
   end
 ```
 
-Multi channel pipettors are added here. 
+Multi channel pipettors are added here.
 ```Ruby
   def get_multi_channel_pipettor(volume:, type: nil)
     qty = type.present? ? Float::INFINITY : volume[:qty]
